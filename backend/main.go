@@ -37,8 +37,13 @@ type SearchResult struct {
 	TotalResults int `json:"total_results"`
 }
 
+const NotFound string = "Not Found"
+
 func fetchData(url string) ([]byte, error) {
 	res, err := http.Get(url)
+	if res.StatusCode == 404 {
+		return nil, errors.New(NotFound)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +58,23 @@ func fetchData(url string) ([]byte, error) {
 	return body, nil
 }
 
+func errorHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+		err := c.Errors.Last()
+		if err == nil {
+			return
+		}
+
+		switch err.Error() {
+		case NotFound:
+			c.AbortWithError(404, err)
+		default:
+			c.AbortWithError(500, err)
+		}
+	}
+}
+
 func getMovieById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -62,18 +84,15 @@ func getMovieById(c *gin.Context) {
 	baseURL.RawQuery = params.Encode()
 
 	res, err := fetchData(baseURL.String())
-	if len(res) == 0 {
-		c.AbortWithStatus(404)
-		return
-	}
 	if err != nil {
-		c.AbortWithStatus(500)
+		c.Error(err)
 		return
 	}
+
 	var data Movie
 	err = json.Unmarshal(res, &data)
 	if err != nil {
-		c.AbortWithStatus(500)
+		c.Error(err)
 		return
 	}
 	c.JSON(http.StatusOK, data)
@@ -91,12 +110,12 @@ func searchMovie(c *gin.Context) {
 	var result SearchResult
 	body, err := fetchData(baseURL.String())
 	if err != nil {
-		c.AbortWithStatus(500)
+		c.Error(err)
 		return
 	}
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		c.AbortWithStatus(500)
+		c.Error(err)
 		return
 	}
 
@@ -106,6 +125,8 @@ func searchMovie(c *gin.Context) {
 func main() {
 	API_KEY = os.Getenv("API_KEY")
 	router := gin.Default()
+
+	router.Use(errorHandler())
 
 	router.GET("/ping", ping)
 	router.GET("/movies/search", searchMovie)

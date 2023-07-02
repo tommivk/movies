@@ -20,22 +20,22 @@ func ping(c *gin.Context) {
 }
 
 type Movie struct {
-	Id            int
-	Title         string
+	Id            int    `json:"id"`
+	Title         string `json:"title"`
 	BackdropPath  string `json:"backdrop_path"`
 	GenreIds      []int  `json:"genre_ids,omitempty"`
 	Language      string `json:"original_language"`
 	OriginalTitle string `json:"original_title"`
-	Overview      string
+	Overview      string `json:"overview"`
 	PosterPath    string `json:"poster_path"`
 	ReleaseDate   string `json:"release_date"`
 }
 
 type SearchResult struct {
-	Page         int
-	Results      []Movie
-	TotalPages   int `json:"total_pages"`
-	TotalResults int `json:"total_results"`
+	Page         int     `json:"page"`
+	Results      []Movie `json:"results"`
+	TotalPages   int     `json:"total_pages"`
+	TotalResults int     `json:"total_results"`
 }
 
 const NotFound string = "Not Found"

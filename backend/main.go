@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -126,10 +127,12 @@ func main() {
 	API_KEY = os.Getenv("API_KEY")
 	router := gin.Default()
 
+	router.Use(cors.Default()) // allows all origins
 	router.Use(errorHandler())
 
 	router.GET("/ping", ping)
 	router.GET("/movies/search", searchMovie)
 	router.GET("/movies/:id", getMovieById)
+
 	router.Run(":8080")
 }

@@ -13,7 +13,7 @@ const MovieCard = ({ movie }: Props) => {
 
   return (
     <div className="card">
-      <div className="card__imageContainer">
+      <div className="card__imageWrapper">
         <img className="card__image" src={bgImage} alt={movie.title}></img>
         <div className="card__fade" />
         <h2 className="card__title">{movie.title}</h2>

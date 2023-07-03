@@ -1,10 +1,12 @@
+@use "../../sassStyles/variables";
+
 $borderRadius: 20px;
 $padding: 20px;
 $background: rgb(14, 13, 13);
 
 .card {
     max-width: 90vw;
-    width: 400px;
+    width: variables.$movieCardWidth;
     position: relative;
     border-radius: $borderRadius;
     background: $background;

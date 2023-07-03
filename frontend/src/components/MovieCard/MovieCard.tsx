@@ -1,4 +1,4 @@
-import { Movie } from "../../types.ts";
+import { Movie } from "../../../types.js";
 import "./movieCard.scss";
 
 type Props = { movie: Movie };

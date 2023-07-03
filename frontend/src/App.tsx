@@ -31,14 +31,10 @@ const fetchData = async (url: string) => {
 const BASE_URL = "http://localhost:8080";
 
 function App() {
-  const {
-    data: movie,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["getMoviebyId"],
-    queryFn: (): Promise<Movie> => fetchData(`${BASE_URL}/movies/550`),
+    queryFn: (): Promise<SearchResult> =>
+      fetchData(`${BASE_URL}/movies/search?q=dog`),
   });
 
   if (isLoading) return <p>Loading...</p>;
@@ -51,14 +47,9 @@ function App() {
     return <p>Error</p>;
   }
 
-  console.log(movie);
+  console.log(data);
 
-  return (
-    <div>
-      <p>{movie.title}</p>
-      <p>{movie.overview}</p>
-    </div>
-  );
+  return <div></div>;
 }
 
 export default App;

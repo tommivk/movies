@@ -68,7 +68,7 @@ $background: rgb(14, 13, 13);
     }
 
     &:hover {
-        transform: scale(1.01);
+        transform: translateY(-1%);
         cursor: pointer;
     }
 }

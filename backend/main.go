@@ -69,9 +69,9 @@ func errorHandler() gin.HandlerFunc {
 
 		switch err.Error() {
 		case NotFound:
-			c.AbortWithError(404, err)
+			c.JSON(http.StatusNotFound, err)
 		default:
-			c.AbortWithError(500, err)
+			c.JSON(500, err)
 		}
 	}
 }

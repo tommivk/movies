@@ -1,20 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
+import camelcaseKeys from "camelcase-keys";
 
 type Movie = {
-  backdrop_path: string;
-  genre_ids: number[];
   id: number;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  poster_path: string;
-  release_date: string;
   title: string;
+  backdropPath: string;
+  genreIds: number[];
+  originalLanguage: string;
+  originalTitle: string;
+  overview: string;
+  posterPath: string;
+  releaseDate: string;
 };
 
 type SearchResult = {
-  total_pages: number;
-  total_results: number;
+  totalPages: number;
+  totalResults: number;
   results: Movie[];
 };
 
@@ -23,7 +24,8 @@ const fetchData = async (url: string) => {
   if (!res.ok) {
     throw new Error(res.statusText);
   }
-  return res.json();
+  const data = await res.json();
+  return camelcaseKeys(data, { deep: true });
 };
 
 const BASE_URL = "http://localhost:8080";
@@ -48,6 +50,8 @@ function App() {
     }
     return <p>Error</p>;
   }
+
+  console.log(movie);
 
   return (
     <div>

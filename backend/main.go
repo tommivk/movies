@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,16 +20,22 @@ func ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
+type Genre struct {
+	Id   int
+	Name string
+}
+
 type Movie struct {
-	Id            int    `json:"id"`
-	Title         string `json:"title"`
-	BackdropPath  string `json:"backdrop_path"`
-	GenreIds      []int  `json:"genre_ids,omitempty"`
-	Language      string `json:"original_language"`
-	OriginalTitle string `json:"original_title"`
-	Overview      string `json:"overview"`
-	PosterPath    string `json:"poster_path"`
-	ReleaseDate   string `json:"release_date"`
+	Id            int     `json:"id"`
+	Title         string  `json:"title"`
+	BackdropPath  string  `json:"backdrop_path"`
+	GenreIds      []int   `json:"genre_ids,omitempty"`
+	Genres        []Genre `json:"genres"`
+	Language      string  `json:"original_language"`
+	OriginalTitle string  `json:"original_title"`
+	Overview      string  `json:"overview"`
+	PosterPath    string  `json:"poster_path"`
+	ReleaseDate   string  `json:"release_date"`
 }
 
 type SearchResult struct {
@@ -99,6 +106,43 @@ func getMovieById(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
+func appendGenresToSearchResult(searchResult SearchResult) {
+	movies := searchResult.Results
+	for i := 0; i < len(movies); i++ {
+		for j := 0; j < len(movies[i].GenreIds); j++ {
+			appendGenreToMovie(movies[i].GenreIds[j], &movies[i])
+		}
+		movies[i].GenreIds = nil
+	}
+}
+
+var genres = [...]Genre{{Id: 28, Name: "Action"}, {Id: 12, Name: "Adventure"}, {Id: 16, Name: "Animation"}, {Id: 35, Name: "Comedy"}, {Id: 80, Name: "Crime"}, {Id: 99, Name: "Documentary"}, {Id: 18, Name: "Drama"}, {Id: 10751, Name: "Family"}, {Id: 14, Name: "Fantasy"}, {Id: 36, Name: "History"}, {Id: 27, Name: "Horror"}, {Id: 10402, Name: "Music"}, {Id: 9648, Name: "Mystery"}, {Id: 10749, Name: "Romance"}, {Id: 878, Name: "Science Fiction"}, {Id: 10770, Name: "TV Movie"}, {Id: 53, Name: "Thriller"}, {Id: 10752, Name: "War"}, {Id: 37, Name: "Western"}}
+
+//	type GenreResult struct {
+//		Genres []Genre
+//	}
+
+func appendGenreToMovie(genreId int, movie *Movie) {
+	//TODO: cache this API result
+	// var genres GenreResult
+	// url := fmt.Sprintf("%s?language=en&api_key=%s", "https://api.themoviedb.org/3/genre/movie/list", API_KEY)
+	// data, err := fetchData(url)
+	// json.Unmarshal(data, &genres)
+
+	idx := -1
+	for i := 0; i < len(genres); i++ {
+		if genres[i].Id == genreId {
+			idx = i
+			break
+		}
+	}
+	if idx == -1 {
+		fmt.Printf("genreId %d not found", genreId)
+		return
+	}
+	movie.Genres = append(movie.Genres, genres[idx])
+}
+
 func searchMovie(c *gin.Context) {
 	search := c.Query("q")
 
@@ -108,19 +152,21 @@ func searchMovie(c *gin.Context) {
 	params.Add("api_key", API_KEY)
 	baseURL.RawQuery = params.Encode()
 
-	var result SearchResult
+	var searchResult SearchResult
 	body, err := fetchData(baseURL.String())
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	err = json.Unmarshal(body, &result)
+	err = json.Unmarshal(body, &searchResult)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	appendGenresToSearchResult(searchResult)
+
+	c.JSON(http.StatusOK, searchResult)
 }
 
 func main() {

@@ -58,6 +58,7 @@ type Movie struct {
 	VoteAverage   float32 `json:"vote_average,omitempty"`
 	VoteCount     int     `json:"vote_count,omitempty"`
 	Popularity    float32 `json:"popularity,omitempty"`
+	Runtime       int     `json:"runtime"`
 }
 
 type SearchResult struct {

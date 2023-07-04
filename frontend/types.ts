@@ -12,9 +12,10 @@ export type Movie = {
   voteAverage?: number;
   voteCount?: number;
   popularity?: number;
+  runtime: number;
 };
 
-type Cast = {
+export type Cast = {
   id: number;
   knownForDepartment: string;
   name: string;

@@ -25,6 +25,24 @@ type Genre struct {
 	Name string
 }
 
+type Cast struct {
+	Id                 int     `json:"id"`
+	KnownForDepartment string  `json:"known_for_department"`
+	Name               string  `json:"name"`
+	OriginalName       string  `json:"original_name"`
+	Popularity         float32 `json:"popularity"`
+	ProfilePath        string  `json:"profile_path"`
+	CastId             int     `json:"cast_id"`
+	Character          string  `json:"character"`
+	CreditId           string  `json:"credit_id"`
+	Order              int     `json:"order"`
+	Job                string  `json:"job,omitempty"`
+}
+
+type Credits struct {
+	Cast []Cast `json:"cast,omitempty"`
+}
+
 type Movie struct {
 	Id            int     `json:"id"`
 	Title         string  `json:"title"`
@@ -36,6 +54,10 @@ type Movie struct {
 	Overview      string  `json:"overview"`
 	PosterPath    string  `json:"poster_path"`
 	ReleaseDate   string  `json:"release_date"`
+	Credits       Credits `json:"credits,omitempty"`
+	VoteAverage   float32 `json:"vote_average,omitempty"`
+	VoteCount     int     `json:"vote_count,omitempty"`
+	Popularity    float32 `json:"popularity,omitempty"`
 }
 
 type SearchResult struct {
@@ -89,6 +111,7 @@ func getMovieById(c *gin.Context) {
 	baseURL, _ := url.Parse("https://api.themoviedb.org/3/movie/" + id)
 	params := url.Values{}
 	params.Add("api_key", API_KEY)
+	params.Add("append_to_response", "credits")
 	baseURL.RawQuery = params.Encode()
 
 	res, err := fetchData(baseURL.String())

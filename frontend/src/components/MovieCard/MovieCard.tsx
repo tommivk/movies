@@ -1,4 +1,6 @@
 import { Movie } from "../../../types.js";
+import { getImageUrl } from "../../../utils.js";
+
 import "./movieCard.scss";
 
 type Props = { movie: Movie };
@@ -8,9 +10,7 @@ const placeHolderImg =
 
 const MovieCard = ({ movie }: Props) => {
   const imagePath = movie.posterPath ?? movie.backdropPath;
-  const image = imagePath
-    ? `https://image.tmdb.org/t/p/original/${imagePath}`
-    : placeHolderImg;
+  const image = imagePath ? getImageUrl(imagePath) : placeHolderImg;
 
   const year = movie.releaseDate
     ? new Date(movie.releaseDate).getFullYear()

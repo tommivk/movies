@@ -8,3 +8,6 @@ export const fetchData = async (url: string) => {
   const data = await res.json();
   return camelcaseKeys(data, { deep: true });
 };
+
+export const getImageUrl = (imagePath: string) =>
+  `https://image.tmdb.org/t/p/original/${imagePath}`;

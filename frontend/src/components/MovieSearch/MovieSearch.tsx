@@ -1,27 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
-import { SearchResult } from "../../../types";
+import { Movie, SearchResult } from "../../../types";
+import { fetchData } from "../../../utils.ts";
 import MovieCard from "../MovieCard/MovieCard";
-import camelcaseKeys from "camelcase-keys";
 
 import "./movieSearch.scss";
 
 const BASE_URL = "http://localhost:8080";
 
-const fetchData = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(res.statusText);
+const MovieList = ({
+  movies,
+  isLoading,
+  isError,
+  error,
+}: {
+  movies: Movie[];
+  isLoading: boolean;
+  isError: boolean;
+  error: unknown;
+}) => {
+  if (isError) {
+    console.error({ error });
+    if (error instanceof Error) {
+      return <p>Error happened: {error.message}</p>;
+    }
+    return <p>Error</p>;
   }
-  const data = await res.json();
-  return camelcaseKeys(data, { deep: true });
-};
 
-const MovieList = ({ data }: { data: SearchResult }) => {
+  if (isLoading) {
+    return <p className="search__info">Loading</p>;
+  }
+
+  if (movies.length === 0) {
+    return <p className="search__info">No results found</p>;
+  }
+
   return (
     <div className="search__result">
-      {data.results.map((movie) => (
+      {movies.map((movie) => (
         <MovieCard movie={movie} />
       ))}
       <div className="search__pseudoEl" />
@@ -33,22 +50,13 @@ const MovieList = ({ data }: { data: SearchResult }) => {
 
 const MovieSearch = () => {
   const [search, setSearch] = useState("");
-  const [debouncedSearch] = useDebounce(search, 500);
+  const [debouncedSearch] = useDebounce(search.trim(), 500);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["searchMovies", debouncedSearch],
     queryFn: (): Promise<SearchResult> =>
       fetchData(`${BASE_URL}/movies/search?q=${debouncedSearch}`),
+    enabled: Boolean(debouncedSearch),
   });
-
-  if (isError) {
-    console.error({ error });
-    if (error instanceof Error) {
-      return <p>Error happened: {error.message}</p>;
-    }
-    return <p>Error</p>;
-  }
-
-  console.log(data);
 
   return (
     <div className="search__container">
@@ -61,14 +69,13 @@ const MovieSearch = () => {
         value={search}
         onChange={({ target: { value } }) => setSearch(value)}
       ></input>
-      {isLoading ? (
-        <p className="search__info">Loading</p>
-      ) : (
-        <MovieList data={data} />
-      )}
-      {data && data.results.length === 0 && (
-        <p className="search__info">No results found</p>
-      )}
+
+      <MovieList
+        movies={data?.results ?? []}
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+      />
     </div>
   );
 };

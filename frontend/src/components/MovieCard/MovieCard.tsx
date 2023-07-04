@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Movie } from "../../../types.js";
 import { getImageUrl } from "../../../utils.js";
 
@@ -17,24 +18,26 @@ const MovieCard = ({ movie }: Props) => {
     : undefined;
 
   return (
-    <div className="card">
-      <div className="card__imageWrapper">
-        <img className="card__image" src={image} alt={movie.title}></img>
-        <div className="card__fade" />
-        <h2 className="card__title">{movie.title}</h2>
-      </div>
-      <div className="card__bottom">
-        <div className="card__details">
-          <div className="card__genres">
-            {movie.genres?.map((genre) => (
-              <span className="card__genre">{genre.name}</span>
-            ))}
-          </div>
-          <span className="card__year">{year}</span>
+    <Link className="link link--unset" to={`/movies/${movie.id}`}>
+      <div className="card">
+        <div className="card__imageWrapper">
+          <img className="card__image" src={image} alt={movie.title}></img>
+          <div className="card__fade" />
+          <h2 className="card__title">{movie.title}</h2>
         </div>
-        <p className="card__overview">{movie.overview}</p>
+        <div className="card__bottom">
+          <div className="card__details">
+            <div className="card__genres">
+              {movie.genres?.map((genre) => (
+                <span className="card__genre">{genre.name}</span>
+              ))}
+            </div>
+            <span className="card__year">{year}</span>
+          </div>
+          <p className="card__overview">{movie.overview}</p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

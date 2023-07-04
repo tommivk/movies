@@ -1,11 +1,23 @@
+import MoviePage from "./components/MoviePage/MoviePage";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route index element={<MovieSearch />} />
+      <Route path="/movies/:id" element={<MoviePage />} />
+    </Route>
+  )
+);
 
 function App() {
-  return (
-    <div>
-      <MovieSearch />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

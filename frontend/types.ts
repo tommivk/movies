@@ -8,7 +8,7 @@ export type Movie = {
   overview: string;
   posterPath: string;
   releaseDate: string;
-  credits?: Cast[];
+  credits?: { cast: Cast[] };
   voteAverage?: number;
   voteCount?: number;
   popularity?: number;

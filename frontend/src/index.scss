@@ -3,3 +3,9 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #212121;
 }
+
+html, body, #root {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}

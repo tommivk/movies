@@ -39,7 +39,7 @@ const MovieList = ({
   return (
     <div className="search__result">
       {movies.map((movie) => (
-        <MovieCard movie={movie} />
+        <MovieCard key={movie.id} movie={movie} />
       ))}
       <div className="search__pseudoEl" />
       <div className="search__pseudoEl" />

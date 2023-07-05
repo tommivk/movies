@@ -1,3 +1,5 @@
+@use "../../sassStyles/theme";
+
 $topSectionHeight: 60vh;
 
 .movie__image {
@@ -35,7 +37,6 @@ $topSectionHeight: 60vh;
         &>* {
             margin: 0;
         }
-
     }
 
     .movie__overview {
@@ -45,20 +46,28 @@ $topSectionHeight: 60vh;
     }
 }
 
-.persons__container {
+
+.cast__container {
+    max-width: 1300px;
+    margin: auto;
+}
+
+.cast__list {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
 
 .person__container {
-    width: 170px;
-    background: rgb(29, 28, 28);
-    border-radius: 10px;
+    width: 190px;
 
     .person__image {
+        background: theme.$darkGrey;
+        height: 285px;
         width: 100%;
-        border-radius: 10px 10px 0px 0px;
+        border-radius: 10px;
+        object-fit: cover;
+        object-position: top;
     }
 
     .person__details {
@@ -71,3 +80,9 @@ $topSectionHeight: 60vh;
     }
 }
 
+.person__placeholder {
+        font-size: 150px;
+        padding: 40px 0px;
+        color: transparent;  
+        text-shadow: 0 0 0 theme.$lightGrey;   
+}

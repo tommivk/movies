@@ -44,20 +44,33 @@ const MoviePage = () => {
         <p className="movie__overview">{movie.overview}</p>
       </div>
 
-      <h1>Cast</h1>
-      <div className="persons__container">
-        {movie.credits?.cast.map((person) => (
-          <Person person={person} key={person.id} />
-        ))}
+      <div className="cast__container">
+        <h1>Cast</h1>
+        <div className="cast__list">
+          {movie.credits?.cast
+            .slice(0, movie.credits.cast.length >= 6 ? 6 : undefined)
+            .map((person) => (
+              <Person person={person} key={person.id} />
+            ))}
+        </div>
       </div>
     </div>
   );
 };
 
 const Person = ({ person }: { person: Cast }) => {
+  const placeholder = (
+    <div className="person__image">
+      <div className="person__placeholder">👤</div>
+    </div>
+  );
   return (
     <div className="person__container">
-      <img className="person__image" src={getImageUrl(person.profilePath)} />
+      {person.profilePath ? (
+        <img className="person__image" src={getImageUrl(person.profilePath)} />
+      ) : (
+        placeholder
+      )}
       <div className="person__details">
         <h3 className="person__name">{person.name}</h3>
         <p className="person__character">{person.character}</p>

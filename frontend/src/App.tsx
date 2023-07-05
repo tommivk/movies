@@ -1,3 +1,4 @@
+import Layout from "./components/Layout";
 import MoviePage from "./components/MoviePage/MoviePage";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
 import {
@@ -9,8 +10,8 @@ import {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
-      <Route index element={<MovieSearch />} />
+    <Route path="/" element={<Layout />}>
+      <Route path="/search" element={<MovieSearch />} />
       <Route path="/movies/:id" element={<MoviePage />} />
     </Route>
   )

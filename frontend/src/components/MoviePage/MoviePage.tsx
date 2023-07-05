@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchData, getImageUrl } from "../../../utils";
+import { fetchData, getImageUrl, runtimeToString } from "../../../utils";
 import { Cast, Movie } from "../../../types";
 import { useState } from "react";
 
@@ -42,7 +42,7 @@ const MoviePage = () => {
         <h1 className="movie__title">{movie.title}</h1>
         <div className="movie__info">
           <h3>{year}</h3>
-          <h3 className="movie__runtime">{movie.runtime} Minutes</h3>
+          <h3 className="movie__runtime">{runtimeToString(movie.runtime)}</h3>
         </div>
         <p className="movie__overview">{movie.overview}</p>
       </div>

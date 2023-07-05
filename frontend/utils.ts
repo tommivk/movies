@@ -11,3 +11,6 @@ export const fetchData = async (url: string) => {
 
 export const getImageUrl = (imagePath: string) =>
   `https://image.tmdb.org/t/p/original/${imagePath}`;
+
+export const runtimeToString = (minutes: number) =>
+  `${Math.floor(minutes / 60)}h ${minutes % 60}m`;

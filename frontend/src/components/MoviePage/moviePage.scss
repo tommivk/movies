@@ -46,10 +46,30 @@ $topSectionHeight: 60vh;
     }
 }
 
+.cast__btn {
+    display: block;
+    margin-left: auto;
+    
+    &:after {
+        content: "➤";
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 15px;
+        transform: rotate(90deg);
+    }
+}
+
+.cast__btn--close {
+    &:after {
+        transform: rotate(-90deg);
+    }
+}
 
 .cast__container {
-    max-width: 1300px;
+    max-width: 1190px;
     margin: auto;
+    position: relative;
+    padding: 0px 20px;
 }
 
 .cast__list {

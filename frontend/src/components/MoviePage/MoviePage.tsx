@@ -2,12 +2,14 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchData, getImageUrl } from "../../../utils";
 import { Cast, Movie } from "../../../types";
+import { useState } from "react";
 
 import "./moviePage.scss";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const MoviePage = () => {
+  const [showFullCast, setShowFullCast] = useState(false);
   const { id } = useParams();
   const {
     data: movie,
@@ -30,6 +32,7 @@ const MoviePage = () => {
 
   const bgImage = movie?.backdropPath ? getImageUrl(movie.backdropPath) : "";
   const year = new Date(movie.releaseDate).getFullYear();
+  const castLength = movie.credits?.cast?.length ?? 0;
 
   return (
     <div>
@@ -44,16 +47,29 @@ const MoviePage = () => {
         <p className="movie__overview">{movie.overview}</p>
       </div>
 
-      <div className="cast__container">
-        <h1>Cast</h1>
-        <div className="cast__list">
-          {movie.credits?.cast
-            .slice(0, movie.credits.cast.length >= 6 ? 6 : undefined)
-            .map((person) => (
-              <Person person={person} key={person.id} />
-            ))}
+      {castLength > 0 && (
+        <div className="cast__container">
+          <h1>Cast</h1>
+
+          <div className="cast__list">
+            {movie.credits?.cast
+              .slice(0, !showFullCast && castLength >= 6 ? 6 : undefined)
+              .map((person) => (
+                <Person person={person} key={person.id} />
+              ))}
+          </div>
+          {castLength > 6 && (
+            <button
+              className={`cast__btn btn--transparent ${
+                showFullCast ? "cast__btn--close" : ""
+              }`}
+              onClick={() => setShowFullCast(!showFullCast)}
+            >
+              {showFullCast ? "Hide full cast" : "Show full cast"}
+            </button>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

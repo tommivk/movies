@@ -16,6 +16,55 @@ type Credentials struct {
 	Password string `binding:"required"`
 }
 
+type User struct {
+	Id           int
+	Username     string
+	PasswordHash string `db:"password_hash"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
+func Login(c *gin.Context) {
+	SECRET := c.MustGet("SECRET").(string)
+	db := c.MustGet("db").(*sqlx.DB)
+
+	var body Credentials
+	if err := c.BindJSON(&body); err != nil {
+		c.Error(errors.New("Missing username or password"))
+		return
+	}
+
+	user := User{}
+	err := db.Get(&user, "SELECT * FROM Users WHERE username=$1", body.Username)
+	if err != nil {
+		c.AbortWithStatus(401)
+		return
+	}
+
+	err = utils.ValidatePassword(user.PasswordHash, body.Password)
+	if err != nil {
+		c.AbortWithStatus(401)
+		return
+	}
+
+	token, err := utils.TokenForUser(user.Username, SECRET)
+	if err != nil {
+		fmt.Println("critical token error: ", err)
+		c.AbortWithStatus(500)
+		return
+	}
+
+	res := LoginResponse{Token: token}
+	c.JSON(http.StatusOK, res)
+}
+
+func AuthTest(c *gin.Context) {
+	username := c.MustGet("username").(string)
+	fmt.Println(username)
+}
+
 func SignUp(c *gin.Context) {
 	db := c.MustGet("db").(*sqlx.DB)
 	var body Credentials

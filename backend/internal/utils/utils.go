@@ -5,7 +5,9 @@ import (
 	"io/ioutil"
 	"movies/internal/constants"
 	"net/http"
+	"time"
 
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,4 +41,34 @@ func HashPassword(password string) (string, error) {
 func ValidatePassword(passwordHash, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
 	return err
+}
+
+func TokenForUser(username, secret string) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := make(jwt.MapClaims)
+	claims["exp"] = time.Now().UTC().Add(72 * time.Hour).Unix()
+	claims["username"] = username
+	token.Claims = claims
+
+	res, err := token.SignedString([]byte(secret))
+	return res, err
+}
+
+func ParseToken(tokenString, secret string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("Unknown signing method")
+		}
+		return []byte(secret), nil
+	})
+	if err != nil {
+		return nil, errors.New("Invalid token")
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, errors.New("Invalid token")
 }

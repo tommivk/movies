@@ -25,19 +25,17 @@ func ping(c *gin.Context) {
 func createTables(db *sqlx.DB) {
 	sql, err := ioutil.ReadFile("./tables.sql")
 	if err != nil {
-		log.Fatal("failed to read ./tables.sql")
+		log.Fatal("failed to read ./tables.sql", err)
 	}
-	res, err := db.Exec(string(sql))
+	_, err = db.Exec(string(sql))
 	if err != nil {
 		log.Fatal("failed to create tables", err)
 	}
-	fmt.Println(res.LastInsertId())
-	rows, _ := db.Query("SELECT * FROM Users")
-	fmt.Println(rows)
 }
 
 func main() {
 	API_KEY := os.Getenv("API_KEY")
+	SECRET := os.Getenv("SECRET")
 
 	connStr := "postgres://postgres:secret@localhost:5500/testDB?sslmode=disable"
 	db, err := sqlx.Open("postgres", connStr)
@@ -56,14 +54,21 @@ func main() {
 	router.Use(cors.Default()) // allows all origins
 	router.Use(middleware.ErrorHandler())
 	router.Use(middleware.APIKey(API_KEY))
+	router.Use(middleware.Secret(SECRET))
 	router.Use(middleware.DBConn(db))
 
-	router.GET("/ping", ping)
+	public := router.Group("/")
+	public.GET("/ping", ping)
+	public.GET("/movies/search", movies.SearchMovie)
+	public.GET("/movies/:id", movies.GetMovieById)
 
-	router.GET("/movies/search", movies.SearchMovie)
-	router.GET("/movies/:id", movies.GetMovieById)
+	public.POST("/users/signup", users.SignUp)
+	public.POST("/users/login", users.Login)
 
-	router.POST("/users/signup", users.SignUp)
+	private := router.Group("/")
+	private.Use(middleware.VerifyJWT())
+
+	private.POST("/users/test", users.AuthTest)
 
 	router.Run(":8080")
 }

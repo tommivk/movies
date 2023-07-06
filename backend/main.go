@@ -63,5 +63,7 @@ func main() {
 	router.GET("/movies/search", movies.SearchMovie)
 	router.GET("/movies/:id", movies.GetMovieById)
 
+	router.POST("/users/signup", users.SignUp)
+
 	router.Run(":8080")
 }

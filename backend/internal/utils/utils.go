@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"movies/internal/constants"
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func FetchData(url string) ([]byte, error) {
@@ -24,4 +26,17 @@ func FetchData(url string) ([]byte, error) {
 		return nil, err
 	}
 	return body, nil
+}
+
+func HashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
+
+func ValidatePassword(passwordHash, password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
+	return err
 }

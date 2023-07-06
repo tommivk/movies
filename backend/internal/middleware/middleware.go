@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"database/sql"
 	"movies/internal/constants"
 	"net/http"
 
@@ -27,6 +28,13 @@ func ErrorHandler() gin.HandlerFunc {
 func APIKey(API_KEY string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("API_KEY", API_KEY)
+		c.Next()
+	}
+}
+
+func DBConn(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("db", db)
 		c.Next()
 	}
 }

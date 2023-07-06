@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"database/sql"
 	"movies/internal/constants"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 )
 
 func ErrorHandler() gin.HandlerFunc {
@@ -32,7 +32,7 @@ func APIKey(API_KEY string) gin.HandlerFunc {
 	}
 }
 
-func DBConn(db *sql.DB) gin.HandlerFunc {
+func DBConn(db *sqlx.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("db", db)
 		c.Next()

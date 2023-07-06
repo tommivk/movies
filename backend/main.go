@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 )
@@ -22,7 +22,7 @@ func ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
-func createTables(db *sql.DB) {
+func createTables(db *sqlx.DB) {
 	sql, err := ioutil.ReadFile("./tables.sql")
 	if err != nil {
 		log.Fatal("failed to read ./tables.sql")
@@ -40,7 +40,7 @@ func main() {
 	API_KEY := os.Getenv("API_KEY")
 
 	connStr := "postgres://postgres:secret@localhost:5500/testDB?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	db, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}

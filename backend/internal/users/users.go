@@ -1,13 +1,14 @@
 package users
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"movies/internal/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 type Credentials struct {
@@ -16,7 +17,7 @@ type Credentials struct {
 }
 
 func SignUp(c *gin.Context) {
-	db := c.MustGet("db").(*sql.DB)
+	db := c.MustGet("db").(*sqlx.DB)
 	var body Credentials
 
 	if err := c.BindJSON(&body); err != nil {

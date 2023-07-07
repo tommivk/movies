@@ -8,6 +8,7 @@ $background: rgb(14, 13, 13);
     max-width: 90vw;
     width: variables.$movieCardWidth;
     position: relative;
+    overflow: hidden;
     border-radius: $borderRadius;
     background: $background;
     transition-duration: 0.5s;
@@ -19,12 +20,38 @@ $background: rgb(14, 13, 13);
         height: 350px;
     }
 
-    .card__fade {
+    .card__rating {
         position: absolute;
-        bottom: 0px;
-        width: 100%;
-        height: 200px;
-        background: linear-gradient(to bottom, rgba(14,13,13,0) 0%, rgba(14,13,13,0.79) 64%, rgba(14,13,13,1) 100%);
+        top: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.6);
+        padding: 8px 10px;
+        border-radius: 18px;
+        font-size: 0.9em;
+        z-index: 1;
+        &::before {
+            content: '⭐';
+            margin-right: 5px;
+        }
+    }
+    
+
+    .card__fade {
+        &--top {
+            position: absolute;
+            top: -5px;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to top, rgba(14,13,13,0) 0%, rgba(14,13,13,0.79) 100%, rgba(14,13,13,1) 64%);
+        }
+
+        &--bottom {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to bottom, rgba(14,13,13,0) 0%, rgba(14,13,13,0.79) 64%, rgba(14,13,13,1) 100%);
+        }
     }
 
     .card__image {

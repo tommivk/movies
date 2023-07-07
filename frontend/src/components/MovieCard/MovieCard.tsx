@@ -20,9 +20,13 @@ const MovieCard = ({ movie }: Props) => {
   return (
     <Link className="link link--unset" to={`/movies/${movie.id}`}>
       <div className="card">
+        {movie.voteAverage && (
+          <div className="card__rating">{movie.voteAverage.toFixed(1)}</div>
+        )}
         <div className="card__imageWrapper">
           <img className="card__image" src={image} alt={movie.title}></img>
-          <div className="card__fade" />
+          <div className="card__fade--top" />
+          <div className="card__fade--bottom" />
           <h2 className="card__title">{movie.title}</h2>
         </div>
         <div className="card__bottom">

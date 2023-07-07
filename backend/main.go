@@ -62,8 +62,8 @@ func main() {
 	public.GET("/movies/search", movies.SearchMovie)
 	public.GET("/movies/:id", movies.GetMovieById)
 
-	public.POST("/users/signup", users.SignUp)
-	public.POST("/users/login", users.Login)
+	public.POST("/signup", users.SignUp)
+	public.POST("/login", users.Login)
 
 	private := router.Group("/")
 	private.Use(middleware.VerifyJWT())

@@ -1,13 +1,15 @@
 @use "../../sassStyles/variables";
 
+$gap: 20px;
+
 .search__container {
-    max-width: 1900px;
+    max-width: (4 * variables.$movieCardWidth) + (3 * $gap);
     margin: auto;
 }
 
 .search__result {
     display: flex;
-    gap: 20px;
+    gap: $gap;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 150px;

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"movies/internal/favourites"
 	"movies/internal/middleware"
 	"movies/internal/movies"
 	"movies/internal/users"
@@ -67,6 +68,9 @@ func main() {
 
 	private := router.Group("/")
 	private.Use(middleware.VerifyJWT())
+
+	private.POST("/movies/:id/favourite", favourites.AddFavourite)
+	private.DELETE("/movies/:id/favourite", favourites.RemoveFavourite)
 
 	router.Run(":8080")
 }

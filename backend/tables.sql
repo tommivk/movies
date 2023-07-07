@@ -3,3 +3,10 @@ CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR UNIQUE NOT NULL,
     password_hash VARCHAR NOT NULL
 );
+
+
+CREATE TABLE IF NOT EXISTS Favourites (
+    id SERIAL PRIMARY KEY,
+    movie_id INTEGER,
+    user_id INTEGER REFERENCES Users
+);

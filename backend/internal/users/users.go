@@ -23,7 +23,8 @@ type User struct {
 }
 
 type LoginResponse struct {
-	Token string `json:"token"`
+	Token    string `json:"token"`
+	Username string `json:"username"`
 }
 
 func Login(c *gin.Context) {
@@ -56,7 +57,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	res := LoginResponse{Token: token}
+	res := LoginResponse{Token: token, Username: user.Username}
 	c.JSON(http.StatusOK, res)
 }
 

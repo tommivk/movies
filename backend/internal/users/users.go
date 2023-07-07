@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"movies/internal/utils"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
@@ -68,6 +69,8 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
+	body.Username = strings.TrimSpace(body.Username)
+
 	if len(body.Username) < 3 {
 		c.AbortWithStatusJSON(http.StatusForbidden, "Username must be at least 3 characters long")
 		return
@@ -88,8 +91,8 @@ func SignUp(c *gin.Context) {
 	}
 
 	var userExists bool
-	sql := `SELECT EXISTS(SELECT 1 FROM Users WHERE username=$1)`
-	err = db.QueryRow(sql, body.Username).Scan(&userExists)
+	sql := `SELECT EXISTS(SELECT 1 FROM Users WHERE LOWER(username)=$1)`
+	err = db.QueryRow(sql, strings.ToLower(body.Username)).Scan(&userExists)
 	if err != nil {
 		c.Error(err)
 		return

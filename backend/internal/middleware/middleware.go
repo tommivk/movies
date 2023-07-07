@@ -21,9 +21,9 @@ func ErrorHandler() gin.HandlerFunc {
 
 		switch err.Error() {
 		case constants.NotFound:
-			c.JSON(http.StatusNotFound, err)
+			c.AbortWithStatusJSON(http.StatusNotFound, err.Error())
 		default:
-			c.JSON(500, err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		}
 	}
 }

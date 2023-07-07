@@ -68,7 +68,5 @@ func main() {
 	private := router.Group("/")
 	private.Use(middleware.VerifyJWT())
 
-	private.POST("/users/test", users.AuthTest)
-
 	router.Run(":8080")
 }

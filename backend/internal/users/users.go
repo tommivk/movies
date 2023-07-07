@@ -1,7 +1,6 @@
 package users
 
 import (
-	"errors"
 	"fmt"
 	"movies/internal/utils"
 	"net/http"
@@ -32,27 +31,27 @@ func Login(c *gin.Context) {
 
 	var body Credentials
 	if err := c.BindJSON(&body); err != nil {
-		c.Error(errors.New("Missing username or password"))
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Missing username or password")
 		return
 	}
 
 	user := User{}
 	err := db.Get(&user, "SELECT * FROM Users WHERE username=$1", body.Username)
 	if err != nil {
-		c.AbortWithStatus(401)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid credentials")
 		return
 	}
 
 	err = utils.ValidatePassword(user.PasswordHash, body.Password)
 	if err != nil {
-		c.AbortWithStatus(401)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid credentials")
 		return
 	}
 
 	token, err := utils.TokenForUser(user.Username, SECRET)
 	if err != nil {
 		fmt.Println("critical token error: ", err)
-		c.AbortWithStatus(500)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, "Internal server error")
 		return
 	}
 
@@ -60,30 +59,25 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func AuthTest(c *gin.Context) {
-	username := c.MustGet("username").(string)
-	fmt.Println(username)
-}
-
 func SignUp(c *gin.Context) {
 	db := c.MustGet("db").(*sqlx.DB)
 	var body Credentials
 
 	if err := c.BindJSON(&body); err != nil {
-		c.Error(errors.New("Missing username or password"))
+		c.AbortWithStatusJSON(http.StatusForbidden, "Missing username or password")
 		return
 	}
 
 	if len(body.Username) < 3 {
-		c.Error(errors.New("Username must be at least 3 characters long"))
+		c.AbortWithStatusJSON(http.StatusForbidden, "Username must be at least 3 characters long")
 		return
 	}
 	if len(body.Username) > 19 {
-		c.Error(errors.New("Username must be less than 20 characters long"))
+		c.AbortWithStatusJSON(http.StatusForbidden, "Username must be less than 20 characters long")
 		return
 	}
 	if len(body.Password) < 6 {
-		c.Error(errors.New("Password must be at least 6 characters long"))
+		c.AbortWithStatusJSON(http.StatusForbidden, "Password must be at least 6 characters long")
 		return
 	}
 
@@ -97,10 +91,11 @@ func SignUp(c *gin.Context) {
 	sql := `SELECT EXISTS(SELECT 1 FROM Users WHERE username=$1)`
 	err = db.QueryRow(sql, body.Username).Scan(&userExists)
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err)
+		return
 	}
 	if userExists {
-		c.Error(errors.New("Username is taken"))
+		c.AbortWithStatusJSON(http.StatusConflict, "Username is taken")
 		return
 	}
 

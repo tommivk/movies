@@ -48,7 +48,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := utils.TokenForUser(user.Username, SECRET)
+	token, err := utils.TokenForUser(user.Id, user.Username, SECRET)
 	if err != nil {
 		fmt.Println("critical token error: ", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, "Internal server error")

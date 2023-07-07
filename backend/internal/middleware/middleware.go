@@ -79,7 +79,9 @@ func VerifyJWT() gin.HandlerFunc {
 		}
 
 		username := claims["username"].(string)
+		userId := claims["userId"].(float64)
 		c.Set("username", username)
+		c.Set("userId", int(userId))
 		c.Next()
 	}
 }

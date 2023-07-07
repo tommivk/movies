@@ -43,12 +43,13 @@ func ValidatePassword(passwordHash, password string) error {
 	return err
 }
 
-func TokenForUser(username, secret string) (string, error) {
+func TokenForUser(userId int, username, secret string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := make(jwt.MapClaims)
 	claims["exp"] = time.Now().UTC().Add(72 * time.Hour).Unix()
 	claims["username"] = username
+	claims["userId"] = userId
 	token.Claims = claims
 
 	res, err := token.SignedString([]byte(secret))

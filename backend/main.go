@@ -65,6 +65,7 @@ func main() {
 	public := router.Group("/")
 	public.GET("/ping", ping)
 	public.GET("/movies/search", movies.SearchMovie)
+	public.GET("/movies/trending", movies.TrendingMovies)
 	public.GET("/movies/:id", movies.GetMovieById)
 
 	public.POST("/signup", users.SignUp)

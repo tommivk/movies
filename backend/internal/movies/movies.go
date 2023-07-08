@@ -149,3 +149,33 @@ func SearchMovie(c *gin.Context) {
 
 	c.JSON(http.StatusOK, searchResult)
 }
+
+func TrendingMovies(c *gin.Context) {
+	page := c.Query("page")
+
+	API_KEY := c.MustGet("API_KEY").(string)
+
+	baseURL, _ := url.Parse("https://api.themoviedb.org/3/trending/movie/week")
+
+	params := url.Values{}
+	params.Add("page", page)
+	params.Add("api_key", API_KEY)
+	baseURL.RawQuery = params.Encode()
+
+	var searchResult SearchResult
+	body, err := utils.FetchData(baseURL.String())
+	if err != nil {
+		fmt.Println(err)
+		c.Error(err)
+		return
+	}
+	err = json.Unmarshal(body, &searchResult)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	appendGenresToSearchResult(searchResult)
+
+	c.JSON(http.StatusOK, searchResult)
+}

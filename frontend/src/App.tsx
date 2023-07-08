@@ -1,6 +1,7 @@
 import Layout from "./components/Layout";
 import MoviePage from "./components/MoviePage/MoviePage";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
+import useAppStore from "./store";
 import { ToastContainer } from "react-toastify";
 import {
   createBrowserRouter,
@@ -8,6 +9,9 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import { fetchData } from "../utils";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,6 +25,33 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  const store = useAppStore();
+  const token = store.loggedUser?.token;
+  const setLoggedUser = store.setLoggedUser;
+
+  useEffect(() => {
+    const data = localStorage.getItem("loggedUser");
+    if (data) {
+      const userData = JSON.parse(data);
+      setLoggedUser(userData);
+    }
+  }, [setLoggedUser]);
+
+  const fetchFavouriteMoviesIds = async () => {
+    const { movieIds } = await fetchData({
+      path: "/users/favourited-movie-ids",
+      token,
+    });
+    store.setFavouritedMovieIds(movieIds);
+    return null;
+  };
+
+  useQuery({
+    queryKey: ["favouriteMovieIds", token],
+    queryFn: fetchFavouriteMoviesIds,
+    enabled: !!token,
+  });
+
   return (
     <>
       <RouterProvider router={router} />

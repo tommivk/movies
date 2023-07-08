@@ -65,9 +65,9 @@ const MovieSearch = () => {
   } = useInfiniteQuery({
     queryKey: ["movieSearch", debouncedSearch],
     queryFn: ({ pageParam = 1 }) =>
-      fetchData(
-        `${BASE_URL}/movies/search?q=${debouncedSearch}&page=${pageParam}`
-      ),
+      fetchData({
+        path: `/movies/search?q=${debouncedSearch}&page=${pageParam}`,
+      }),
     getNextPageParam: (lastPage) =>
       lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     enabled: !!debouncedSearch,

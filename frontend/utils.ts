@@ -1,12 +1,37 @@
 import camelcaseKeys from "camelcase-keys";
 
-export const fetchData = async (url: string) => {
-  const res = await fetch(url);
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+export const fetchData = async ({
+  method,
+  path,
+  body,
+  token,
+}: {
+  method?: "GET" | "POST" | "DELETE" | "PUT" | "PATCH";
+  path: string;
+  body?: Record<string, unknown>;
+  token?: string;
+}) => {
+  const url = `${BASE_URL}${path}`;
+
+  const res = await fetch(url, {
+    method,
+    body: body ? JSON.stringify(body) : undefined,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
   if (!res.ok) {
-    throw new Error(res.statusText);
+    throw new Error(await res.json());
   }
-  const data = await res.json();
-  return camelcaseKeys(data, { deep: true });
+
+  if (method == "DELETE") return;
+
+  const json = await res.json();
+  return camelcaseKeys(json, { deep: true });
 };
 
 export const getImageUrl = (imagePath: string) =>

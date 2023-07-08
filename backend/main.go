@@ -52,7 +52,11 @@ func main() {
 
 	router := gin.Default()
 
-	router.Use(cors.Default()) // allows all origins
+	config := cors.DefaultConfig()
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
+	config.AllowAllOrigins = true
+
+	router.Use(cors.New(config))
 	router.Use(middleware.ErrorHandler())
 	router.Use(middleware.APIKey(API_KEY))
 	router.Use(middleware.Secret(SECRET))

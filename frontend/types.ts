@@ -30,6 +30,7 @@ export type Cast = {
 };
 
 export type SearchResult = {
+  page: number;
   totalPages: number;
   totalResults: number;
   results: Movie[];

@@ -70,13 +70,14 @@ const MovieSearch = () => {
       ),
     getNextPageParam: (lastPage) =>
       lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+    enabled: !!debouncedSearch,
   });
 
   useEffect(() => {
-    if (inView) {
+    if (inView && debouncedSearch) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage]);
+  }, [inView, fetchNextPage, debouncedSearch]);
 
   const movies =
     useMemo(() => data?.pages.flatMap((page) => page.results), [data]) ?? [];
@@ -93,12 +94,14 @@ const MovieSearch = () => {
         onChange={({ target: { value } }) => setSearch(value)}
       ></input>
 
-      <MovieList
-        movies={movies}
-        isLoading={isLoading}
-        isError={isError}
-        error={error}
-      />
+      {debouncedSearch && (
+        <MovieList
+          movies={movies}
+          isLoading={isLoading}
+          isError={isError}
+          error={error}
+        />
+      )}
 
       <div className="search__end" ref={ref}>
         {isFetchingNextPage && <div>Loading more....</div>}

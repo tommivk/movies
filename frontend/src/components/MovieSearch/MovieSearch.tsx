@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useDebounce } from "use-debounce";
-import { Movie, SearchResult } from "../../../types";
-import { fetchData } from "../../../utils.ts";
 import MovieCard from "../MovieCard/MovieCard";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useDebounce } from "use-debounce";
+import { Movie } from "../../../types";
+import { fetchData } from "../../../utils.ts";
+import { useInView } from "react-intersection-observer";
 
 import "./movieSearch.scss";
 
@@ -49,14 +50,36 @@ const MovieList = ({
 };
 
 const MovieSearch = () => {
+  const { ref, inView } = useInView();
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search.trim(), 500);
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["searchMovies", debouncedSearch],
-    queryFn: (): Promise<SearchResult> =>
-      fetchData(`${BASE_URL}/movies/search?q=${debouncedSearch}`),
-    enabled: Boolean(debouncedSearch),
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["movieSearch", debouncedSearch],
+    queryFn: ({ pageParam = 1 }) =>
+      fetchData(
+        `${BASE_URL}/movies/search?q=${debouncedSearch}&page=${pageParam}`
+      ),
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
   });
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage]);
+
+  const movies =
+    useMemo(() => data?.pages.flatMap((page) => page.results), [data]) ?? [];
 
   return (
     <div className="search__container">
@@ -71,11 +94,16 @@ const MovieSearch = () => {
       ></input>
 
       <MovieList
-        movies={data?.results ?? []}
+        movies={movies}
         isLoading={isLoading}
         isError={isError}
         error={error}
       />
+
+      <div className="search__end" ref={ref}>
+        {isFetchingNextPage && <div>Loading more....</div>}
+        {movies?.length > 0 && !hasNextPage && <div>That's all</div>}
+      </div>
     </div>
   );
 };

@@ -114,3 +114,22 @@ func SignUp(c *gin.Context) {
 
 	c.Status(http.StatusCreated)
 }
+
+type FavouritedMoviesResponse struct {
+	MovieIds []int `json:"movieIds"`
+}
+
+func FavouritedMovieIds(c *gin.Context) {
+	db := c.MustGet("db").(*sqlx.DB)
+	userId := c.MustGet("userId").(int)
+
+	var ids []int
+	err := db.Select(&ids, "SELECT movie_id FROM Favourites WHERE user_id=$1", userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	result := FavouritedMoviesResponse{ids}
+	c.JSON(http.StatusOK, result)
+}

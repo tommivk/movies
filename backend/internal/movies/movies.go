@@ -122,11 +122,14 @@ func appendGenreToMovie(genreId int, movie *Movie) {
 
 func SearchMovie(c *gin.Context) {
 	search := c.Query("q")
+	page := c.Query("page")
+
 	API_KEY := c.MustGet("API_KEY").(string)
 
 	baseURL, _ := url.Parse("https://api.themoviedb.org/3/search/movie")
 	params := url.Values{}
 	params.Add("query", search)
+	params.Add("page", page)
 	params.Add("api_key", API_KEY)
 	baseURL.RawQuery = params.Encode()
 

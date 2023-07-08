@@ -8,8 +8,6 @@ import { useInView } from "react-intersection-observer";
 
 import "./movieSearch.scss";
 
-const BASE_URL = "http://localhost:8080";
-
 const MovieList = ({
   movies,
   isLoading,

@@ -33,7 +33,9 @@ const MovieCard = ({ movie }: Props) => {
           <div className="card__details">
             <div className="card__genres">
               {movie.genres?.map((genre) => (
-                <span className="card__genre">{genre.name}</span>
+                <span id={genre.id} className="card__genre">
+                  {genre.name}
+                </span>
               ))}
             </div>
             <span className="card__year">{year}</span>

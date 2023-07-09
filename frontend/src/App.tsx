@@ -26,7 +26,7 @@ const router = createBrowserRouter(
 
 function App() {
   const store = useAppStore();
-  const token = store.loggedUser?.token;
+  const { userId, token } = store.loggedUser ?? {};
   const setLoggedUser = store.setLoggedUser;
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function App() {
 
   const fetchFavouriteMoviesIds = async () => {
     const { movieIds } = await fetchData({
-      path: "/users/favourited-movie-ids",
+      path: `/users/${userId}/favourited-movie-ids`,
       token,
     });
     store.setFavouritedMovieIds(movieIds);
@@ -49,7 +49,7 @@ function App() {
   useQuery({
     queryKey: ["favouriteMovieIds", token],
     queryFn: fetchFavouriteMoviesIds,
-    enabled: !!token,
+    enabled: !!store.loggedUser,
   });
 
   return (

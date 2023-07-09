@@ -37,6 +37,9 @@ const Navigation = () => {
           <Link to="/search">Search</Link>
         </li>
         <li>
+          <Link to="/favourites">Favourites</Link>
+        </li>
+        <li>
           {store.loggedUser ? (
             <button className="btn btn--transparent" onClick={handleLogOut}>
               Logout

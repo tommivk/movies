@@ -1,70 +1,56 @@
 @use "../../sassStyles/variables";
 
-$gap: 20px;
-
-.search__container {
-    max-width: (4 * variables.$movieCardWidth) + (3 * $gap);
-    margin: auto;
-}
-
-.movieList {
-    display: flex;
-    gap: $gap;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
 .search__info {
-    text-align: center;
+  text-align: center;
 }
 
-.movieList__pseudoEl {
-    height: 0;
-    width: variables.$movieCardWidth;
+.search__title {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .search__input {
-    all: unset;
-    background-color: rgb(44, 43, 43);
-    border: 2px solid rgb(87, 87, 87);
-    border-radius: 10px;
-    padding: 10px 20px;
-    display: block;
-    margin: 40px auto;
-    width: 400px;
-    max-width: 60vw;
+  all: unset;
+  background-color: rgb(44, 43, 43);
+  border: 2px solid rgb(87, 87, 87);
+  border-radius: 10px;
+  padding: 10px 20px;
+  display: block;
+  margin: 40px auto;
+  width: 400px;
+  max-width: 60vw;
 
-    &:focus {
+  &:focus {
     border: 2px solid rgb(187, 194, 194);
-    }
+  }
 }
 
 .search__end {
-    height: 150px;
-    text-align: center;
+  height: 150px;
+  text-align: center;
 }
 
 .search__buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .search__btn {
-    background: transparent;
-    border: 2px solid rgb(80, 76, 76);
-    border-radius: 10px;
-    padding: 10px 20px;
-    margin-bottom: 30px;
-    color: white;
+  background: transparent;
+  border: 2px solid rgb(80, 76, 76);
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin-bottom: 30px;
+  color: white;
 
-    &:hover {
-        cursor: pointer;
-        background: rgb(80, 76, 76);
-    }
+  &:hover {
+    cursor: pointer;
+    background: rgb(80, 76, 76);
+  }
 
-    &--active {
-        background: rgb(80, 76, 76);
-    }
+  &--active {
+    background: rgb(80, 76, 76);
+  }
 }

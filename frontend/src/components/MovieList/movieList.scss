@@ -1,0 +1,15 @@
+@use "../../sassStyles/variables";
+
+.movieList {
+  display: flex;
+  gap: variables.$movieCardGap;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: (4 * variables.$movieCardWidth) + (3 * variables.$movieCardGap);
+  margin: auto;
+}
+
+.movieList__pseudoEl {
+  height: 0;
+  width: variables.$movieCardWidth;
+}

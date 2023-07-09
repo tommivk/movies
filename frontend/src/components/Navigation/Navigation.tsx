@@ -22,7 +22,11 @@ const Navigation = () => {
 
   return (
     <div className="nav">
-      <Login modalOpen={loginModalOpen} setModalOpen={setLoginModalOpen} />
+      <Login
+        login
+        modalOpen={loginModalOpen}
+        setModalOpen={setLoginModalOpen}
+      />
       <ul>
         <li>
           <Link to="/">

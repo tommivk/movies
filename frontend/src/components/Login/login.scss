@@ -1,3 +1,5 @@
+@use "../../sassStyles/theme";
+
 .modal__content {
     z-index: 50;
     position: fixed;
@@ -48,4 +50,11 @@
         cursor: pointer;
         background: rgb(58, 57, 57);
     }
+}
+
+.form__error {
+    font-size: 13px;
+    padding: 0px 5px;
+    margin: 0;
+    color: theme.$errorText;
 }

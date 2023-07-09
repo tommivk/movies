@@ -35,3 +35,8 @@ export type SearchResult = {
   totalResults: number;
   results: Movie[];
 };
+
+export type Credentials = {
+  username: string;
+  password: string;
+};

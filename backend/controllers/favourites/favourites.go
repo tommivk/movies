@@ -1,6 +1,8 @@
 package favourites
 
 import (
+	"math"
+	"movies/controllers/movies"
 	"movies/models"
 	"net/http"
 	"strconv"
@@ -69,4 +71,57 @@ func FavouritedMovieIds(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, result)
+}
+
+func FavouritedMovies(c *gin.Context) {
+	pageStr := c.Query("page")
+	userId := c.MustGet("userId").(int)
+	pathId := c.Param("id")
+	id, err := strconv.Atoi(pathId)
+	if userId != id || err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid page query param")
+		return
+	}
+
+	favourites, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	ids := favourites.MovieIds
+
+	// Fetch 20 movies at a time because of 50req/s ratelimit on API
+	moviesOnPage := 20
+	totalPages := int(math.Ceil(float64(len(ids)) / float64(moviesOnPage)))
+
+	start := (page - 1) * moviesOnPage
+	end := start + moviesOnPage
+	if end > len(ids) {
+		end = len(ids)
+	}
+
+	var results []movies.Movie
+
+	for i := start; i < end; i++ {
+		movieId := strconv.Itoa(ids[i])
+		movie, err := movies.FetchMovieById(c, movieId)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		results = append(results, movie)
+	}
+	response := movies.SearchResult{
+		Page:         page,
+		Results:      results,
+		TotalPages:   totalPages,
+		TotalResults: len(ids),
+	}
+
+	c.JSON(http.StatusOK, response)
 }

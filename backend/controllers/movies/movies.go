@@ -58,8 +58,7 @@ type SearchResult struct {
 	TotalResults int     `json:"total_results"`
 }
 
-func GetMovieById(c *gin.Context) {
-	id := c.Param("id")
+func FetchMovieById(c *gin.Context, id string) (Movie, error) {
 	API_KEY := c.MustGet("API_KEY").(string)
 
 	baseURL, _ := url.Parse("https://api.themoviedb.org/3/movie/" + id)
@@ -70,17 +69,26 @@ func GetMovieById(c *gin.Context) {
 
 	res, err := utils.FetchData(baseURL.String())
 	if err != nil {
-		c.Error(err)
-		return
+		return Movie{}, err
 	}
 
-	var data Movie
-	err = json.Unmarshal(res, &data)
+	var movie Movie
+	err = json.Unmarshal(res, &movie)
+	if err != nil {
+		return Movie{}, err
+	}
+	return movie, nil
+}
+
+func GetMovieById(c *gin.Context) {
+	id := c.Param("id")
+
+	movie, err := FetchMovieById(c, id)
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, movie)
 }
 
 func appendGenresToSearchResult(searchResult SearchResult) {

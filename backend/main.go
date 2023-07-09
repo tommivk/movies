@@ -79,6 +79,7 @@ func main() {
 	private.POST("/movies/:id/favourite", favourites.AddFavourite)
 	private.DELETE("/movies/:id/favourite", favourites.RemoveFavourite)
 
+	private.GET("/users/:id/favourited-movies", favourites.FavouritedMovies)
 	private.GET("/users/:id/favourited-movie-ids", favourites.FavouritedMovieIds)
 
 	router.Run(":8080")

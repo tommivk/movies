@@ -112,7 +112,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, "Account successfully created")
 }
 
 type FavouritedMoviesResponse struct {

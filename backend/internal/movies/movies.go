@@ -120,6 +120,21 @@ func appendGenreToMovie(genreId int, movie *Movie) {
 	movie.Genres = append(movie.Genres, genres[idx])
 }
 
+func getMovies(url *url.URL) (SearchResult, error) {
+	var searchResult SearchResult
+	body, err := utils.FetchData(url.String())
+	if err != nil {
+		return SearchResult{}, err
+	}
+	err = json.Unmarshal(body, &searchResult)
+	if err != nil {
+		return SearchResult{}, err
+	}
+
+	appendGenresToSearchResult(searchResult)
+	return searchResult, nil
+}
+
 func SearchMovie(c *gin.Context) {
 	search := c.Query("q")
 	page := c.Query("page")
@@ -133,21 +148,13 @@ func SearchMovie(c *gin.Context) {
 	params.Add("api_key", API_KEY)
 	baseURL.RawQuery = params.Encode()
 
-	var searchResult SearchResult
-	body, err := utils.FetchData(baseURL.String())
-	if err != nil {
-		c.Error(err)
-		return
-	}
-	err = json.Unmarshal(body, &searchResult)
+	movies, err := getMovies(baseURL)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	appendGenresToSearchResult(searchResult)
-
-	c.JSON(http.StatusOK, searchResult)
+	c.JSON(http.StatusOK, movies)
 }
 
 func TrendingMovies(c *gin.Context) {
@@ -162,20 +169,30 @@ func TrendingMovies(c *gin.Context) {
 	params.Add("api_key", API_KEY)
 	baseURL.RawQuery = params.Encode()
 
-	var searchResult SearchResult
-	body, err := utils.FetchData(baseURL.String())
-	if err != nil {
-		fmt.Println(err)
-		c.Error(err)
-		return
-	}
-	err = json.Unmarshal(body, &searchResult)
+	movies, err := getMovies(baseURL)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
-	appendGenresToSearchResult(searchResult)
+	c.JSON(http.StatusOK, movies)
+}
 
-	c.JSON(http.StatusOK, searchResult)
+func TopRatedMovies(c *gin.Context) {
+	page := c.Query("page")
+	API_KEY := c.MustGet("API_KEY").(string)
+
+	baseURL, _ := url.Parse("https://api.themoviedb.org/3/movie/top_rated")
+	params := url.Values{}
+	params.Add("page", page)
+	params.Add("api_key", API_KEY)
+	baseURL.RawQuery = params.Encode()
+
+	movies, err := getMovies(baseURL)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, movies)
 }

@@ -107,13 +107,26 @@ const useInfiniteTrendingMovies = () => {
   });
 };
 
+const useInfiniteTopRatedMovies = () => {
+  return useInfiniteQuery<SearchResult>({
+    queryKey: ["topRatedMovies"],
+    queryFn: ({ pageParam = 1 }) =>
+      fetchData({
+        path: `/movies/top-rated?page=${pageParam}`,
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+  });
+};
+
 const MovieSearch = () => {
-  const [page, setPage] = useState<"search" | "trending">("trending");
+  const [page, setPage] = useState<"search" | "trending" | "top">("trending");
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search.trim(), 500);
 
   const searchResult = useInfiniteMovieSearch(debouncedSearch);
   const trendingResult = useInfiniteTrendingMovies();
+  const topRatedResult = useInfiniteTopRatedMovies();
 
   return (
     <div className="search__container">
@@ -142,12 +155,29 @@ const MovieSearch = () => {
         >
           Trending
         </button>
+        <button
+          className={`search__btn
+                      ${page === "top" ? "search__btn--active" : ""}
+                    `}
+          onClick={() => {
+            setPage("top");
+            setSearch("");
+          }}
+        >
+          Top Rated
+        </button>
       </div>
 
       {page == "trending" && (
         <>
-          <h1 className="search__title">Trending movies this week</h1>
+          <h1 className="search__title">Trending movies on TMDB this week</h1>
           <SearchResults queryResult={trendingResult} />
+        </>
+      )}
+      {page == "top" && (
+        <>
+          <h1 className="search__title">Top rated movies on TMDB</h1>
+          <SearchResults queryResult={topRatedResult} />
         </>
       )}
       {page == "search" && (

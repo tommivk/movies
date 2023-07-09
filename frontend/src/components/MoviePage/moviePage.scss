@@ -1,6 +1,8 @@
 @use "../../sassStyles/theme";
 
 $topSectionHeight: 60vh;
+$personContainerWidth: 150px;
+$personGap: 10px;
 
 .movie {
   position: relative;
@@ -148,7 +150,8 @@ $topSectionHeight: 60vh;
 }
 
 .cast__container {
-  max-width: 1190px;
+  box-sizing: content-box;
+  max-width: ($personContainerWidth * 7) + ($personGap * 6);
   margin: auto;
   position: relative;
   padding: 50px 20px;
@@ -157,16 +160,17 @@ $topSectionHeight: 60vh;
 
 .cast__list {
   display: flex;
-  gap: 10px;
+  gap: $personGap;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .person__container {
-  width: 190px;
+  width: $personContainerWidth;
 
   .person__image {
     background: theme.$darkGrey;
-    height: 285px;
+    height: 200px;
     width: 100%;
     border-radius: 10px;
     object-fit: cover;

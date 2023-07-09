@@ -129,7 +129,7 @@ const MoviePage = () => {
 
           <div className="cast__list">
             {movie.credits?.cast
-              .slice(0, !showFullCast && castLength >= 6 ? 6 : undefined)
+              .slice(0, !showFullCast && castLength >= 7 ? 7 : undefined)
               .map((person) => (
                 <Person person={person} key={person.id} />
               ))}

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 type UserData = {
+  userId: number | undefined;
   username: string | undefined;
   token: string | undefined;
 };

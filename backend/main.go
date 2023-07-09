@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"os"
 
-	"movies/internal/favourites"
-	"movies/internal/middleware"
-	"movies/internal/movies"
-	"movies/internal/users"
+	"movies/controllers/favourites"
+	"movies/controllers/movies"
+	"movies/controllers/users"
+	"movies/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -79,7 +79,7 @@ func main() {
 	private.POST("/movies/:id/favourite", favourites.AddFavourite)
 	private.DELETE("/movies/:id/favourite", favourites.RemoveFavourite)
 
-	private.GET("/users/favourited-movie-ids", users.FavouritedMovieIds)
+	private.GET("/users/:id/favourited-movie-ids", favourites.FavouritedMovieIds)
 
 	router.Run(":8080")
 }

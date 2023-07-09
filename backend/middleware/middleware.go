@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"fmt"
-	"movies/internal/constants"
-	"movies/internal/utils"
+	"movies/constants"
+	"movies/utils"
 	"net/http"
 	"strings"
 

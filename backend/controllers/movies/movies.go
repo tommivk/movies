@@ -3,7 +3,7 @@ package movies
 import (
 	"encoding/json"
 	"fmt"
-	"movies/internal/utils"
+	"movies/utils"
 	"net/http"
 	"net/url"
 

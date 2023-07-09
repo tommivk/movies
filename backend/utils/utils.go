@@ -3,7 +3,7 @@ package utils
 import (
 	"errors"
 	"io/ioutil"
-	"movies/internal/constants"
+	"movies/constants"
 	"net/http"
 	"time"
 

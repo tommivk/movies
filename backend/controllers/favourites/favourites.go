@@ -1,22 +1,23 @@
 package favourites
 
 import (
+	"movies/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
 
+var favouritesModel = new(models.Favourite)
+
 func AddFavourite(c *gin.Context) {
 	movieId := c.Param("id")
-	db := c.MustGet("db").(*sqlx.DB)
 	userId := c.MustGet("userId").(int)
 
-	var favouriteExists bool
-	sql := `SELECT EXISTS(SELECT 1 FROM Favourites WHERE user_id=$1 AND movie_id=$2)`
-	err := db.QueryRow(sql, userId, movieId).Scan(&favouriteExists)
+	favouriteExists, err := favouritesModel.FavouriteExists(c, userId, movieId)
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.Error(err)
 		return
 	}
 	if favouriteExists {
@@ -24,14 +25,11 @@ func AddFavourite(c *gin.Context) {
 		return
 	}
 
-	// TODO: check if movie exists
-
-	sql = `INSERT INTO FAVOURITES (movie_id, user_id) VALUES($1, $2)`
-	_, err = db.Exec(sql, movieId, userId)
-	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+	if err := favouritesModel.AddFavourite(c, userId, movieId); err != nil {
+		c.Error(err)
 		return
 	}
+
 	c.JSON(http.StatusCreated, "Movie successfully favourited")
 }
 
@@ -53,4 +51,22 @@ func RemoveFavourite(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func FavouritedMovieIds(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	pathId := c.Param("id")
+	id, err := strconv.Atoi(pathId)
+
+	if userId != id || err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	result, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, result)
 }

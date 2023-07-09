@@ -1,23 +1,25 @@
 .link {
-
-    &--unset {
-        all: unset;
-    }
+  &--unset {
+    all: unset;
+  }
 }
 
-
 .btn {
-    &--transparent {
-        background: transparent;
-        color: inherit;
-        border: none;
-        font-size: inherit;
-        font-family: inherit;
+  &--transparent {
+    background: transparent;
+    color: inherit;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
 
-        &:hover {
-            cursor: pointer;
-            border: none;
-            color: rgb(128, 126, 126);
-        }
+    &:hover {
+      cursor: pointer;
+      border: none;
+      color: rgb(128, 126, 126);
     }
+  }
+}
+
+.text-center {
+  text-align: center;
 }

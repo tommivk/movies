@@ -2,6 +2,7 @@ import Layout from "./components/Layout";
 import MoviePage from "./components/MoviePage/MoviePage";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
 import Favourites from "./components/Favourites/Favourites";
+import ProtectedRoute from "./components/ProtectedRoute";
 import useAppStore from "./store";
 import { ToastContainer } from "react-toastify";
 import {
@@ -21,7 +22,9 @@ const router = createBrowserRouter(
     <Route path="/" element={<Layout />}>
       <Route path="/search" element={<MovieSearch />} />
       <Route path="/movies/:id" element={<MoviePage />} />
-      <Route path="/favourites" element={<Favourites />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/favourites" element={<Favourites />} />
+      </Route>
     </Route>
   )
 );

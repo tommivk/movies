@@ -11,9 +11,10 @@ const Navigation = () => {
 
   const store = useAppStore();
   const setLoggedUser = store.setLoggedUser;
+  const { userId } = store.loggedUser ?? {};
 
   const handleLogOut = () => {
-    setLoggedUser(undefined);
+    setLoggedUser(null);
     localStorage.removeItem("loggedUser");
     toast.success("Goodbye");
   };
@@ -36,9 +37,11 @@ const Navigation = () => {
         <li>
           <Link to="/search">Search</Link>
         </li>
-        <li>
-          <Link to="/favourites">Favourites</Link>
-        </li>
+        {userId && (
+          <li>
+            <Link to="/favourites">Favourites</Link>
+          </li>
+        )}
         <li>
           {store.loggedUser ? (
             <button className="btn btn--transparent" onClick={handleLogOut}>

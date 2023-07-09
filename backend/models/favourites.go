@@ -18,7 +18,7 @@ type FavouritedMoviesResponse struct {
 func (f *Favourite) GetFavouriteMovieIdsByUserId(c *gin.Context, userId int) (*FavouritedMoviesResponse, error) {
 	db := c.MustGet("db").(*sqlx.DB)
 	var ids []int
-	err := db.Select(&ids, "SELECT movie_id FROM Favourites WHERE user_id=$1", userId)
+	err := db.Select(&ids, "SELECT movie_id FROM Favourites WHERE user_id=$1 ORDER BY id DESC", userId)
 	if err != nil {
 		return nil, err
 	}

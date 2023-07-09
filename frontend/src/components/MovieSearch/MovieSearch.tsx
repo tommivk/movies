@@ -1,8 +1,11 @@
 import MovieCard from "../MovieCard/MovieCard";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  UseInfiniteQueryResult,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { Movie } from "../../../types";
+import { Movie, SearchResult } from "../../../types";
 import { fetchData } from "../../../utils.ts";
 import { useInView } from "react-intersection-observer";
 
@@ -47,52 +50,37 @@ const MovieList = ({
   );
 };
 
-const MovieSearch = () => {
-  const { ref, inView } = useInView();
-  const [search, setSearch] = useState("");
-  const [debouncedSearch] = useDebounce(search.trim(), 500);
-
+const SearchResults = ({
+  queryResult,
+  enabled = true,
+}: {
+  queryResult: UseInfiniteQueryResult<SearchResult, unknown>;
+  enabled?: boolean;
+}) => {
   const {
     data,
-    isLoading,
-    isError,
     error,
-    isFetchingNextPage,
-    fetchNextPage,
+    isError,
+    isLoading,
     hasNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["movieSearch", debouncedSearch],
-    queryFn: ({ pageParam = 1 }) =>
-      fetchData({
-        path: `/movies/search?q=${debouncedSearch}&page=${pageParam}`,
-      }),
-    getNextPageParam: (lastPage) =>
-      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
-    enabled: !!debouncedSearch,
-  });
+    fetchNextPage,
+    isFetchingNextPage,
+  } = queryResult;
+
+  const { ref, inView } = useInView();
 
   useEffect(() => {
-    if (inView && debouncedSearch) {
+    if (inView && enabled) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage, debouncedSearch]);
+  }, [inView, fetchNextPage, enabled]);
 
   const movies =
     useMemo(() => data?.pages.flatMap((page) => page.results), [data]) ?? [];
 
   return (
     <div className="search__container">
-      <input
-        type="text"
-        placeholder="Search movies..."
-        className="search__input"
-        autoComplete="false"
-        autoCorrect="false"
-        value={search}
-        onChange={({ target: { value } }) => setSearch(value)}
-      ></input>
-
-      {debouncedSearch && (
+      {enabled && (
         <MovieList
           movies={movies}
           isLoading={isLoading}
@@ -106,6 +94,81 @@ const MovieSearch = () => {
         {movies?.length > 0 && !hasNextPage && <div>That's all</div>}
       </div>
     </div>
+  );
+};
+
+const useInfiniteMovieSearch = (query: string) => {
+  return useInfiniteQuery<SearchResult>({
+    queryKey: ["movieSearch", query],
+    queryFn: ({ pageParam = 1 }) =>
+      fetchData({
+        path: `/movies/search?q=${query}&page=${pageParam}`,
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+    enabled: !!query,
+  });
+};
+
+const useInfiniteTrendingMovieSearch = () => {
+  return useInfiniteQuery<SearchResult>({
+    queryKey: ["trendingMovies"],
+    queryFn: ({ pageParam = 1 }) =>
+      fetchData({
+        path: `/movies/trending?page=${pageParam}`,
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+  });
+};
+
+const MovieSearch = () => {
+  const [page, setPage] = useState<"search" | "trending">("trending");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search.trim(), 500);
+
+  const searchResult = useInfiniteMovieSearch(debouncedSearch);
+  const trendingResult = useInfiniteTrendingMovieSearch();
+
+  return (
+    <>
+      <input
+        type="text"
+        placeholder="Search all movies..."
+        className="search__input"
+        autoComplete="false"
+        autoCorrect="false"
+        value={search}
+        onChange={({ target: { value } }) => {
+          setSearch(value);
+          setPage("search");
+        }}
+      ></input>
+
+      <div className="search__buttons">
+        <button
+          className={`search__btn
+                      ${page === "trending" ? "search__btn--active" : ""}
+                    `}
+          onClick={() => {
+            setPage("trending");
+            setSearch("");
+          }}
+        >
+          Trending
+        </button>
+      </div>
+
+      {page == "trending" && (
+        <>
+          <h1 className="search__title">Trending movies this week</h1>
+          <SearchResults queryResult={trendingResult} />
+        </>
+      )}
+      {page == "search" && (
+        <SearchResults queryResult={searchResult} enabled={!!debouncedSearch} />
+      )}
+    </>
   );
 };
 

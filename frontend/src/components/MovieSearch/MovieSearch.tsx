@@ -11,41 +11,15 @@ import { useInView } from "react-intersection-observer";
 
 import "./movieSearch.scss";
 
-const MovieList = ({
-  movies,
-  isLoading,
-  isError,
-  error,
-}: {
-  movies: Movie[];
-  isLoading: boolean;
-  isError: boolean;
-  error: unknown;
-}) => {
-  if (isError) {
-    console.error({ error });
-    if (error instanceof Error) {
-      return <p>Error happened: {error.message}</p>;
-    }
-    return <p>Error</p>;
-  }
-
-  if (isLoading) {
-    return <p className="search__info">Loading</p>;
-  }
-
-  if (movies.length === 0) {
-    return <p className="search__info">No results found</p>;
-  }
-
+const MovieList = ({ movies }: { movies: Movie[] }) => {
   return (
-    <div className="search__result">
+    <div className="movieList">
       {movies.map((movie) => (
         <MovieCard key={movie.id} movie={movie} />
       ))}
-      <div className="search__pseudoEl" />
-      <div className="search__pseudoEl" />
-      <div className="search__pseudoEl" />
+      <div className="movieList__pseudoEl" />
+      <div className="movieList__pseudoEl" />
+      <div className="movieList__pseudoEl" />
     </div>
   );
 };
@@ -78,22 +52,33 @@ const SearchResults = ({
   const movies =
     useMemo(() => data?.pages.flatMap((page) => page.results), [data]) ?? [];
 
+  if (!enabled) return <></>;
+
+  if (isError) {
+    console.error({ error });
+    if (error instanceof Error) {
+      return <p>Error happened: {error.message}</p>;
+    }
+    return <p>Error</p>;
+  }
+
+  if (isLoading) {
+    return <p className="search__info">Loading</p>;
+  }
+
+  if (movies.length === 0) {
+    return <p className="search__info">No results found</p>;
+  }
+
   return (
-    <div className="search__container">
-      {enabled && (
-        <MovieList
-          movies={movies}
-          isLoading={isLoading}
-          isError={isError}
-          error={error}
-        />
-      )}
+    <>
+      <MovieList movies={movies} />
 
       <div className="search__end" ref={ref}>
         {isFetchingNextPage && <div>Loading more....</div>}
         {movies?.length > 0 && !hasNextPage && <div>That's all</div>}
       </div>
-    </div>
+    </>
   );
 };
 
@@ -110,7 +95,7 @@ const useInfiniteMovieSearch = (query: string) => {
   });
 };
 
-const useInfiniteTrendingMovieSearch = () => {
+const useInfiniteTrendingMovies = () => {
   return useInfiniteQuery<SearchResult>({
     queryKey: ["trendingMovies"],
     queryFn: ({ pageParam = 1 }) =>
@@ -128,10 +113,10 @@ const MovieSearch = () => {
   const [debouncedSearch] = useDebounce(search.trim(), 500);
 
   const searchResult = useInfiniteMovieSearch(debouncedSearch);
-  const trendingResult = useInfiniteTrendingMovieSearch();
+  const trendingResult = useInfiniteTrendingMovies();
 
   return (
-    <>
+    <div className="search__container">
       <input
         type="text"
         placeholder="Search all movies..."
@@ -168,7 +153,7 @@ const MovieSearch = () => {
       {page == "search" && (
         <SearchResults queryResult={searchResult} enabled={!!debouncedSearch} />
       )}
-    </>
+    </div>
   );
 };
 

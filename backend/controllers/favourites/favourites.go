@@ -105,7 +105,7 @@ func FavouritedMovies(c *gin.Context) {
 		end = len(ids)
 	}
 
-	var results []movies.Movie
+	results := []movies.Movie{}
 
 	for i := start; i < end; i++ {
 		movieId := strconv.Itoa(ids[i])

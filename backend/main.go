@@ -39,6 +39,11 @@ func main() {
 	SECRET := os.Getenv("SECRET")
 	DATABASE_URL := os.Getenv("DATABASE_URL")
 	ENV := os.Getenv("ENV")
+	PORT := os.Getenv("PORT")
+
+	if PORT == "" {
+		PORT = "8080"
+	}
 
 	connStr := DATABASE_URL
 	if ENV == "test" {
@@ -89,5 +94,5 @@ func main() {
 	private.GET("/users/:id/favourited-movies", favourites.FavouritedMovies)
 	private.GET("/users/:id/favourited-movie-ids", favourites.FavouritedMovieIds)
 
-	router.Run(":8080")
+	router.Run(fmt.Sprintf(":%s", PORT))
 }

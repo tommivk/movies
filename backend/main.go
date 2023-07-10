@@ -37,12 +37,19 @@ func createTables(db *sqlx.DB) {
 func main() {
 	API_KEY := os.Getenv("API_KEY")
 	SECRET := os.Getenv("SECRET")
+	DATABASE_URL := os.Getenv("DATABASE_URL")
+	ENV := os.Getenv("ENV")
 
-	connStr := "postgres://postgres:secret@localhost:5500/testDB?sslmode=disable"
+	connStr := DATABASE_URL
+	if ENV == "test" {
+		connStr = "postgres://postgres:secret@localhost:5500/testDB?sslmode=disable"
+	}
+
 	db, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	if err = db.Ping(); err != nil {
 		log.Fatal(err)
 	}

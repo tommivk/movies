@@ -40,6 +40,7 @@ func main() {
 	DATABASE_URL := os.Getenv("DATABASE_URL")
 	ENV := os.Getenv("ENV")
 	PORT := os.Getenv("PORT")
+	ALLOWED_ORIGIN := os.Getenv("ALLOWED_ORIGIN")
 
 	if PORT == "" {
 		PORT = "8080"
@@ -66,7 +67,7 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
-	config.AllowAllOrigins = true
+	config.AllowOrigins = []string{ALLOWED_ORIGIN}
 
 	router.Use(cors.New(config))
 	router.Use(middleware.ErrorHandler())

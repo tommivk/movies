@@ -11,7 +11,7 @@ const Favourites = () => {
 
   return (
     <>
-      <h1 className="favourited__title">Your Favouried Movies</h1>
+      <h1 className="favourited__title">Your Favourited Movies</h1>
       <InfiniteMovieContainer queryResult={favouritesResult} />
     </>
   );

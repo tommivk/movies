@@ -48,7 +48,7 @@ func main() {
 
 	connStr := DATABASE_URL
 	if ENV == "test" {
-		connStr = "postgres://postgres:secret@localhost:5500/testDB?sslmode=disable"
+		connStr = "postgres://user:pass@localhost:5432/testDB?sslmode=disable"
 	}
 
 	db, err := sqlx.Open("postgres", connStr)
@@ -95,5 +95,5 @@ func main() {
 	private.GET("/users/:id/favourited-movies", favourites.FavouritedMovies)
 	private.GET("/users/:id/favourited-movie-ids", favourites.FavouritedMovieIds)
 
-	router.Run(fmt.Sprintf(":%s", PORT))
+	router.Run(fmt.Sprintf("0.0.0.0:%s", PORT))
 }

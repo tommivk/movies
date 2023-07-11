@@ -2,9 +2,13 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { SearchResult } from "../../types";
 import { fetchData } from "../../utils";
 
-const useInfiniteFavouritedMovies = (userId?: number, token?: string) => {
+const useInfiniteFavouritedMovies = (
+  userId?: number,
+  token?: string,
+  movieIds?: number[]
+) => {
   return useInfiniteQuery<SearchResult>({
-    queryKey: ["favouritedMovies"],
+    queryKey: ["favouritedMovies", movieIds],
     queryFn: ({ pageParam = 1 }) =>
       fetchData({
         path: `/users/${userId}/favourited-movies?page=${pageParam}`,

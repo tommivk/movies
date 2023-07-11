@@ -7,7 +7,8 @@ import "./favourites.scss";
 const Favourites = () => {
   const store = useAppStore();
   const { userId, token } = store.loggedUser ?? {};
-  const favouritesResult = useInfiniteFavouritedMovies(userId, token);
+  const movieIds = store.favouritedMovieIds;
+  const favouritesResult = useInfiniteFavouritedMovies(userId, token, movieIds);
 
   return (
     <>

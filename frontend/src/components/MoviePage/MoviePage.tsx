@@ -11,11 +11,9 @@ import "./moviePage.scss";
 const MoviePage = () => {
   const { id } = useParams();
 
-  const [showFullCast, setShowFullCast] = useState(false);
-
   const queryClient = useQueryClient();
-
   const store = useAppStore();
+
   const token = store.loggedUser?.token;
   const favouritedMovieIds = store.favouritedMovieIds;
 
@@ -56,8 +54,8 @@ const MoviePage = () => {
       queryClient.invalidateQueries({ queryKey: ["favouriteMovieIds"] });
       toast.success(
         isFavourited
-          ? "Movie removed from favourites"
-          : "Movie added to favourites"
+          ? `"${movie?.title}" has been removed from your favourites`
+          : `"${movie?.title}" has been added to your favourites`
       );
     },
     onError: () => {
@@ -78,12 +76,11 @@ const MoviePage = () => {
 
   const bgImage = movie?.backdropPath ? getImageUrl(movie.backdropPath) : "";
   const year = new Date(movie.releaseDate).getFullYear();
-  const castLength = movie.credits?.cast?.length ?? 0;
 
-  return (
-    <div className="movie">
+  const TopSection = ({ movie, imgSrc }: { movie: Movie; imgSrc: string }) => {
+    return (
       <div className="movie__topSection">
-        <img alt={movie.title} className="movie__image" src={bgImage}></img>
+        <img alt={movie.title} className="movie__image" src={imgSrc}></img>
 
         <div className="movie__details">
           <h1 className="movie__title">{movie.title}</h1>
@@ -124,51 +121,69 @@ const MoviePage = () => {
           </div>
         </div>
       </div>
+    );
+  };
 
-      {castLength > 0 && (
-        <div className="cast__container">
-          <h1>Cast</h1>
-
-          <div className="cast__list">
-            {movie.credits?.cast
-              .slice(0, !showFullCast && castLength >= 7 ? 7 : undefined)
-              .map((person) => (
-                <Person person={person} key={person.id} />
-              ))}
-          </div>
-          {castLength > 6 && (
-            <button
-              className={`cast__btn btn--transparent ${
-                showFullCast ? "cast__btn--close" : ""
-              }`}
-              onClick={() => setShowFullCast(!showFullCast)}
-            >
-              {showFullCast ? "Hide full cast" : "Show full cast"}
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const Person = ({ person }: { person: Cast }) => {
-  const placeholder = (
-    <div className="person__image">
-      <div className="person__placeholder">👤</div>
-    </div>
-  );
-  return (
-    <div className="person__container">
-      {person.profilePath ? (
-        <img className="person__image" src={getImageUrl(person.profilePath)} />
-      ) : (
-        placeholder
-      )}
-      <div className="person__details">
-        <h3 className="person__name">{person.name}</h3>
-        <p className="person__character">{person.character}</p>
+  const Person = ({ person }: { person: Cast }) => {
+    const placeholder = (
+      <div className="person__image">
+        <div className="person__placeholder">👤</div>
       </div>
+    );
+    return (
+      <div className="person__container">
+        {person.profilePath ? (
+          <img
+            className="person__image"
+            src={getImageUrl(person.profilePath)}
+          />
+        ) : (
+          placeholder
+        )}
+        <div className="person__details">
+          <h3 className="person__name">{person.name}</h3>
+          <p className="person__character">{person.character}</p>
+        </div>
+      </div>
+    );
+  };
+
+  const CastContainer = ({ movie }: { movie: Movie }) => {
+    const [showFullCast, setShowFullCast] = useState(false);
+
+    const castLength = movie.credits?.cast?.length ?? 0;
+
+    if (castLength === 0) return <></>;
+
+    return (
+      <div className="cast__container">
+        <h1>Cast</h1>
+
+        <div className="cast__list">
+          {movie.credits?.cast
+            .slice(0, !showFullCast && castLength >= 7 ? 7 : undefined)
+            .map((person) => (
+              <Person person={person} key={person.id} />
+            ))}
+        </div>
+        {castLength > 6 && (
+          <button
+            className={`cast__btn btn--transparent ${
+              showFullCast ? "cast__btn--close" : ""
+            }`}
+            onClick={() => setShowFullCast(!showFullCast)}
+          >
+            {showFullCast ? "Hide full cast" : "Show full cast"}
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="movie">
+      <TopSection movie={movie} imgSrc={bgImage} />
+      <CastContainer movie={movie} />
     </div>
   );
 };

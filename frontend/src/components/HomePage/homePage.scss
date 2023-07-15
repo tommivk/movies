@@ -103,6 +103,10 @@
 }
 
 @keyframes firstCard {
+  12% {
+    filter: brightness(0);
+  }
+
   28% {
     z-index: 3;
   }
@@ -144,6 +148,10 @@
     transform: translateX(-200px);
     top: 50px;
     filter: brightness(0.03);
+  }
+
+  45% {
+    filter: brightness(0);
   }
 
   65% {
@@ -189,6 +197,10 @@
     filter: brightness(0.06);
   }
 
+  78% {
+    filter: brightness(0);
+  }
+
   100%,
   3% {
     z-index: 2;
@@ -210,7 +222,7 @@
   }
 }
 
-@media (max-width: 80px) {
+@media (max-width: 800px) {
   .home__cards {
     display: none;
   }

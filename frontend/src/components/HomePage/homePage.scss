@@ -21,6 +21,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0px 100px;
+  height: 100%;
 }
 
 .home__card {
@@ -31,11 +32,16 @@
   position: relative;
   display: flex;
   padding-top: 50px;
+  width: 750px;
+  height: 450px;
 }
 
 .home__card1 {
-  transform: perspective(400px) rotateY(-5deg);
-  filter: brightness(0.1);
+  position: absolute;
+  filter: brightness(0.06);
+  animation: firstCard 10s infinite;
+  animation-delay: 2s;
+  top: 50px;
 }
 
 .home__card2 {
@@ -43,14 +49,18 @@
   position: absolute;
   left: 200px;
   top: 0px;
-  filter: brightness(0.1);
-  animation: display 0s 2s forwards;
-  transform: perspective(400px) rotateY(-5deg);
+  filter: brightness(0.06);
+  animation: secondCard 10s infinite;
+  animation-delay: 2s;
 }
+
 .home__card3 {
-  margin-left: 150px;
-  filter: brightness(0.1);
-  transform: perspective(400px) rotateY(-5deg);
+  position: absolute;
+  filter: brightness(0.06);
+  left: 420px;
+  animation: thirdCard 10s infinite;
+  animation-delay: 2s;
+  top: 50px;
 }
 
 .home__projector {
@@ -58,7 +68,7 @@
   top: 10px;
   img {
     position: relative;
-    z-index: 7;
+    z-index: 11;
     height: 350px;
   }
 }
@@ -68,7 +78,7 @@
   top: -220px;
   left: 260px;
   filter: blur(15px);
-  z-index: 6;
+  z-index: 10;
 }
 
 .home__light {
@@ -89,5 +99,119 @@
   to {
     opacity: 1;
     filter: brightness(1);
+  }
+}
+
+@keyframes firstCard {
+  28% {
+    z-index: 3;
+  }
+  30%,
+  37% {
+    z-index: 4;
+    transform: translateX(400px);
+    top: 50px;
+    filter: brightness(0.06);
+  }
+
+  40% {
+    z-index: 7;
+  }
+
+  66% {
+    z-index: 7;
+    transform: translateX(200px);
+    top: 0px;
+    filter: brightness(1);
+  }
+
+  87%,
+  100% {
+    z-index: 3;
+    transform: translateX(0px);
+    top: 50px;
+    filter: brightness(0.06);
+  }
+}
+
+@keyframes secondCard {
+  0% {
+    filter: brightness(1);
+  }
+  20%,
+  33% {
+    z-index: 3;
+    transform: translateX(-200px);
+    top: 50px;
+    filter: brightness(0.03);
+  }
+
+  65% {
+    z-index: 3;
+  }
+
+  70% {
+    z-index: 4;
+    transform: translateX(200px);
+    top: 50px;
+    filter: brightness(0.03);
+  }
+
+  77% {
+    z-index: 7;
+  }
+
+  100% {
+    z-index: 7;
+    transform: translateX(0px);
+    top: 0px;
+    filter: brightness(1);
+  }
+}
+
+@keyframes thirdCard {
+  26% {
+    z-index: 7;
+  }
+
+  33% {
+    z-index: 7;
+    transform: translateX(-200px);
+    top: 0px;
+    filter: brightness(1);
+  }
+
+  53%,
+  66% {
+    z-index: 3;
+    transform: translateX(-400px);
+    top: 50px;
+    filter: brightness(0.06);
+  }
+
+  100%,
+  3% {
+    z-index: 2;
+    transform: translateX(0px);
+    top: 50px;
+    filter: brightness(0.06);
+  }
+}
+
+@media (max-width: 1400px) {
+  .home__light {
+    display: none;
+  }
+  .home__projector {
+    display: none;
+  }
+  .home__cards {
+    margin: auto;
+  }
+}
+
+@media (max-width: 80px) {
+  .home__cards {
+    display: none;
   }
 }

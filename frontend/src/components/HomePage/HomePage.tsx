@@ -3,7 +3,6 @@ import "./homePage.scss";
 const HomePage = () => {
   return (
     <div className="home">
-      <h1 className="home__title">Mövies Lorem ipsum dolor sit elit</h1>
       <div className="home__topSection">
         <div className="home__projector">
           <img src="/projector.png"></img>

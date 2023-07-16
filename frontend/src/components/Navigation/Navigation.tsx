@@ -1,14 +1,14 @@
-import Login from "../Login/Login";
 import useAppStore from "../../store";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import { Menu } from "@headlessui/react";
+import { ModalContext } from "../../App";
 
 import "./navigation.scss";
 
 const Navigation = () => {
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const modalContext = useContext(ModalContext);
 
   const store = useAppStore();
   const setLoggedUser = store.setLoggedUser;
@@ -21,11 +21,6 @@ const Navigation = () => {
 
   return (
     <div className="nav">
-      <Login
-        login
-        modalOpen={loginModalOpen}
-        setModalOpen={setLoginModalOpen}
-      />
       <ul>
         <li>
           <Link to="/">
@@ -41,7 +36,12 @@ const Navigation = () => {
           ) : (
             <button
               className="btn btn--transparent"
-              onClick={() => setLoginModalOpen(true)}
+              onClick={() =>
+                modalContext.setModalState({
+                  isOpen: true,
+                  isLogin: true,
+                })
+              }
             >
               Login
             </button>

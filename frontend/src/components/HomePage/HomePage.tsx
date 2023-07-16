@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import { ModalContext } from "../../App";
 import Button from "../Button/Button";
 
 import "./homePage.scss";
@@ -78,6 +79,7 @@ const useCardAnimation = () => {
 };
 
 const HomePage = () => {
+  const modalContext = useContext(ModalContext);
   const [card1, card2, card3] = useCardAnimation();
 
   return (
@@ -88,7 +90,14 @@ const HomePage = () => {
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vitae aut
             nemo pariatur expedita dolorem maiores
           </h1>
-          <Button size={"lg"}>Sign Up</Button>
+          <Button
+            size={"lg"}
+            onClick={() =>
+              modalContext.setModalState({ isOpen: true, isLogin: false })
+            }
+          >
+            Sign Up
+          </Button>
         </div>
         <div className="home__cards">
           <img className="home__card home__card1" src={card1}></img>

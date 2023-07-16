@@ -5,6 +5,7 @@ import Favourites from "./components/Favourites/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./components/HomePage/HomePage";
 import useAppStore from "./store";
+import Login from "./components/Login/Login";
 import { ToastContainer } from "react-toastify";
 import {
   createBrowserRouter,
@@ -14,7 +15,7 @@ import {
 } from "react-router-dom";
 import { fetchData } from "../utils";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -31,7 +32,25 @@ const router = createBrowserRouter(
   )
 );
 
+type LoginModalContext = {
+  setModalState: React.Dispatch<
+    React.SetStateAction<{
+      isOpen: boolean;
+      isLogin: boolean;
+    }>
+  >;
+};
+
+export const ModalContext = createContext<LoginModalContext>({
+  setModalState: () => undefined,
+});
+
 function App() {
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    isLogin: false,
+  });
+
   const store = useAppStore();
   const { userId, token } = store.loggedUser ?? {};
   const setLoggedUser = store.setLoggedUser;
@@ -61,7 +80,16 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <Login
+        modalOpen={modalState.isOpen}
+        login={modalState.isLogin}
+        setModalOpen={(value) =>
+          setModalState({ ...modalState, isOpen: Boolean(value) })
+        }
+      />
+      <ModalContext.Provider value={{ setModalState }}>
+        <RouterProvider router={router} />
+      </ModalContext.Provider>
       <ToastContainer
         position="bottom-right"
         theme="dark"

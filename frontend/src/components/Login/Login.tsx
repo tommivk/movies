@@ -5,12 +5,12 @@ import useAppStore from "../../store";
 import { useForm } from "react-hook-form";
 import FormInput from "../FormInput/FormInput";
 import { fetchData } from "../../../utils";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Credentials } from "../../../types";
 import * as z from "zod";
 
 import "./login.scss";
-import { Credentials } from "../../../types";
 
 const Login = ({
   modalOpen,
@@ -22,6 +22,10 @@ const Login = ({
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [isLogin, setIsLogin] = useState(login);
+
+  useEffect(() => {
+    setIsLogin(login);
+  }, [login]);
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-empty-function

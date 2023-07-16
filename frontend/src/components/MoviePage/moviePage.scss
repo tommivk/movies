@@ -1,8 +1,16 @@
 @use "../../sassStyles/theme";
+@use "../../sassStyles/variables";
 
 $topSectionHeight: 60vh;
 $personContainerWidth: 150px;
 $personGap: 10px;
+
+.loading__container {
+  height: calc(100% - variables.$navigationBarHeight);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .movie {
   position: relative;

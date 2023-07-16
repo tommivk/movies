@@ -1,0 +1,52 @@
+.loading {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 10px;
+
+  &__ball {
+    display: block;
+    border-radius: 100%;
+    background: rgb(82, 78, 78);
+    animation: loading 0.7s infinite alternate;
+  }
+
+  &.sm {
+    .loading__ball {
+      height: 15px;
+      width: 15px;
+    }
+  }
+
+  &.md {
+    .loading__ball {
+      height: 23px;
+      width: 23px;
+    }
+  }
+
+  &.lg {
+    gap: 10px;
+
+    .loading__ball {
+      height: 33px;
+      width: 33px;
+    }
+  }
+}
+
+.delay {
+  &--100 {
+    animation-delay: 100ms;
+  }
+  &--200 {
+    animation-delay: 200ms;
+  }
+}
+
+@keyframes loading {
+  to {
+    translate: 0 -100%;
+    opacity: 0.1;
+  }
+}

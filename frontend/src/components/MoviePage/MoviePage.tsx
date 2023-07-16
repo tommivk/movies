@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import useAppStore from "../../store";
 
 import "./moviePage.scss";
+import Loading from "../Loading/Loading";
 
 const MoviePage = () => {
   const { id } = useParams();
@@ -71,7 +72,11 @@ const MoviePage = () => {
     return <p>Error</p>;
   }
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="loading__container">
+        <Loading size="lg" />
+      </div>
+    );
   }
 
   const bgImage = movie?.backdropPath ? getImageUrl(movie.backdropPath) : "";

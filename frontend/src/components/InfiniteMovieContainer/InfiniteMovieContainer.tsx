@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 
 import "./infiniteMovieContainer.scss";
 import MovieList from "../MovieList/MovieList";
+import Loading from "../Loading/Loading";
 
 const InfiniteMovieContainer = ({
   queryResult,
@@ -45,7 +46,7 @@ const InfiniteMovieContainer = ({
   }
 
   if (isLoading) {
-    return <p className="search__info">Loading</p>;
+    return <Loading />;
   }
 
   if (movies.length === 0) {
@@ -57,7 +58,7 @@ const InfiniteMovieContainer = ({
       <MovieList movies={movies} />
 
       <div className="search__end" ref={ref}>
-        {isFetchingNextPage && <div>Loading more....</div>}
+        {isFetchingNextPage && <Loading size="sm" />}
         {movies?.length > 0 && !hasNextPage && <div>That's all</div>}
       </div>
     </>

@@ -1,14 +1,14 @@
 @use "../../sassStyles/theme";
+@use "../../sassStyles/variables";
 
 .home {
-  height: 100%;
+  height: calc(100% - variables.$navigationBarHeight);
   background: rgb(15, 15, 15);
   width: 100%;
-  height: 100%;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-x: hidden;
 
   h1 {
     margin: 0px;
@@ -207,5 +207,6 @@
   .home__left {
     gap: 20px;
     padding-top: 0px;
+    padding-bottom: 50px;
   }
 }

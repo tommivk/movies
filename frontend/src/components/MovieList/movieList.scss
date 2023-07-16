@@ -7,9 +7,9 @@
   justify-content: center;
   max-width: (4 * variables.$movieCardWidth) + (3 * variables.$movieCardGap);
   margin: auto;
-}
 
-.movieList__pseudoEl {
-  height: 0;
-  width: variables.$movieCardWidth;
+  &__pseudoEl {
+    height: 0;
+    width: variables.$movieCardWidth;
+  }
 }

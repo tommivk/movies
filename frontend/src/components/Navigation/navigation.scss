@@ -32,14 +32,14 @@ $hoverHighlight: rgb(58, 56, 56);
   li {
     list-style: none;
   }
-}
 
-.nav__title {
-  margin: 0;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: rgb(212, 214, 214);
-  font-family: theme.$titleFontFamily;
+  &__title {
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgb(212, 214, 214);
+    font-family: theme.$titleFontFamily;
+  }
 }
 
 .menuItem {

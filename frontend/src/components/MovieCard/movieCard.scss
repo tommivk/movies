@@ -5,101 +5,110 @@ $padding: 20px;
 $background: rgb(14, 13, 13);
 
 .card {
-    max-width: 90vw;
-    width: variables.$movieCardWidth;
+  max-width: 90vw;
+  width: variables.$movieCardWidth;
+  position: relative;
+  overflow: hidden;
+  border-radius: $borderRadius;
+  background: $background;
+  transition-duration: 0.5s;
+  margin-bottom: 20px;
+
+  &__imageWrapper {
     position: relative;
+    width: 100%;
+    height: 350px;
+  }
+
+  &__rating {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 10px;
+    border-radius: 18px;
+    font-size: 0.9em;
+    font-weight: 600;
+    z-index: 1;
+    &::before {
+      content: "⭐";
+      margin-right: 5px;
+    }
+  }
+
+  &__fade {
+    &--top {
+      position: absolute;
+      top: -5px;
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(
+        to top,
+        rgba(14, 13, 13, 0) 0%,
+        rgba(14, 13, 13, 0.79) 100%,
+        rgba(14, 13, 13, 1) 64%
+      );
+    }
+
+    &--bottom {
+      position: absolute;
+      bottom: -1px;
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(
+        to bottom,
+        rgba(14, 13, 13, 0) 0%,
+        rgba(14, 13, 13, 0.79) 64%,
+        rgba(14, 13, 13, 1) 100%
+      );
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    border-radius: $borderRadius $borderRadius 0px 0px;
+  }
+
+  &__title {
+    position: absolute;
+    bottom: 5px;
+    margin: 0px $padding;
+  }
+
+  &__bottom {
+    height: 150px;
+    min-height: fit-content;
+    padding: 11px 20px 15px 20px;
+  }
+
+  &__overview {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    border-radius: $borderRadius;
-    background: $background;
-    transition-duration: 0.5s;
-    margin-bottom: 20px;
+  }
 
-    .card__imageWrapper {
-        position: relative;
-        width: 100%;
-        height: 350px;
-    }
+  &__genres {
+    display: flex;
+    flex-wrap: wrap;
+  }
 
-    .card__rating {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: rgba(0,0,0,0.6);
-        padding: 8px 10px;
-        border-radius: 18px;
-        font-size: 0.9em;
-        font-weight: 600;
-        z-index: 1;
-        &::before {
-            content: '⭐';
-            margin-right: 5px;
-        }
-    }
-    
+  &__details {
+    display: flex;
+    justify-content: space-between;
+  }
 
-    .card__fade {
-        &--top {
-            position: absolute;
-            top: -5px;
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(to top, rgba(14,13,13,0) 0%, rgba(14,13,13,0.79) 100%, rgba(14,13,13,1) 64%);
-        }
+  &__genre:not(:last-child)::after {
+    content: "|";
+    padding: 5px;
+  }
 
-        &--bottom {
-            position: absolute;
-            bottom: -1px;
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(to bottom, rgba(14,13,13,0) 0%, rgba(14,13,13,0.79) 64%, rgba(14,13,13,1) 100%);
-        }
-    }
-
-    .card__image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top;
-        border-radius: $borderRadius $borderRadius 0px 0px;
-    }
-
-    .card__title {
-        position: absolute;
-        bottom: 5px;
-        margin: 0px $padding;
-    }
-
-    .card__bottom {
-        height: 150px;
-        min-height: fit-content;
-        padding: 11px 20px 15px 20px;
-    }
-
-    .card__overview {
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;  
-        overflow: hidden;
-    }
-
-    .card__genres {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .card__details {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .card__genre:not(:last-child)::after {
-        content: '|';
-        padding: 5px;
-    }
-
-    &:hover {
-        transform: translateY(-1%);
-        cursor: pointer;
-    }
+  &:hover {
+    transform: translateY(-1%);
+    cursor: pointer;
+  }
 }

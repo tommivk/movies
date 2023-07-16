@@ -16,64 +16,64 @@
     font-weight: 600;
     font-family: theme.$headerFontFamily;
   }
-}
 
-.home__left {
-  width: 40%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 80px;
-  margin: auto;
-}
+  &__left {
+    width: 40%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    margin: auto;
+  }
 
-.home__topSection {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap-reverse;
-  align-items: center;
-  padding: 0px 150px;
-  height: fit-content;
-}
+  &__topSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap-reverse;
+    align-items: center;
+    padding: 0px 150px;
+    height: fit-content;
+  }
 
-.home__card {
-  height: 400px;
-}
+  &__card {
+    height: 400px;
+  }
 
-.home__cards {
-  position: relative;
-  display: flex;
-  padding-top: 50px;
-  width: 690px;
-  height: 450px;
-  margin: auto;
-}
+  &__cards {
+    position: relative;
+    display: flex;
+    padding-top: 50px;
+    width: 690px;
+    height: 450px;
+    margin: auto;
+  }
 
-.home__card1 {
-  position: absolute;
-  filter: brightness(0.06);
-  animation: firstCard 10s infinite;
-  top: 50px;
-}
+  &__card1 {
+    position: absolute;
+    filter: brightness(0.06);
+    animation: firstCard 10s infinite;
+    top: 50px;
+  }
 
-.home__card2 {
-  z-index: 5;
-  position: absolute;
-  left: 200px;
-  top: 0px;
-  filter: brightness(0.06);
-  animation: secondCard 10s infinite;
-}
+  &__card2 {
+    z-index: 5;
+    position: absolute;
+    left: 200px;
+    top: 0px;
+    filter: brightness(0.06);
+    animation: secondCard 10s infinite;
+  }
 
-.home__card3 {
-  position: absolute;
-  filter: brightness(0.06);
-  left: 420px;
-  animation: thirdCard 10s infinite;
-  top: 50px;
+  &__card3 {
+    position: absolute;
+    filter: brightness(0.06);
+    left: 420px;
+    animation: thirdCard 10s infinite;
+    top: 50px;
+  }
 }
 
 @keyframes firstCard {

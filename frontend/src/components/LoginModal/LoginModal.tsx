@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Credentials } from "../../../types";
 import * as z from "zod";
 
-import "./login.scss";
+import "./loginModal.scss";
 
 const Login = ({
   modalOpen,

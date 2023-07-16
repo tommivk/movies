@@ -5,7 +5,7 @@ import Favourites from "./components/Favourites/Favourites";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./components/HomePage/HomePage";
 import useAppStore from "./store";
-import Login from "./components/Login/Login";
+import Login from "./components/LoginModal/LoginModal";
 import { ToastContainer } from "react-toastify";
 import {
   createBrowserRouter,

@@ -92,6 +92,7 @@ const HomePage = () => {
           </h1>
           <Button
             size={"lg"}
+            hoverEffect="zoom"
             onClick={() =>
               modalContext.setModalState({ isOpen: true, isLogin: false })
             }

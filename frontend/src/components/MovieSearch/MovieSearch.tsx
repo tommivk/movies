@@ -4,6 +4,7 @@ import InfiniteMovieContainer from "../InfiniteMovieContainer/InfiniteMovieConta
 import useInfiniteMovieSearch from "../../hooks/useInfiniteMovieSearch.tsx";
 import useInfiniteTopRatedMovies from "../../hooks/useInfiniteTopRatedMovies.tsx";
 import useInfiniteTrendingMovies from "../../hooks/useInfiniteTrendingMovies.tsx";
+import Button from "../Button/Button.tsx";
 
 import "./movieSearch.scss";
 
@@ -34,28 +35,28 @@ const MovieSearch = () => {
       ></input>
 
       <div className="search__buttons">
-        <button
-          className={`search__btn
-                      ${page === "trending" ? "search__btn--active" : ""}
-                    `}
+        <Button
+          color="transparent"
+          size="sm"
+          className={`${page === "trending" ? "btn--active" : ""}`}
           onClick={() => {
             setPage("trending");
             setSearch("");
           }}
         >
           Trending
-        </button>
-        <button
-          className={`search__btn
-                      ${page === "top" ? "search__btn--active" : ""}
-                    `}
+        </Button>
+        <Button
+          color="transparent"
+          size="sm"
+          className={`${page === "top" ? "btn--active" : ""}`}
           onClick={() => {
             setPage("top");
             setSearch("");
           }}
         >
           Top Rated
-        </button>
+        </Button>
       </div>
 
       {page == "trending" && (

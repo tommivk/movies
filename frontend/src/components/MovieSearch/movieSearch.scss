@@ -36,21 +36,3 @@
   justify-content: center;
   gap: 10px;
 }
-
-.search__btn {
-  background: transparent;
-  border: 2px solid rgb(80, 76, 76);
-  border-radius: 10px;
-  padding: 10px 20px;
-  margin-bottom: 30px;
-  color: white;
-
-  &:hover {
-    cursor: pointer;
-    background: rgb(80, 76, 76);
-  }
-
-  &--active {
-    background: rgb(80, 76, 76);
-  }
-}

@@ -1,4 +1,4 @@
-.button {
+.btn {
   all: unset;
   padding: 10px 30px;
   border-radius: 10px;
@@ -6,8 +6,10 @@
   cursor: pointer;
   transition-duration: 0.4s;
 
-  &:hover {
-    transform: scale(1.1);
+  &.zoom {
+    &:hover {
+      transform: scale(1.1);
+    }
   }
 
   &.md {
@@ -20,6 +22,12 @@
 
   &.primary {
     background: rgb(13, 135, 184);
+
+    &.brighten {
+      &:hover {
+        background: rgb(19, 164, 221);
+      }
+    }
   }
 
   &.transparent {
@@ -34,7 +42,7 @@
       background: rgb(80, 76, 76);
     }
 
-    &--active {
+    &.btn--active {
       background: rgb(80, 76, 76);
     }
   }

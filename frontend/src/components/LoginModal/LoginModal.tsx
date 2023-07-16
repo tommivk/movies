@@ -8,6 +8,7 @@ import { fetchData } from "../../../utils";
 import { SetStateAction, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Credentials } from "../../../types";
+import Button from "../Button/Button";
 import * as z from "zod";
 
 import "./loginModal.scss";
@@ -161,7 +162,7 @@ const SignupForm = ({
         placeholder="Confirm password"
       ></FormInput>
       <FormFieldError message={errors.passwordConfirm?.message} />
-      <button type="submit">Signup</button>
+      <Button type="submit">Signup</Button>
     </form>
   );
 };
@@ -205,7 +206,7 @@ const LoginForm = ({
         type="password"
         placeholder="Password"
       ></FormInput>
-      <button type="submit">Login</button>
+      <Button type="submit">Login</Button>
     </form>
   );
 };

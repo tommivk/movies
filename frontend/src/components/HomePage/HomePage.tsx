@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import Button from "../Button/Button";
 
 import "./homePage.scss";
 
@@ -21,9 +22,9 @@ const useCardAnimation = () => {
   const firstRenderRef = useRef<number>();
   const requestRef = useRef<number>();
   const previousRef = useRef<number>();
-  const card1UpdateRef = useRef<number>(-6);
-  const card2UpdateRef = useRef<number>(-3);
-  const card3UpdateRef = useRef<number>(0);
+  const card1UpdateRef = useRef<number>(-8);
+  const card2UpdateRef = useRef<number>(-5);
+  const card3UpdateRef = useRef<number>(-2);
 
   const animate = useCallback(
     (time: number) => {
@@ -82,14 +83,13 @@ const HomePage = () => {
   return (
     <div className="home">
       <div className="home__topSection">
-        <div className="home__projector">
-          <img src="/projector.png"></img>
-
-          <div className="home__lightWrapper">
-            <div className="home__light" />
-          </div>
+        <div className="home__left">
+          <h1>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vitae aut
+            nemo pariatur expedita dolorem maiores
+          </h1>
+          <Button size={"lg"}>Sign Up</Button>
         </div>
-
         <div className="home__cards">
           <img className="home__card home__card1" src={card1}></img>
           <img className="home__card home__card2" src={card2}></img>

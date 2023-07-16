@@ -4,24 +4,34 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   h1 {
     margin: 0px;
   }
 }
 
-.home__title {
-  width: 50%;
-  padding-top: 50px;
-  padding: 50px;
+.home__left {
+  width: 40%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  margin: auto;
 }
 
 .home__topSection {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 100px;
-  height: 100%;
+  flex-wrap: wrap-reverse;
+  align-items: center;
+  padding: 0px 150px;
+  height: fit-content;
 }
 
 .home__card {
@@ -34,13 +44,13 @@
   padding-top: 50px;
   width: 750px;
   height: 450px;
+  margin: auto;
 }
 
 .home__card1 {
   position: absolute;
   filter: brightness(0.06);
   animation: firstCard 10s infinite;
-  animation-delay: 2s;
   top: 50px;
 }
 
@@ -51,7 +61,6 @@
   top: 0px;
   filter: brightness(0.06);
   animation: secondCard 10s infinite;
-  animation-delay: 2s;
 }
 
 .home__card3 {
@@ -59,47 +68,7 @@
   filter: brightness(0.06);
   left: 420px;
   animation: thirdCard 10s infinite;
-  animation-delay: 2s;
   top: 50px;
-}
-
-.home__projector {
-  position: relative;
-  top: 10px;
-  img {
-    position: relative;
-    z-index: 11;
-    height: 350px;
-  }
-}
-
-.home__lightWrapper {
-  position: absolute;
-  top: -220px;
-  left: 260px;
-  filter: blur(15px);
-  z-index: 10;
-}
-
-.home__light {
-  width: 100vw;
-  height: 700px;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.1) 70%,
-    transparent
-  );
-  clip-path: polygon(0 60%, 0 50%, 100% 0, 100% 100%);
-  opacity: 0;
-  animation: display 0s 2s forwards;
-}
-
-@keyframes display {
-  to {
-    opacity: 1;
-    filter: brightness(1);
-  }
 }
 
 @keyframes firstCard {
@@ -211,14 +180,12 @@
 }
 
 @media (max-width: 1400px) {
-  .home__light {
-    display: none;
-  }
-  .home__projector {
-    display: none;
-  }
   .home__cards {
     margin: auto;
+  }
+  .home__left {
+    width: 600px;
+    max-width: 90vw;
   }
 }
 

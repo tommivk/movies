@@ -42,7 +42,7 @@
   position: relative;
   display: flex;
   padding-top: 50px;
-  width: 750px;
+  width: 690px;
   height: 450px;
   margin: auto;
 }
@@ -190,7 +190,17 @@
 }
 
 @media (max-width: 800px) {
-  .home__cards {
-    display: none;
+  .home {
+    align-items: flex-start;
+    padding-top: 10px;
+
+    h1 {
+      font-size: 1.1em;
+    }
+  }
+
+  .home__left {
+    gap: 20px;
+    padding-top: 0px;
   }
 }

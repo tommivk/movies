@@ -1,8 +1,11 @@
+@use "../../sassStyles/theme";
+
 .btn {
   all: unset;
   padding: 10px 30px;
   border-radius: 10px;
   font-weight: bold;
+  font-family: theme.$buttonFontFamily;
   cursor: pointer;
   transition-duration: 0.4s;
 

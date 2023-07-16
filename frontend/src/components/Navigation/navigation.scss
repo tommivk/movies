@@ -1,3 +1,5 @@
+@use "../../sassStyles/theme";
+
 $hoverHighlight: rgb(58, 56, 56);
 
 .nav {
@@ -34,9 +36,9 @@ $hoverHighlight: rgb(58, 56, 56);
 .nav__title {
   margin: 0;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
   color: rgb(212, 214, 214);
-  font-family: fantasy;
+  font-family: theme.$titleFontFamily;
 }
 
 .menuItem {

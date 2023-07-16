@@ -1,0 +1,41 @@
+.button {
+  all: unset;
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition-duration: 0.4s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &.md {
+    padding: 15px 40px;
+  }
+
+  &.lg {
+    padding: 20px 60px;
+  }
+
+  &.primary {
+    background: rgb(13, 135, 184);
+  }
+
+  &.transparent {
+    background: transparent;
+    border: 2px solid rgb(80, 76, 76);
+    border-radius: 10px;
+    margin-bottom: 30px;
+    color: white;
+
+    &:hover {
+      cursor: pointer;
+      background: rgb(80, 76, 76);
+    }
+
+    &--active {
+      background: rgb(80, 76, 76);
+    }
+  }
+}

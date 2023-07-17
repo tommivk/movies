@@ -46,7 +46,7 @@
     position: relative;
     display: flex;
     padding-top: 50px;
-    width: 690px;
+    width: 660px;
     height: 450px;
     margin: auto;
   }
@@ -70,7 +70,7 @@
   &__card3 {
     position: absolute;
     filter: brightness(0.06);
-    left: 420px;
+    left: 400px;
     animation: thirdCard 10s infinite;
     top: 50px;
   }

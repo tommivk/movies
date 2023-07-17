@@ -149,39 +149,42 @@ $personGap: 10px;
   }
 }
 
-.cast__btn {
-  display: block;
-  margin-left: auto;
-
-  &:after {
-    content: "➤";
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 15px;
-    transform: rotate(90deg);
-  }
-}
-
-.cast__btn--close {
-  &:after {
-    transform: rotate(-90deg);
-  }
-}
-
-.cast__container {
+.cast {
   box-sizing: content-box;
   max-width: ($personContainerWidth * 7) + ($personGap * 6);
   margin: auto;
   position: relative;
   padding: 50px 20px;
   padding-bottom: 200px;
-}
 
-.cast__list {
-  display: flex;
-  gap: $personGap;
-  flex-wrap: wrap;
-  width: 100%;
+  &__list {
+    display: flex;
+    gap: $personGap;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  &__modal {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, $personContainerWidth);
+    gap: $personGap;
+    place-content: center;
+    padding: 50px 20px;
+    box-sizing: border-box;
+    width: 1200px;
+    max-width: 100%;
+  }
+
+  &__btn {
+    display: block;
+    margin-left: auto;
+  }
+
+  &__btn--close {
+    &:after {
+      transform: rotate(-90deg);
+    }
+  }
 }
 
 .person__container {

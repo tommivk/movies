@@ -14,6 +14,7 @@ import Loading from "../Loading/Loading";
 import { Dialog } from "@headlessui/react";
 
 import "./moviePage.scss";
+import Modal from "../Modal/Modal";
 
 const MoviePage = () => {
   const { id } = useParams();
@@ -192,7 +193,18 @@ const MoviePage = () => {
     if (castLength === 0) return <></>;
 
     return (
-      <div className="cast__container">
+      <div className="cast">
+        <Modal
+          title="Cast"
+          open={showFullCast}
+          onClose={() => setShowFullCast(false)}
+        >
+          <div className="cast__modal">
+            {movie.credits?.cast.map((person) => (
+              <Person person={person} key={person.id} />
+            ))}
+          </div>
+        </Modal>
         <h1>Cast</h1>
 
         <div className="cast__list">

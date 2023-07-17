@@ -35,7 +35,7 @@ const Login = ({
       onClose={() => setModalOpen(false)}
       title={isLogin ? "Login" : "Signup"}
     >
-      <>
+      <div className="form">
         {isLogin ? (
           <LoginForm setModalOpen={setModalOpen} />
         ) : (
@@ -57,7 +57,7 @@ const Login = ({
             Already a user? Login
           </button>
         )}
-      </>
+      </div>
     </Modal>
   );
 };
@@ -130,10 +130,7 @@ const SignupForm = ({
   });
 
   return (
-    <form
-      className="loginForm"
-      onSubmit={handleSubmit((credentials) => mutateAsync(credentials))}
-    >
+    <form onSubmit={handleSubmit((credentials) => mutateAsync(credentials))}>
       <FormInput
         register={register("username")}
         required={true}
@@ -183,10 +180,7 @@ const LoginForm = ({
   });
 
   return (
-    <form
-      className="loginForm"
-      onSubmit={handleSubmit((credentials) => mutateAsync(credentials))}
-    >
+    <form onSubmit={handleSubmit((credentials) => mutateAsync(credentials))}>
       <FormInput
         register={register("username")}
         required={true}

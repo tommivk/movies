@@ -7,15 +7,16 @@ import {
   runtimeToString,
 } from "../../../utils";
 import { Cast, Movie } from "../../../types";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
+import Loading from "../Loading/Loading";
 
 import "./moviePage.scss";
-import Loading from "../Loading/Loading";
 
 const MoviePage = () => {
   const { id } = useParams();
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const queryClient = useQueryClient();
   const store = useAppStore();
@@ -53,6 +54,26 @@ const MoviePage = () => {
     });
   };
 
+  const cacheImage = useCallback(async (src: string) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.src = src;
+      img.onerror = (...args) => reject(args);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (movie) {
+      const src = getFullSizeImageUrl(movie.backdropPath);
+      if (src) {
+        cacheImage(src).then(() => setImageLoaded(true));
+        return;
+      }
+      setImageLoaded(true);
+    }
+  }, [movie, cacheImage]);
+
   const { mutate: toggleFavourite } = useMutation({
     mutationKey: ["toggleFav", isFavourited],
     mutationFn: isFavourited ? removeFavourite : addFavourite,
@@ -76,7 +97,7 @@ const MoviePage = () => {
     console.log(error);
     return <p>Error</p>;
   }
-  if (isLoading) {
+  if (isLoading || !imageLoaded) {
     return (
       <div className="loading__container">
         <Loading size="lg" />
@@ -84,10 +105,11 @@ const MoviePage = () => {
     );
   }
 
-  const bgImage = getFullSizeImageUrl(movie.backdropPath);
-  const year = new Date(movie.releaseDate).getFullYear();
+  const imageSrc = getFullSizeImageUrl(movie.backdropPath);
 
   const TopSection = ({ movie, imgSrc }: { movie: Movie; imgSrc?: string }) => {
+    const year = new Date(movie.releaseDate).getFullYear();
+
     return (
       <div className="movie__topSection">
         {imgSrc ? (
@@ -195,7 +217,7 @@ const MoviePage = () => {
 
   return (
     <div className="movie">
-      <TopSection movie={movie} imgSrc={bgImage} />
+      <TopSection movie={movie} imgSrc={imageSrc} />
       <CastContainer movie={movie} />
     </div>
   );

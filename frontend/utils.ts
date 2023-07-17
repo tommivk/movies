@@ -34,8 +34,25 @@ export const fetchData = async ({
   return camelcaseKeys(json, { deep: true });
 };
 
-export const getImageUrl = (imagePath: string) =>
-  `https://image.tmdb.org/t/p/original/${imagePath}`;
+export const getFullSizeImageUrl = (imagePath: string) => {
+  if (imagePath === "") return;
+  return `https://image.tmdb.org/t/p/original/${imagePath}`;
+};
+
+export const getSmallPosterImageUrl = (imagePath: string) => {
+  if (imagePath === "") return;
+  return `https://image.tmdb.org/t/p/w500/${imagePath}`;
+};
+
+export const getSmallBackdropImageUrl = (imagePath: string) => {
+  if (imagePath === "") return;
+  return `https://image.tmdb.org/t/p/w780/${imagePath}`;
+};
+
+export const getSmallProfileImageUrl = (imagePath: string) => {
+  if (imagePath === "") return;
+  return `https://image.tmdb.org/t/p/w185/${imagePath}`;
+};
 
 export const runtimeToString = (minutes: number) =>
   `${Math.floor(minutes / 60)}h ${minutes % 60}m`;

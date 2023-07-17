@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { Movie } from "../../../types.js";
-import { getImageUrl } from "../../../utils.js";
+import {
+  getSmallBackdropImageUrl,
+  getSmallPosterImageUrl,
+} from "../../../utils.js";
 
 import "./movieCard.scss";
 
@@ -10,8 +13,10 @@ const placeHolderImg =
   "https://files.worldwildlife.org/wwfcmsprod/images/Panda_in_Tree/story_full_width/8u3k0zn66i_Large_WW170579.jpg";
 
 const MovieCard = ({ movie }: Props) => {
-  const imagePath = movie.posterPath ?? movie.backdropPath;
-  const image = imagePath ? getImageUrl(imagePath) : placeHolderImg;
+  const image =
+    getSmallPosterImageUrl(movie.posterPath) ??
+    getSmallBackdropImageUrl(movie.backdropPath) ??
+    placeHolderImg;
 
   const year = movie.releaseDate
     ? new Date(movie.releaseDate).getFullYear()

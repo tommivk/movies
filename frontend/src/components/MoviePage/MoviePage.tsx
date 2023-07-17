@@ -1,6 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchData, getImageUrl, runtimeToString } from "../../../utils";
+import {
+  fetchData,
+  getFullSizeImageUrl,
+  getSmallProfileImageUrl,
+  runtimeToString,
+} from "../../../utils";
 import { Cast, Movie } from "../../../types";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -79,14 +84,17 @@ const MoviePage = () => {
     );
   }
 
-  const bgImage = movie?.backdropPath ? getImageUrl(movie.backdropPath) : "";
+  const bgImage = getFullSizeImageUrl(movie.backdropPath);
   const year = new Date(movie.releaseDate).getFullYear();
 
-  const TopSection = ({ movie, imgSrc }: { movie: Movie; imgSrc: string }) => {
+  const TopSection = ({ movie, imgSrc }: { movie: Movie; imgSrc?: string }) => {
     return (
       <div className="movie__topSection">
-        <img alt={movie.title} className="movie__image" src={imgSrc}></img>
-
+        {imgSrc ? (
+          <img alt={movie.title} className="movie__image" src={imgSrc}></img>
+        ) : (
+          <div className="movie__image movie__imagePlaceholder" />
+        )}
         <div className="movie__details">
           <h1 className="movie__title">{movie.title}</h1>
           <div className="movie__info">
@@ -140,7 +148,7 @@ const MoviePage = () => {
         {person.profilePath ? (
           <img
             className="person__image"
-            src={getImageUrl(person.profilePath)}
+            src={getSmallProfileImageUrl(person.profilePath)}
           />
         ) : (
           placeholder

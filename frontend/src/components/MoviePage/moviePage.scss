@@ -187,10 +187,10 @@ $personGap: 10px;
   }
 }
 
-.person__container {
+.person {
   width: $personContainerWidth;
 
-  .person__image {
+  &__image {
     background: theme.$darkGrey;
     height: 200px;
     width: 100%;
@@ -199,19 +199,19 @@ $personGap: 10px;
     object-position: top;
   }
 
-  .person__details {
+  &__details {
     padding: 10px;
     text-align: center;
   }
 
-  .person__name {
+  &__name {
     margin: 0;
   }
-}
 
-.person__placeholder {
-  font-size: 120px;
-  padding: 20px 0px 0px 3px;
-  color: transparent;
-  text-shadow: 0 0 0 theme.$lightGrey;
+  &__placeholder {
+    font-size: 120px;
+    padding: 20px 0px 0px 3px;
+    color: transparent;
+    text-shadow: 0 0 0 theme.$lightGrey;
+  }
 }

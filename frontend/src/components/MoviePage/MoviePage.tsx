@@ -168,7 +168,7 @@ const MoviePage = () => {
       </div>
     );
     return (
-      <div className="person__container">
+      <div className="person">
         {person.profilePath ? (
           <img
             className="person__image"

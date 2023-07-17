@@ -35,22 +35,22 @@ export const fetchData = async ({
 };
 
 export const getFullSizeImageUrl = (imagePath: string) => {
-  if (imagePath === "") return;
+  if (!imagePath) return;
   return `https://image.tmdb.org/t/p/original/${imagePath}`;
 };
 
 export const getSmallPosterImageUrl = (imagePath: string) => {
-  if (imagePath === "") return;
+  if (!imagePath) return;
   return `https://image.tmdb.org/t/p/w500/${imagePath}`;
 };
 
 export const getSmallBackdropImageUrl = (imagePath: string) => {
-  if (imagePath === "") return;
+  if (!imagePath) return;
   return `https://image.tmdb.org/t/p/w780/${imagePath}`;
 };
 
 export const getSmallProfileImageUrl = (imagePath: string) => {
-  if (imagePath === "") return;
+  if (!imagePath) return;
   return `https://image.tmdb.org/t/p/w185/${imagePath}`;
 };
 

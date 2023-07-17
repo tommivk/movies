@@ -24,7 +24,7 @@ const Modal = ({ open, onClose, children, title }: Props) => {
             ✕
           </button>
           <Dialog.Title>{title}</Dialog.Title>
-          {children}
+          <div className="modal__children">{children}</div>
         </Dialog.Panel>
       </div>
     </Dialog>

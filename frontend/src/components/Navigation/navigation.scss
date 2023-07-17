@@ -5,7 +5,7 @@ $hoverHighlight: rgb(58, 56, 56);
 
 .nav {
   height: variables.$navigationBarHeight;
-  background: rgb(20, 20, 20);
+  background: theme.$darkBackground;
   display: flex;
   font-weight: 600;
   padding: 0px 20px;

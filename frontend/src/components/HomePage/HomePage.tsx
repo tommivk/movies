@@ -30,10 +30,10 @@ const useCardAnimation = () => {
   const animate = useCallback(
     (time: number) => {
       if (firstRenderRef.current == undefined) {
-        firstRenderRef.current = Math.ceil(time / 1000);
+        firstRenderRef.current = Math.floor(time / 1000);
       }
       if (previousRef.current != undefined) {
-        const second = Math.ceil(time / 1000) - firstRenderRef.current;
+        const second = Math.floor(time / 1000) - firstRenderRef.current;
 
         const timeSinceCard1Update = second - card1UpdateRef.current;
         if (timeSinceCard1Update >= 10 && timeSinceCard1Update % 10 == 0) {

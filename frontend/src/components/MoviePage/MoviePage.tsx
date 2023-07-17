@@ -11,10 +11,9 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import Loading from "../Loading/Loading";
-import { Dialog } from "@headlessui/react";
+import Modal from "../Modal/Modal";
 
 import "./moviePage.scss";
-import Modal from "../Modal/Modal";
 
 const MoviePage = () => {
   const { id } = useParams();

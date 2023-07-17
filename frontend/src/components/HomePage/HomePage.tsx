@@ -23,7 +23,7 @@ const useCardAnimation = () => {
   const firstRenderRef = useRef<number>();
   const requestRef = useRef<number>();
   const previousRef = useRef<number>();
-  const card1UpdateRef = useRef<number>(-8);
+  const card1UpdateRef = useRef<number>(-9);
   const card2UpdateRef = useRef<number>(-5);
   const card3UpdateRef = useRef<number>(-2);
 

@@ -78,9 +78,34 @@ const useCardAnimation = () => {
   return [cardPaths[card1Index], cardPaths[card2Index], cardPaths[card3Index]];
 };
 
+const Cards = () => {
+  const [card1, card2, card3] = useCardAnimation();
+  return (
+    <>
+      <img className="home__card home__card1" src={card1}></img>
+      <img className="home__card home__card2" src={card2}></img>
+      <img className="home__card home__card3" src={card3}></img>
+    </>
+  );
+};
+
 const HomePage = () => {
   const modalContext = useContext(ModalContext);
-  const [card1, card2, card3] = useCardAnimation();
+  const [play, setPlay] = useState(false);
+
+  const checkVisibility = useCallback(() => {
+    if (!play && document.visibilityState === "visible") {
+      setPlay(true);
+    }
+  }, [play]);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", checkVisibility);
+    checkVisibility();
+    return () => {
+      document.removeEventListener("visibilitychange", checkVisibility);
+    };
+  }, [checkVisibility]);
 
   return (
     <div className="home">
@@ -100,11 +125,7 @@ const HomePage = () => {
             Sign Up
           </Button>
         </div>
-        <div className="home__cards">
-          <img className="home__card home__card1" src={card1}></img>
-          <img className="home__card home__card2" src={card2}></img>
-          <img className="home__card home__card3" src={card3}></img>
-        </div>
+        <div className="home__cards">{play && <Cards />}</div>
       </div>
     </div>
   );

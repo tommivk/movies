@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import Loading from "../Loading/Loading";
+import { Dialog } from "@headlessui/react";
 
 import "./moviePage.scss";
 

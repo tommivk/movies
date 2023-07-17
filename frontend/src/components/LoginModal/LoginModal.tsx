@@ -1,4 +1,3 @@
-import { Dialog } from "@headlessui/react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
@@ -9,6 +8,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Credentials } from "../../../types";
 import Button from "../Button/Button";
+import Modal from "../Modal/Modal";
 import * as z from "zod";
 
 import "./loginModal.scss";
@@ -30,42 +30,35 @@ const Login = ({
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    <Dialog open={modalOpen} onClose={() => {}} className="modal">
-      <div className="modal__content">
-        <Dialog.Panel className="modal__panel">
-          <button
-            className="modal__closeButton"
-            onClick={() => {
-              setModalOpen(false);
-            }}
-          >
-            ✕
-          </button>
-          <Dialog.Title>{isLogin ? "Login" : "Signup"}</Dialog.Title>
-          {isLogin ? (
-            <LoginForm setModalOpen={setModalOpen} />
-          ) : (
-            <SignupForm setModalOpen={setModalOpen} />
-          )}
+    <Modal
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
+      title={isLogin ? "Login" : "Signup"}
+    >
+      <>
+        {isLogin ? (
+          <LoginForm setModalOpen={setModalOpen} />
+        ) : (
+          <SignupForm setModalOpen={setModalOpen} />
+        )}
 
-          {isLogin ? (
-            <button
-              className="btn btn--transparent"
-              onClick={() => setIsLogin(false)}
-            >
-              Not a user? Sign up Here
-            </button>
-          ) : (
-            <button
-              className="btn btn--transparent"
-              onClick={() => setIsLogin(true)}
-            >
-              Already a user? Login
-            </button>
-          )}
-        </Dialog.Panel>
-      </div>
-    </Dialog>
+        {isLogin ? (
+          <button
+            className="btn btn--transparent"
+            onClick={() => setIsLogin(false)}
+          >
+            Not a user? Sign up Here
+          </button>
+        ) : (
+          <button
+            className="btn btn--transparent"
+            onClick={() => setIsLogin(true)}
+          >
+            Already a user? Login
+          </button>
+        )}
+      </>
+    </Modal>
   );
 };
 

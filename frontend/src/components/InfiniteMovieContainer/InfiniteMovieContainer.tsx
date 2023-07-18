@@ -2,10 +2,11 @@ import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { SearchResult } from "../../../types";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useMemo } from "react";
-
-import "./infiniteMovieContainer.scss";
 import MovieList from "../MovieList/MovieList";
 import Loading from "../Loading/Loading";
+import LoadingContainer from "../LoadingContainer/LoadingContainer";
+
+import "./infiniteMovieContainer.scss";
 
 const InfiniteMovieContainer = ({
   queryResult,
@@ -46,7 +47,7 @@ const InfiniteMovieContainer = ({
   }
 
   if (isLoading) {
-    return <Loading />;
+    return <LoadingContainer />;
   }
 
   if (movies.length === 0) {

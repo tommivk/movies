@@ -20,7 +20,7 @@ const MovieSearch = () => {
   const topRatedResult = useInfiniteTopRatedMovies();
 
   return (
-    <div className="search__container">
+    <div className="search">
       <input
         type="text"
         placeholder="Search all movies..."

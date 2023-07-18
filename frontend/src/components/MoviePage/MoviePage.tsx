@@ -10,8 +10,8 @@ import { Cast, Movie } from "../../../types";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
-import Loading from "../Loading/Loading";
 import Modal from "../Modal/Modal";
+import LoadingContainer from "../LoadingContainer/LoadingContainer";
 
 import "./moviePage.scss";
 
@@ -99,11 +99,7 @@ const MoviePage = () => {
     return <p>Error</p>;
   }
   if (isLoading || !imageLoaded) {
-    return (
-      <div className="loading__container">
-        <Loading size="lg" />
-      </div>
-    );
+    return <LoadingContainer />;
   }
 
   const imageSrc = getFullSizeImageUrl(movie.backdropPath);

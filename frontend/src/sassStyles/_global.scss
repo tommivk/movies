@@ -1,7 +1,6 @@
 .link {
-  &--unset {
-    all: unset;
-  }
+  all: unset;
+  cursor: pointer;
 }
 
 .btn {

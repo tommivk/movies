@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchData,
@@ -163,20 +163,22 @@ const MoviePage = () => {
       </div>
     );
     return (
-      <div className="person">
-        {person.profilePath ? (
-          <img
-            className="person__image"
-            src={getSmallProfileImageUrl(person.profilePath)}
-          />
-        ) : (
-          placeholder
-        )}
-        <div className="person__details">
-          <h3 className="person__name">{person.name}</h3>
-          <p className="person__character">{person.character}</p>
+      <Link className="link" to={`/actors/${person.id}`}>
+        <div className="person">
+          {person.profilePath ? (
+            <img
+              className="person__image"
+              src={getSmallProfileImageUrl(person.profilePath)}
+            />
+          ) : (
+            placeholder
+          )}
+          <div className="person__details">
+            <h3 className="person__name">{person.name}</h3>
+            <p className="person__character">{person.character}</p>
+          </div>
         </div>
-      </div>
+      </Link>
     );
   };
 

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"movies/controllers/actors"
 	"movies/controllers/favourites"
 	"movies/controllers/movies"
 	"movies/controllers/users"
@@ -77,11 +78,13 @@ func main() {
 
 	public := router.Group("/")
 	public.GET("/ping", ping)
+
 	public.GET("/movies/search", movies.SearchMovie)
 	public.GET("/movies/trending", movies.TrendingMovies)
 	public.GET("/movies/top-rated", movies.TopRatedMovies)
-
 	public.GET("/movies/:id", movies.GetMovieById)
+
+	public.GET("/actors/:id", actors.GetActorById)
 
 	public.POST("/signup", users.SignUp)
 	public.POST("/login", users.Login)

@@ -40,3 +40,22 @@ export type Credentials = {
   username: string;
   password: string;
 };
+
+export type ActorMovie = Movie & { character: string };
+
+export type ActorResponse = Actor & {
+  movieCredits: {
+    cast: ActorMovie[];
+  };
+};
+
+export type Actor = {
+  id: number;
+  name: string;
+  alsoKnownAs: string[];
+  placeOfBirth: string;
+  profilePath: string;
+  biography: string;
+  birthday: string;
+  deathday: string;
+};

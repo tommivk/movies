@@ -14,8 +14,8 @@ const placeHolderImg =
 
 const MovieCard = ({ movie }: Props) => {
   const image =
-    getSmallPosterImageUrl(movie.posterPath) ??
     getSmallBackdropImageUrl(movie.backdropPath) ??
+    getSmallPosterImageUrl(movie.posterPath) ??
     placeHolderImg;
 
   const year = movie.releaseDate

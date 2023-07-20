@@ -144,11 +144,18 @@ $personGap: 10px;
 
 .cast {
   box-sizing: content-box;
-  max-width: ($personContainerWidth * 7) + ($personGap * 6);
+  max-width: ($personContainerWidth * 6) + ($personGap * 5);
   margin: auto;
   position: relative;
   padding: 50px 20px;
   padding-bottom: 200px;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
 
   &__list {
     display: flex;
@@ -168,11 +175,6 @@ $personGap: 10px;
     max-width: 100%;
   }
 
-  &__btn {
-    display: block;
-    margin-left: auto;
-  }
-
   &__btn--close {
     &:after {
       transform: rotate(-90deg);
@@ -182,6 +184,7 @@ $personGap: 10px;
 
 .person {
   width: $personContainerWidth;
+  border-radius: 10px;
 
   &__image {
     background: theme.$darkGrey;
@@ -206,5 +209,9 @@ $personGap: 10px;
     padding: 20px 0px 0px 3px;
     color: transparent;
     text-shadow: 0 0 0 theme.$lightGrey;
+  }
+
+  &:hover {
+    background: theme.$hoverGray;
   }
 }

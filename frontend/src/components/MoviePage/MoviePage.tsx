@@ -202,25 +202,26 @@ const MoviePage = () => {
             ))}
           </div>
         </Modal>
-        <h1>Cast</h1>
+
+        <div className="cast__top">
+          <h1>Top Cast</h1>
+          {castLength > 6 && (
+            <button
+              className={`cast__btn btn--transparent ${
+                showFullCast ? "cast__btn--close" : ""
+              }`}
+              onClick={() => setShowFullCast(!showFullCast)}
+            >
+              {showFullCast ? "Hide full cast" : "Show full cast"}
+            </button>
+          )}
+        </div>
 
         <div className="cast__list">
-          {movie.credits?.cast
-            .slice(0, !showFullCast && castLength >= 7 ? 7 : undefined)
-            .map((person) => (
-              <Person person={person} key={person.id} />
-            ))}
+          {movie.credits?.cast.slice(0, 6).map((person) => (
+            <Person person={person} key={person.id} />
+          ))}
         </div>
-        {castLength > 6 && (
-          <button
-            className={`cast__btn btn--transparent ${
-              showFullCast ? "cast__btn--close" : ""
-            }`}
-            onClick={() => setShowFullCast(!showFullCast)}
-          >
-            {showFullCast ? "Hide full cast" : "Show full cast"}
-          </button>
-        )}
       </div>
     );
   };

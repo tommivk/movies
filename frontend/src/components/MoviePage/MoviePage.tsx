@@ -17,6 +17,7 @@ import useToggleFavourite from "../../hooks/useToggleFavourite";
 import useAddRating from "../../hooks/useAddRating";
 import useUpdateRating from "../../hooks/useUpdateRating";
 import useCacheImage from "../../hooks/useCacheImage";
+import { toast } from "react-toastify";
 
 import "./moviePage.scss";
 
@@ -86,12 +87,19 @@ const Ratings = ({ movie }: { movie: Movie }) => {
   const siteRating = movie.voteSiteAverage?.toFixed(1) ?? "N/A";
   const tmdbRating = movie.voteAverage?.toFixed(1) ?? "N/A";
 
+  const handleModalOpen = () => {
+    if (!store.loggedUser) {
+      return toast.error("You must be logged in to rate movies");
+    }
+    setOpen(true);
+  };
+
   return (
     <div className="movie__ratings">
       <RatingModal open={open} setOpen={setOpen} userRating={userRating} />
       <Rating rating={tmdbRating} text="TMDB" />
       <Rating rating={siteRating} text="Mövies" />
-      <div className="movie__userRating" onClick={() => setOpen(true)}>
+      <div className="movie__userRating" onClick={handleModalOpen}>
         <Rating rating={userRating?.toFixed(1) ?? "Rate"} text="Your rating" />
       </div>
     </div>

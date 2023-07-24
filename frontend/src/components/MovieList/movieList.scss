@@ -1,15 +1,10 @@
 @use "../../sassStyles/variables";
 
 .movieList {
-  display: flex;
+  display: grid;
   gap: variables.$movieCardGap;
-  flex-wrap: wrap;
-  justify-content: center;
+  grid-template-columns: repeat(auto-fit, variables.$movieCardWidth);
   max-width: (4 * variables.$movieCardWidth) + (3 * variables.$movieCardGap);
+  place-content: center;
   margin: auto;
-
-  &__pseudoEl {
-    height: 0;
-    width: variables.$movieCardWidth;
-  }
 }

@@ -9,9 +9,6 @@ const MovieList = ({ movies }: { movies: Movie[] }) => {
       {movies.map((movie) => (
         <MovieCard key={movie.id} movie={movie} />
       ))}
-      <div className="movieList__pseudoEl" />
-      <div className="movieList__pseudoEl" />
-      <div className="movieList__pseudoEl" />
     </div>
   );
 };

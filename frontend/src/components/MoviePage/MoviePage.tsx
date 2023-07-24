@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   fetchData,
   getFullSizeImageUrl,
@@ -7,30 +7,222 @@ import {
   runtimeToString,
 } from "../../../utils";
 import { Cast, Movie } from "../../../types";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import useAppStore from "../../store";
 import Modal from "../Modal/Modal";
 import LoadingContainer from "../LoadingContainer/LoadingContainer";
 import Button from "../Button/Button";
 import RatingStars from "../RatingStars/RatingStars";
+import useToggleFavourite from "../../hooks/useToggleFavourite";
+import useAddRating from "../../hooks/useAddRating";
+import useUpdateRating from "../../hooks/useUpdateRating";
+import useCacheImage from "../../hooks/useCacheImage";
 
 import "./moviePage.scss";
 
+const Rating = ({ rating, text }: { rating: string; text: string }) => {
+  return (
+    <div className="rating">
+      <div className="rating__circle">{rating}</div>
+      <p>{text}</p>
+    </div>
+  );
+};
+
+const RatingModal = ({
+  open,
+  setOpen,
+  userRating,
+}: {
+  userRating?: number;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const { id: movieId } = useParams();
+  const [rating, setRating] = useState<number | undefined>(userRating);
+  const token = useAppStore().loggedUser?.token;
+
+  const { mutate: updateRating } = useUpdateRating();
+  const handleUpdateRating = async () => {
+    updateRating({ rating, movieId, token });
+    setOpen(false);
+  };
+  const { mutate: addRating } = useAddRating();
+  const handleAddRating = async () => {
+    addRating({ rating, movieId, token });
+    setOpen(false);
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={() => setOpen(false)}
+      title={userRating ? "Update your rating" : "Rate this movie"}
+    >
+      <div className="ratingModal">
+        <RatingStars
+          selected={rating}
+          onChange={(rating) => setRating(rating)}
+        />
+        <Button
+          disabled={!rating || rating === userRating}
+          onClick={() =>
+            userRating ? handleUpdateRating() : handleAddRating()
+          }
+        >
+          {userRating ? "Update" : "Rate"}
+        </Button>
+      </div>
+    </Modal>
+  );
+};
+
+const Ratings = ({ movie }: { movie: Movie }) => {
+  const [open, setOpen] = useState(false);
+  const store = useAppStore();
+  const userRating = store.ratings?.find(
+    ({ movieId }) => movieId == Number(movie.id)
+  )?.rating;
+  const siteRating = movie.voteSiteAverage?.toFixed(1) ?? "N/A";
+  const tmdbRating = movie.voteAverage?.toFixed(1) ?? "N/A";
+
+  return (
+    <div className="movie__ratings">
+      <RatingModal open={open} setOpen={setOpen} userRating={userRating} />
+      <Rating rating={tmdbRating} text="TMDB" />
+      <Rating rating={siteRating} text="Mövies" />
+      <div className="movie__userRating" onClick={() => setOpen(true)}>
+        <Rating rating={userRating?.toFixed(1) ?? "Rate"} text="Your rating" />
+      </div>
+    </div>
+  );
+};
+
+const TopSection = ({ movie }: { movie: Movie }) => {
+  const year = new Date(movie.releaseDate).getFullYear();
+  const imgSrc = getFullSizeImageUrl(movie.backdropPath);
+  const store = useAppStore();
+  const favouritedMovieIds = store.favouritedMovieIds;
+  const isFavourited = favouritedMovieIds?.some(
+    (movieId) => movieId === Number(movie.id)
+  );
+  const { mutate: toggleFavourite } = useToggleFavourite({
+    isFavourited,
+    movie,
+    token: store.loggedUser?.token,
+  });
+
+  return (
+    <div className="movie__topSection">
+      {imgSrc ? (
+        <img alt={movie.title} className="movie__image" src={imgSrc}></img>
+      ) : (
+        <div className="movie__image movie__imagePlaceholder" />
+      )}
+      <div className="movie__details">
+        <h1 className="movie__title">{movie.title}</h1>
+        <div className="movie__info">
+          <h3>{year}</h3>
+          <h3 className="movie__runtime">{runtimeToString(movie.runtime)}</h3>
+        </div>
+        <p className="movie__overview">{movie.overview}</p>
+
+        <div className="movie__bottom">
+          <Ratings movie={movie} />
+
+          <div
+            className="movie__favourite"
+            role="button"
+            onClick={() => toggleFavourite()}
+          >
+            <span
+              className={`movie__heart ${
+                isFavourited ? "movie__heart--striked" : ""
+              }`}
+            >
+              ♡
+            </span>
+            <span>
+              {isFavourited ? "Remove from favourites" : "Add to favourites"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Person = ({ person }: { person: Cast }) => {
+  const placeholder = (
+    <div className="person__image">
+      <div className="person__placeholder">👤</div>
+    </div>
+  );
+  return (
+    <Link className="link" to={`/actors/${person.id}`}>
+      <div className="person">
+        {person.profilePath ? (
+          <img
+            className="person__image"
+            src={getSmallProfileImageUrl(person.profilePath)}
+          />
+        ) : (
+          placeholder
+        )}
+        <div className="person__details">
+          <h3 className="person__name">{person.name}</h3>
+          <p className="person__character">{person.character}</p>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+const CastContainer = ({ movie }: { movie: Movie }) => {
+  const [showFullCast, setShowFullCast] = useState(false);
+  const castLength = movie.credits?.cast?.length ?? 0;
+
+  if (castLength === 0) return <></>;
+
+  return (
+    <div className="cast">
+      <Modal
+        title="Cast"
+        open={showFullCast}
+        onClose={() => setShowFullCast(false)}
+      >
+        <div className="cast__modal">
+          {movie.credits?.cast.map((person) => (
+            <Person person={person} key={person.id} />
+          ))}
+        </div>
+      </Modal>
+
+      <div className="cast__top">
+        <h1>Top Cast</h1>
+        {castLength > 6 && (
+          <button
+            className={`cast__btn btn--transparent ${
+              showFullCast ? "cast__btn--close" : ""
+            }`}
+            onClick={() => setShowFullCast(!showFullCast)}
+          >
+            {showFullCast ? "Hide full cast" : "Show full cast"}
+          </button>
+        )}
+      </div>
+
+      <div className="cast__list">
+        {movie.credits?.cast.slice(0, 6).map((person) => (
+          <Person person={person} key={person.id} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const MoviePage = () => {
   const { id } = useParams();
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  const queryClient = useQueryClient();
-  const store = useAppStore();
-
-  const token = store.loggedUser?.token;
-  const favouritedMovieIds = store.favouritedMovieIds;
-
-  const isFavourited = favouritedMovieIds?.some(
-    (movieId) => movieId === Number(id)
-  );
-
   const {
     data: movie,
     isLoading,
@@ -41,297 +233,20 @@ const MoviePage = () => {
     queryFn: (): Promise<Movie> => fetchData({ path: `/movies/${id}` }),
   });
 
-  const removeFavourite = async () => {
-    return await fetchData({
-      path: `/movies/${id}/favourite`,
-      token,
-      method: "DELETE",
-    });
-  };
-
-  const addFavourite = async () => {
-    return await fetchData({
-      path: `/movies/${id}/favourite`,
-      token,
-      method: "POST",
-    });
-  };
-
-  const cacheImage = useCallback(async (src: string) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.src = src;
-      img.onerror = (...args) => reject(args);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (movie) {
-      const src = getFullSizeImageUrl(movie.backdropPath);
-      if (src) {
-        cacheImage(src).then(() => setImageLoaded(true));
-        return;
-      }
-      setImageLoaded(true);
-    }
-  }, [movie, cacheImage]);
-
-  const { mutate: toggleFavourite } = useMutation({
-    mutationKey: ["toggleFav", isFavourited],
-    mutationFn: isFavourited ? removeFavourite : addFavourite,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fetchUserData"] });
-      toast.success(
-        isFavourited
-          ? `"${movie?.title}" has been removed from your favourites`
-          : `"${movie?.title}" has been added to your favourites`
-      );
-    },
-    onError: () => {
-      if (!store.loggedUser) {
-        return toast.error("You must be logged in to favourite movies");
-      }
-      toast.error("Server error");
-    },
-  });
+  const backdrop = movie?.backdropPath ?? "";
+  const [imageLoaded] = useCacheImage(getFullSizeImageUrl(backdrop));
 
   if (isError) {
     console.log(error);
     return <p>Error</p>;
   }
-  if (isLoading || !imageLoaded) {
+  if (isLoading || (backdrop && !imageLoaded)) {
     return <LoadingContainer />;
   }
 
-  const imageSrc = getFullSizeImageUrl(movie.backdropPath);
-
-  const Rating = ({ rating, text }: { rating: string; text: string }) => {
-    return (
-      <div className="rating">
-        <div className="rating__circle">{rating}</div>
-        <p>{text}</p>
-      </div>
-    );
-  };
-
-  const RatingModal = ({
-    open,
-    setOpen,
-    userRating,
-  }: {
-    userRating?: number;
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => {
-    const [rating, setRating] = useState<number | undefined>(userRating);
-    const token = useAppStore().loggedUser?.token;
-
-    const { mutate: addRating } = useMutation({
-      mutationKey: ["addRating"],
-      mutationFn: (rating?: number) =>
-        fetchData({
-          method: "POST",
-          path: `/movies/${id}/ratings`,
-          body: { rating },
-          token,
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["fetchUserData"] });
-        queryClient.invalidateQueries({
-          queryKey: ["fetchMovie"],
-        });
-        toast.success("Rating added!");
-        setOpen(false);
-      },
-      onError: (error: Error) => toast.error(error.message),
-    });
-
-    const { mutate: updateRating } = useMutation({
-      mutationKey: ["updateRating"],
-      mutationFn: (rating?: number) =>
-        fetchData({
-          method: "PATCH",
-          path: `/movies/${id}/ratings`,
-          body: { rating },
-          token,
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["fetchUserData"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["fetchMovie"],
-        });
-        toast.success("Rating updated!");
-        setOpen(false);
-      },
-      onError: (error: Error) => toast.error(error.message),
-    });
-
-    return (
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        title={userRating ? "Update your rating" : "Rate this movie"}
-      >
-        <div className="ratingModal">
-          <RatingStars
-            selected={rating}
-            onChange={(rating) => setRating(rating)}
-          />
-          <Button
-            disabled={!rating || rating === userRating}
-            onClick={() =>
-              userRating ? updateRating(rating) : addRating(rating)
-            }
-          >
-            {userRating ? "Update" : "Rate"}
-          </Button>
-        </div>
-      </Modal>
-    );
-  };
-
-  const Ratings = () => {
-    const [open, setOpen] = useState(false);
-    const userRating = store.ratings?.find(
-      ({ movieId }) => movieId == Number(id)
-    )?.rating;
-    const siteRating = movie.voteSiteAverage?.toFixed(1) ?? "N/A";
-    const tmdbRating = movie.voteAverage?.toFixed(1) ?? "N/A";
-
-    return (
-      <div className="movie__ratings">
-        <RatingModal open={open} setOpen={setOpen} userRating={userRating} />
-        <Rating rating={tmdbRating} text="TMDB" />
-        <Rating rating={siteRating} text="Mövies" />
-        <div className="movie__userRating" onClick={() => setOpen(true)}>
-          <Rating
-            rating={userRating?.toFixed(1) ?? "Rate"}
-            text="Your rating"
-          />
-        </div>
-      </div>
-    );
-  };
-
-  const TopSection = ({ movie, imgSrc }: { movie: Movie; imgSrc?: string }) => {
-    const year = new Date(movie.releaseDate).getFullYear();
-
-    return (
-      <div className="movie__topSection">
-        {imgSrc ? (
-          <img alt={movie.title} className="movie__image" src={imgSrc}></img>
-        ) : (
-          <div className="movie__image movie__imagePlaceholder" />
-        )}
-        <div className="movie__details">
-          <h1 className="movie__title">{movie.title}</h1>
-          <div className="movie__info">
-            <h3>{year}</h3>
-            <h3 className="movie__runtime">{runtimeToString(movie.runtime)}</h3>
-          </div>
-          <p className="movie__overview">{movie.overview}</p>
-
-          <div className="movie__bottom">
-            <Ratings />
-
-            <div
-              className="movie__favourite"
-              role="button"
-              onClick={() => toggleFavourite()}
-            >
-              <span
-                className={`movie__heart ${
-                  isFavourited ? "movie__heart--striked" : ""
-                }`}
-              >
-                ♡
-              </span>
-              <span>
-                {isFavourited ? "Remove from favourites" : "Add to favourites"}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const Person = ({ person }: { person: Cast }) => {
-    const placeholder = (
-      <div className="person__image">
-        <div className="person__placeholder">👤</div>
-      </div>
-    );
-    return (
-      <Link className="link" to={`/actors/${person.id}`}>
-        <div className="person">
-          {person.profilePath ? (
-            <img
-              className="person__image"
-              src={getSmallProfileImageUrl(person.profilePath)}
-            />
-          ) : (
-            placeholder
-          )}
-          <div className="person__details">
-            <h3 className="person__name">{person.name}</h3>
-            <p className="person__character">{person.character}</p>
-          </div>
-        </div>
-      </Link>
-    );
-  };
-
-  const CastContainer = ({ movie }: { movie: Movie }) => {
-    const [showFullCast, setShowFullCast] = useState(false);
-
-    const castLength = movie.credits?.cast?.length ?? 0;
-
-    if (castLength === 0) return <></>;
-
-    return (
-      <div className="cast">
-        <Modal
-          title="Cast"
-          open={showFullCast}
-          onClose={() => setShowFullCast(false)}
-        >
-          <div className="cast__modal">
-            {movie.credits?.cast.map((person) => (
-              <Person person={person} key={person.id} />
-            ))}
-          </div>
-        </Modal>
-
-        <div className="cast__top">
-          <h1>Top Cast</h1>
-          {castLength > 6 && (
-            <button
-              className={`cast__btn btn--transparent ${
-                showFullCast ? "cast__btn--close" : ""
-              }`}
-              onClick={() => setShowFullCast(!showFullCast)}
-            >
-              {showFullCast ? "Hide full cast" : "Show full cast"}
-            </button>
-          )}
-        </div>
-
-        <div className="cast__list">
-          {movie.credits?.cast.slice(0, 6).map((person) => (
-            <Person person={person} key={person.id} />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="movie">
-      <TopSection movie={movie} imgSrc={imageSrc} />
+      <TopSection movie={movie} />
       <CastContainer movie={movie} />
     </div>
   );

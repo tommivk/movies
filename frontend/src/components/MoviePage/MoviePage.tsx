@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import Modal from "../Modal/Modal";
 import LoadingContainer from "../LoadingContainer/LoadingContainer";
+import Button from "../Button/Button";
+import RatingStars from "../RatingStars/RatingStars";
 
 import "./moviePage.scss";
 
@@ -79,7 +81,7 @@ const MoviePage = () => {
     mutationKey: ["toggleFav", isFavourited],
     mutationFn: isFavourited ? removeFavourite : addFavourite,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favouriteMovieIds"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchUserData"] });
       toast.success(
         isFavourited
           ? `"${movie?.title}" has been removed from your favourites`
@@ -104,6 +106,116 @@ const MoviePage = () => {
 
   const imageSrc = getFullSizeImageUrl(movie.backdropPath);
 
+  const Rating = ({ rating, text }: { rating: string; text: string }) => {
+    return (
+      <div className="rating">
+        <div className="rating__circle">{rating}</div>
+        <p>{text}</p>
+      </div>
+    );
+  };
+
+  const RatingModal = ({
+    open,
+    setOpen,
+    userRating,
+  }: {
+    userRating?: number;
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => {
+    const [rating, setRating] = useState<number | undefined>(userRating);
+    const token = useAppStore().loggedUser?.token;
+
+    const { mutate: addRating } = useMutation({
+      mutationKey: ["addRating"],
+      mutationFn: (rating?: number) =>
+        fetchData({
+          method: "POST",
+          path: `/movies/${id}/ratings`,
+          body: { rating },
+          token,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["fetchUserData"] });
+        queryClient.invalidateQueries({
+          queryKey: ["fetchMovie"],
+        });
+        toast.success("Rating added!");
+        setOpen(false);
+      },
+      onError: (error: Error) => toast.error(error.message),
+    });
+
+    const { mutate: updateRating } = useMutation({
+      mutationKey: ["updateRating"],
+      mutationFn: (rating?: number) =>
+        fetchData({
+          method: "PATCH",
+          path: `/movies/${id}/ratings`,
+          body: { rating },
+          token,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchUserData"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["fetchMovie"],
+        });
+        toast.success("Rating updated!");
+        setOpen(false);
+      },
+      onError: (error: Error) => toast.error(error.message),
+    });
+
+    return (
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={userRating ? "Update your rating" : "Rate this movie"}
+      >
+        <div className="ratingModal">
+          <RatingStars
+            selected={rating}
+            onChange={(rating) => setRating(rating)}
+          />
+          <Button
+            disabled={!rating || rating === userRating}
+            onClick={() =>
+              userRating ? updateRating(rating) : addRating(rating)
+            }
+          >
+            {userRating ? "Update" : "Rate"}
+          </Button>
+        </div>
+      </Modal>
+    );
+  };
+
+  const Ratings = () => {
+    const [open, setOpen] = useState(false);
+    const userRating = store.ratings?.find(
+      ({ movieId }) => movieId == Number(id)
+    )?.rating;
+    const siteRating = movie.voteSiteAverage?.toFixed(1) ?? "N/A";
+    const tmdbRating = movie.voteAverage?.toFixed(1) ?? "N/A";
+
+    return (
+      <div className="movie__ratings">
+        <RatingModal open={open} setOpen={setOpen} userRating={userRating} />
+        <Rating rating={tmdbRating} text="TMDB" />
+        <Rating rating={siteRating} text="Mövies" />
+        <div className="movie__userRating" onClick={() => setOpen(true)}>
+          <Rating
+            rating={userRating?.toFixed(1) ?? "Rate"}
+            text="Your rating"
+          />
+        </div>
+      </div>
+    );
+  };
+
   const TopSection = ({ movie, imgSrc }: { movie: Movie; imgSrc?: string }) => {
     const year = new Date(movie.releaseDate).getFullYear();
 
@@ -123,16 +235,7 @@ const MoviePage = () => {
           <p className="movie__overview">{movie.overview}</p>
 
           <div className="movie__bottom">
-            <div className="movie__ratings">
-              {movie.voteAverage && (
-                <>
-                  <div className="movie__rating">
-                    {movie.voteAverage.toFixed(1)}
-                  </div>
-                  <div className="movie__rating__site">TMDB</div>
-                </>
-              )}
-            </div>
+            <Ratings />
 
             <div
               className="movie__favourite"

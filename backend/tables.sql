@@ -4,9 +4,15 @@ CREATE TABLE IF NOT EXISTS Users (
     password_hash VARCHAR NOT NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS Favourites (
     id SERIAL PRIMARY KEY,
     movie_id INTEGER,
     user_id INTEGER REFERENCES Users
+);
+
+CREATE TABLE IF NOT EXISTS Ratings (
+    id SERIAL PRIMARY KEY,
+    movie_id INTEGER NOT NULL,
+    user_id INTEGER REFERENCES Users NOT NULL,
+    rating INTEGER NOT NULL
 );

@@ -65,18 +65,23 @@ function App() {
     }
   }, [setLoggedUser]);
 
-  const fetchFavouriteMoviesIds = async () => {
+  const fetchUserData = async () => {
     const { movieIds } = await fetchData({
       path: `/users/${userId}/favourited-movie-ids`,
       token,
     });
+    const ratings = await fetchData({
+      path: `/users/me/ratings`,
+      token,
+    });
     store.setFavouritedMovieIds(movieIds);
+    store.setRatings(ratings);
     return null;
   };
 
   useQuery({
-    queryKey: ["favouriteMovieIds", token],
-    queryFn: fetchFavouriteMoviesIds,
+    queryKey: ["fetchUserData", token],
+    queryFn: fetchUserData,
     enabled: !!store.loggedUser,
   });
 

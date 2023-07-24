@@ -11,6 +11,7 @@ export type Movie = {
   credits?: { cast: Cast[] };
   voteAverage?: number;
   voteCount?: number;
+  voteSiteAverage?: number;
   popularity?: number;
   runtime: number;
 };
@@ -58,4 +59,9 @@ export type Actor = {
   biography: string;
   birthday: string;
   deathday: string;
+};
+
+export type Rating = {
+  movieId: number;
+  rating: number;
 };

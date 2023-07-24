@@ -3,12 +3,16 @@ package movies
 import (
 	"encoding/json"
 	"fmt"
+	"movies/models"
 	"movies/utils"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+var ratingsModel = new(models.Rating)
 
 type Genre struct {
 	Id   int
@@ -34,21 +38,22 @@ type Credits struct {
 }
 
 type Movie struct {
-	Id            int     `json:"id"`
-	Title         string  `json:"title"`
-	BackdropPath  string  `json:"backdrop_path"`
-	GenreIds      []int   `json:"genre_ids,omitempty"`
-	Genres        []Genre `json:"genres"`
-	Language      string  `json:"original_language"`
-	OriginalTitle string  `json:"original_title"`
-	Overview      string  `json:"overview"`
-	PosterPath    string  `json:"poster_path"`
-	ReleaseDate   string  `json:"release_date"`
-	Credits       Credits `json:"credits,omitempty"`
-	VoteAverage   float32 `json:"vote_average,omitempty"`
-	VoteCount     int     `json:"vote_count,omitempty"`
-	Popularity    float32 `json:"popularity,omitempty"`
-	Runtime       int     `json:"runtime"`
+	Id              int     `json:"id"`
+	Title           string  `json:"title"`
+	BackdropPath    string  `json:"backdrop_path"`
+	GenreIds        []int   `json:"genre_ids,omitempty"`
+	Genres          []Genre `json:"genres"`
+	Language        string  `json:"original_language"`
+	OriginalTitle   string  `json:"original_title"`
+	Overview        string  `json:"overview"`
+	PosterPath      string  `json:"poster_path"`
+	ReleaseDate     string  `json:"release_date"`
+	Credits         Credits `json:"credits,omitempty"`
+	VoteAverage     float32 `json:"vote_average,omitempty"`
+	VoteCount       int     `json:"vote_count,omitempty"`
+	VoteSiteAverage float32 `json:"vote_site_average,omitempty"`
+	Popularity      float32 `json:"popularity,omitempty"`
+	Runtime         int     `json:"runtime"`
 }
 
 type SearchResult struct {
@@ -80,6 +85,15 @@ func FetchMovieById(c *gin.Context, id string) (Movie, error) {
 	return movie, nil
 }
 
+func appendSiteAvgToMovie(c *gin.Context, movie *Movie) {
+	siteAvg, err := ratingsModel.GetMoviesAverageRating(c, strconv.Itoa(movie.Id))
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	movie.VoteSiteAverage = siteAvg
+}
+
 func GetMovieById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -88,6 +102,7 @@ func GetMovieById(c *gin.Context) {
 		c.Error(err)
 		return
 	}
+	appendSiteAvgToMovie(c, &movie)
 	c.JSON(http.StatusOK, movie)
 }
 

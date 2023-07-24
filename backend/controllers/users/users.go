@@ -11,6 +11,7 @@ import (
 )
 
 var userModel = new(models.User)
+var ratingsModel = new(models.Rating)
 
 func Login(c *gin.Context) {
 	var body forms.Credentials
@@ -73,4 +74,15 @@ func SignUp(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, "Account successfully created")
+}
+
+func RatedMovies(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	ratings, err := ratingsModel.GetRatingsByUserId(c, userId)
+	if err != nil {
+		c.Error(err)
+		return
+
+	}
+	c.JSON(http.StatusOK, ratings)
 }

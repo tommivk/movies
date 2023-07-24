@@ -4,9 +4,27 @@
 $topSectionHeight: 60vh;
 $personContainerWidth: 150px;
 $personGap: 10px;
+$lightGreen: rgb(18, 202, 48);
 
 .movie {
   position: relative;
+
+  .movie__ratings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+  }
+
+  &__userRating {
+    .rating__circle {
+      &:hover {
+        background: rgba(0, 0, 0, 0.5);
+        color: $lightGreen;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 .movie__topSection {
@@ -65,29 +83,11 @@ $personGap: 10px;
 
     .movie__bottom {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 20px;
       margin-top: 20px;
       justify-content: space-between;
-
-      .movie__ratings {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 7px;
-
-        .movie__rating__site {
-          font-weight: 700;
-        }
-      }
-      .movie__rating {
-        width: fit-content;
-        border: 3px solid rgb(18, 202, 48);
-        padding: 20px;
-        border-radius: 50%;
-        font-size: 1.3em;
-      }
 
       .movie__favourite {
         background: rgba(41, 40, 40, 0.6);
@@ -139,6 +139,29 @@ $personGap: 10px;
         }
       }
     }
+  }
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__circle {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid $lightGreen;
+    padding: 20px;
+    border-radius: 50%;
+    font-size: 1.3em;
+  }
+
+  p {
+    font-weight: 700;
   }
 }
 
@@ -213,5 +236,12 @@ $personGap: 10px;
 
   &:hover {
     background: theme.$hoverGray;
+  }
+}
+
+.ratingModal {
+  button {
+    display: block;
+    margin: auto;
   }
 }

@@ -11,7 +11,7 @@ const useInfiniteFavouritedMovies = (
     queryKey: ["favouritedMovies", movieIds],
     queryFn: ({ pageParam = 1 }) =>
       fetchData({
-        path: `/users/${userId}/favourited-movies?page=${pageParam}`,
+        path: `/users/me/favourited-movies?page=${pageParam}`,
         token,
       }),
     getNextPageParam: (lastPage) =>

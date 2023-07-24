@@ -54,7 +54,7 @@ function App() {
   });
 
   const store = useAppStore();
-  const { userId, token } = store.loggedUser ?? {};
+  const token = store.loggedUser?.token;
   const setLoggedUser = store.setLoggedUser;
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function App() {
 
   const fetchUserData = async () => {
     const { movieIds } = await fetchData({
-      path: `/users/${userId}/favourited-movie-ids`,
+      path: `/users/me/favourited-movie-ids`,
       token,
     });
     const ratings = await fetchData({

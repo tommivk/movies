@@ -57,14 +57,6 @@ func RemoveFavourite(c *gin.Context) {
 
 func FavouritedMovieIds(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
-	pathId := c.Param("id")
-	id, err := strconv.Atoi(pathId)
-
-	if userId != id || err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized")
-		return
-	}
-
 	result, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId)
 	if err != nil {
 		c.Error(err)
@@ -76,12 +68,6 @@ func FavouritedMovieIds(c *gin.Context) {
 func FavouritedMovies(c *gin.Context) {
 	pageStr := c.Query("page")
 	userId := c.MustGet("userId").(int)
-	pathId := c.Param("id")
-	id, err := strconv.Atoi(pathId)
-	if userId != id || err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized")
-		return
-	}
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid page query param")

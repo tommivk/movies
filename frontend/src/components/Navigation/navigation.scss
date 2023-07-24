@@ -73,6 +73,7 @@ $hoverHighlight: rgb(58, 56, 56);
 }
 
 .menu__logout {
+  all: unset;
   margin-top: auto;
   display: flex;
   justify-content: center;
@@ -81,10 +82,6 @@ $hoverHighlight: rgb(58, 56, 56);
   border-radius: 10px;
   padding: 6px;
   font-weight: 400;
-
-  button {
-    all: unset;
-  }
 
   &:hover {
     background: $hoverHighlight;

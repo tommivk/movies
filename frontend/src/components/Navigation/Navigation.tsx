@@ -79,10 +79,10 @@ const DropDown = ({ handleLogOut }: { handleLogOut: () => void }) => {
         <MenuItem href="/search" icon="🔍" text="Search" />
         <MenuItem href="/favourites" icon="⭐" text="Favourites" />
 
-        <div className="menu__logout">
+        <button onClick={handleLogOut} className="menu__logout">
           <span className="logout__icon">⇤</span>
-          <button onClick={handleLogOut}>Log out</button>
-        </div>
+          Log out
+        </button>
       </Menu.Items>
     </Menu>
   );

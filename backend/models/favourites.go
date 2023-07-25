@@ -15,10 +15,28 @@ type FavouritedMoviesResponse struct {
 	MovieIds []int `json:"movieIds"`
 }
 
-func (f *Favourite) GetFavouriteMovieIdsByUserId(c *gin.Context, userId int) (*FavouritedMoviesResponse, error) {
+func (f *Favourite) GetFavouriteMovieIdsByUserId(c *gin.Context, userId int, filter string) (*FavouritedMoviesResponse, error) {
 	db := c.MustGet("db").(*sqlx.DB)
+
+	var sql string
+
+	switch filter {
+	case "rated":
+		sql = `SELECT F.movie_id FROM Favourites F, Ratings R
+		WHERE F.user_id=$1 AND R.user_id = $1
+		AND R.movie_id = F.movie_id
+		ORDER BY F.id DESC`
+	case "unrated":
+		sql = `SELECT F.movie_id FROM Favourites F
+		LEFT JOIN Ratings R ON R.user_id = F.user_id AND R.movie_id = F.movie_id
+		WHERE F.user_id=$1 AND R.user_id IS NULL
+		ORDER BY F.id DESC`
+	default:
+		sql = "SELECT movie_id FROM Favourites WHERE user_id=$1 ORDER BY id DESC"
+	}
+
 	var ids []int
-	err := db.Select(&ids, "SELECT movie_id FROM Favourites WHERE user_id=$1 ORDER BY id DESC", userId)
+	err := db.Select(&ids, sql, userId)
 	if err != nil {
 		return nil, err
 	}

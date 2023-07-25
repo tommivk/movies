@@ -1,4 +1,14 @@
-.favourited__title {
-  text-align: center;
-  margin: 40px;
+.favourites {
+  &__title {
+    text-align: center;
+    margin: 40px;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
 }

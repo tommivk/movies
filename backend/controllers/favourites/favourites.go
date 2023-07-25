@@ -57,7 +57,7 @@ func RemoveFavourite(c *gin.Context) {
 
 func FavouritedMovieIds(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
-	result, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId)
+	result, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId, "")
 	if err != nil {
 		c.Error(err)
 		return
@@ -67,6 +67,7 @@ func FavouritedMovieIds(c *gin.Context) {
 
 func FavouritedMovies(c *gin.Context) {
 	pageStr := c.Query("page")
+	show := c.Query("show")
 	userId := c.MustGet("userId").(int)
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -74,7 +75,7 @@ func FavouritedMovies(c *gin.Context) {
 		return
 	}
 
-	favourites, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId)
+	favourites, err := favouritesModel.GetFavouriteMovieIdsByUserId(c, userId, show)
 	if err != nil {
 		c.Error(err)
 		return

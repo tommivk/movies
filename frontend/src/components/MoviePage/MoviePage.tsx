@@ -1,13 +1,12 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import {
-  fetchData,
   getFullSizeImageUrl,
   getSmallProfileImageUrl,
   runtimeToString,
 } from "../../../utils";
 import { Cast, Movie } from "../../../types";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import Modal from "../Modal/Modal";
 import LoadingContainer from "../LoadingContainer/LoadingContainer";
@@ -17,7 +16,7 @@ import useToggleFavourite from "../../hooks/useToggleFavourite";
 import useAddRating from "../../hooks/useAddRating";
 import useUpdateRating from "../../hooks/useUpdateRating";
 import useCacheImage from "../../hooks/useCacheImage";
-import { toast } from "react-toastify";
+import useFetchMovie from "../../hooks/useFetchMovie";
 
 import "./moviePage.scss";
 
@@ -231,16 +230,7 @@ const CastContainer = ({ movie }: { movie: Movie }) => {
 
 const MoviePage = () => {
   const { id } = useParams();
-  const {
-    data: movie,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["fetchMovie", id],
-    queryFn: (): Promise<Movie> => fetchData({ path: `/movies/${id}` }),
-  });
-
+  const { data: movie, isLoading, isError, error } = useFetchMovie({ id });
   const backdrop = movie?.backdropPath ?? "";
   const [imageLoaded] = useCacheImage(getFullSizeImageUrl(backdrop));
 

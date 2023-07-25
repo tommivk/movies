@@ -1,14 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  fetchData,
-  getFullSizeImageUrl,
-  getSmallPosterImageUrl,
-} from "../../../utils";
+import { getFullSizeImageUrl, getSmallPosterImageUrl } from "../../../utils";
 import { useParams } from "react-router";
-import { ActorMovie, ActorResponse } from "../../../types";
+import { ActorMovie } from "../../../types";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import LoadingContainer from "../LoadingContainer/LoadingContainer";
+import useFetchActor from "../../hooks/useFetchActor";
 
 import "./actorPage.scss";
 
@@ -50,11 +46,7 @@ const MovieList = ({ movies }: { movies: ActorMovie[] }) => {
 
 const ActorPage = () => {
   const { id } = useParams();
-
-  const { data, isLoading, isError, error } = useQuery<ActorResponse>({
-    queryKey: ["actorData", id],
-    queryFn: () => fetchData({ path: `/actors/${id}` }),
-  });
+  const { data, isLoading, isError, error } = useFetchActor({ id });
 
   const movies = useMemo(() => {
     return (

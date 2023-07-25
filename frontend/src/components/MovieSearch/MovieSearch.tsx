@@ -38,7 +38,7 @@ const MovieSearch = () => {
         <Button
           color="transparent"
           size="sm"
-          className={`${page === "trending" ? "btn--active" : ""}`}
+          active={page === "trending"}
           onClick={() => {
             setPage("trending");
             setSearch("");
@@ -49,7 +49,7 @@ const MovieSearch = () => {
         <Button
           color="transparent"
           size="sm"
-          className={`${page === "top" ? "btn--active" : ""}`}
+          active={page == "top"}
           onClick={() => {
             setPage("top");
             setSearch("");

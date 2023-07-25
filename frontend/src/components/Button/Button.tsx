@@ -1,3 +1,5 @@
+import classNames from "classnames";
+
 import "./button.scss";
 
 type Props = {
@@ -5,6 +7,7 @@ type Props = {
   color?: "primary" | "transparent";
   size?: "sm" | "md" | "lg";
   hoverEffect?: "zoom" | "brighten";
+  active?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button = ({
@@ -12,12 +15,18 @@ const Button = ({
   color = "primary",
   size = "md",
   hoverEffect = "brighten",
+  active = false,
   ...props
 }: Props) => {
   return (
     <button
       {...props}
-      className={`btn ${size} ${color} ${hoverEffect} ${props.className}`}
+      className={classNames(`btn ${props.className}`, {
+        "--active": active,
+        [color]: color,
+        [hoverEffect]: hoverEffect,
+        [size]: size,
+      })}
     >
       {children}
     </button>

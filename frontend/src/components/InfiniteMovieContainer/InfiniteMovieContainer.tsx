@@ -58,11 +58,12 @@ const InfiniteMovieContainer = ({
     <>
       <MovieList movies={movies} />
 
-      <div className="search__end" ref={ref}>
+      <div className="searchEnd" ref={ref}>
         {isFetchingNextPage && <Loading size="sm" />}
         {movies?.length > 0 && !hasNextPage && <div>That's all</div>}
       </div>
     </>
   );
 };
+
 export default InfiniteMovieContainer;

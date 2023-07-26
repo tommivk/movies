@@ -1,13 +1,13 @@
 package middleware
 
 import (
-	"fmt"
 	"movies/constants"
 	"movies/utils"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -55,17 +55,17 @@ func VerifyJWT() gin.HandlerFunc {
 
 		auth := c.Request.Header["Authorization"]
 		if len(auth) == 0 {
-			c.AbortWithStatus(401)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Missing authorization header")
 			return
 		}
 
 		tokenStr := strings.Split(auth[0], " ")
 		if len(tokenStr) != 2 {
-			c.AbortWithStatus(401)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid authorization header")
 			return
 		}
 		if tokenStr[0] != "Bearer" {
-			c.AbortWithStatus(401)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid authorization header")
 			return
 		}
 
@@ -73,8 +73,11 @@ func VerifyJWT() gin.HandlerFunc {
 
 		claims, err := utils.ParseToken(token, SECRET)
 		if err != nil {
-			fmt.Println("ParseToken:", err)
-			c.AbortWithStatus(401)
+			if err.Errors == jwt.ValidationErrorExpired {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, "Expired token")
+				return
+			}
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid token")
 			return
 		}
 

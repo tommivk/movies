@@ -56,20 +56,20 @@ func TokenForUser(userId int, username, secret string) (string, error) {
 	return res, err
 }
 
-func ParseToken(tokenString, secret string) (jwt.MapClaims, error) {
+func ParseToken(tokenString, secret string) (jwt.MapClaims, *jwt.ValidationError) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("Unknown signing method")
+			return nil, jwt.NewValidationError("Invalid token", jwt.ValidationErrorUnverifiable)
 		}
 		return []byte(secret), nil
 	})
+
 	if err != nil {
-		return nil, errors.New("Invalid token")
+		return nil, err.(*jwt.ValidationError)
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		return claims, nil
 	}
-
-	return nil, errors.New("Invalid token")
+	return nil, jwt.NewValidationError("Invalid token", jwt.ValidationErrorMalformed)
 }

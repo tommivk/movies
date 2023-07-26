@@ -15,7 +15,7 @@ func RateMovie(c *gin.Context) {
 	movieId := c.Param("id")
 	var body forms.MovieRating
 	if err := c.BindJSON(&body); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid request body")
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid request body")
 		return
 	}
 	if body.Rating < 0 || body.Rating > 10 {
@@ -35,7 +35,7 @@ func UpdateMovieRating(c *gin.Context) {
 	movieId := c.Param("id")
 	var body forms.MovieRating
 	if err := c.BindJSON(&body); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid request body")
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid request body")
 		return
 	}
 	if body.Rating < 0 || body.Rating > 10 {

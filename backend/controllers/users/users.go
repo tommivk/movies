@@ -16,7 +16,7 @@ var ratingsModel = new(models.Rating)
 func Login(c *gin.Context) {
 	var body forms.Credentials
 	if err := c.BindJSON(&body); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, "Missing username or password")
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Missing username or password")
 		return
 	}
 

@@ -1,6 +1,34 @@
+@use "../../sassStyles/theme";
+
 .formInput {
+  position: relative;
+  margin: 15px 0px;
+
+  &__input {
     width: 100%;
-    padding: 10px 20px;
-    margin: 10px 0px;
+    padding: 13px 15px;
     box-sizing: border-box;
+    border-radius: 7px;
+    outline: none;
+    background: theme.$darkBackground;
+    color: whitesmoke;
+    border: 2px solid rgb(84, 88, 90);
+
+    &:focus {
+      border: 2px solid theme.$primaryBlue;
+    }
+
+    &.error {
+      border: 2px solid theme.$errorText;
+    }
+  }
+
+  label {
+    display: block;
+    margin-right: auto;
+    width: fit-content;
+    padding: 5px;
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
 }

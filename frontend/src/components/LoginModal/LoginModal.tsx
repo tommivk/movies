@@ -33,7 +33,7 @@ const Login = ({
     <Modal
       open={modalOpen}
       onClose={() => setModalOpen(false)}
-      title={isLogin ? "Login" : "Signup"}
+      title={isLogin ? "Login" : "Sign Up"}
     >
       <div className="form">
         {isLogin ? (
@@ -44,14 +44,14 @@ const Login = ({
 
         {isLogin ? (
           <button
-            className="btn btn--transparent"
+            className="form__changeFormBtn"
             onClick={() => setIsLogin(false)}
           >
             Not a user? Sign up Here
           </button>
         ) : (
           <button
-            className="btn btn--transparent"
+            className="form__changeFormBtn"
             onClick={() => setIsLogin(true)}
           >
             Already a user? Login
@@ -136,6 +136,7 @@ const SignupForm = ({
         required={true}
         type="text"
         placeholder="Username"
+        error={!!errors.username}
       ></FormInput>
       <FormFieldError message={errors.username?.message} />
       <FormInput
@@ -143,6 +144,7 @@ const SignupForm = ({
         required={true}
         type="password"
         placeholder="Password"
+        error={!!errors.password}
       ></FormInput>
       <FormFieldError message={errors.password?.message} />
       <FormInput
@@ -150,9 +152,12 @@ const SignupForm = ({
         required={true}
         type="password"
         placeholder="Confirm password"
+        error={!!errors.passwordConfirm}
       ></FormInput>
       <FormFieldError message={errors.passwordConfirm?.message} />
-      <Button type="submit">Signup</Button>
+      <Button className="form__submitBtn" type="submit" size="md">
+        Sign Up
+      </Button>
     </form>
   );
 };
@@ -193,7 +198,9 @@ const LoginForm = ({
         type="password"
         placeholder="Password"
       ></FormInput>
-      <Button type="submit">Login</Button>
+      <Button className="form__submitBtn" type="submit">
+        Login
+      </Button>
     </form>
   );
 };

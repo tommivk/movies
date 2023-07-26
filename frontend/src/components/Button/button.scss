@@ -2,7 +2,7 @@
 
 .btn {
   all: unset;
-  padding: 10px 30px;
+  padding: 8px 24px;
   border-radius: 10px;
   font-weight: bold;
   font-family: theme.$buttonFontFamily;
@@ -16,7 +16,7 @@
   }
 
   &.md {
-    padding: 15px 40px;
+    padding: 10px 30px;
   }
 
   &.lg {
@@ -24,11 +24,11 @@
   }
 
   &.primary {
-    background: rgb(13, 135, 184);
+    background: theme.$primaryBlue;
 
     &.brighten {
       &:hover {
-        background: rgb(19, 164, 221);
+        background: theme.$primaryBlueHover;
       }
     }
   }

@@ -54,11 +54,11 @@ func VerifyJWT() gin.HandlerFunc {
 		SECRET := c.MustGet("SECRET").(string)
 
 		auth := c.Request.Header["Authorization"]
-		fmt.Println(auth)
 		if len(auth) == 0 {
 			c.AbortWithStatus(401)
 			return
 		}
+
 		tokenStr := strings.Split(auth[0], " ")
 		if len(tokenStr) != 2 {
 			c.AbortWithStatus(401)

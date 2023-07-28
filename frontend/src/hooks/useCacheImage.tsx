@@ -13,9 +13,9 @@ const useCacheImage = (src?: string) => {
   }, []);
 
   useEffect(() => {
+    setImageLoaded(false);
     if (src) {
       cacheImage(src).then(() => setImageLoaded(true));
-      return;
     }
   }, [src, cacheImage]);
 

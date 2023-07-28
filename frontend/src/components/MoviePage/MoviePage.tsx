@@ -19,13 +19,22 @@ import useCacheImage from "../../hooks/useCacheImage";
 import useFetchMovie from "../../hooks/useFetchMovie";
 import PosterCard from "../PosterCard/PosterCard";
 import Swiper from "../Swiper/Swiper";
+import RatingCircle from "../RatingCircle/RatingCircle";
 
 import "./moviePage.scss";
 
-const Rating = ({ rating, text }: { rating: string; text: string }) => {
+const Rating = ({
+  rating,
+  text,
+  userRating,
+}: {
+  rating?: string;
+  text: string;
+  userRating?: boolean;
+}) => {
   return (
     <div className="rating">
-      <div className="rating__circle">{rating}</div>
+      <RatingCircle rating={rating} userRating={userRating} />
       <p>{text}</p>
     </div>
   );
@@ -85,8 +94,8 @@ const Ratings = ({ movie }: { movie: Movie }) => {
   const userRating = store.ratings?.find(
     ({ movieId }) => movieId == Number(movie.id)
   )?.rating;
-  const siteRating = movie.voteSiteAverage?.toFixed(1) ?? "N/A";
-  const tmdbRating = movie.voteAverage?.toFixed(1) ?? "N/A";
+  const siteRating = movie.voteSiteAverage?.toFixed(1);
+  const tmdbRating = movie.voteAverage?.toFixed(1);
 
   const handleModalOpen = () => {
     if (!store.loggedUser) {
@@ -101,7 +110,7 @@ const Ratings = ({ movie }: { movie: Movie }) => {
       <Rating rating={tmdbRating} text="TMDB" />
       <Rating rating={siteRating} text="Mövies" />
       <div className="movie__userRating" onClick={handleModalOpen}>
-        <Rating rating={userRating?.toFixed(1) ?? "Rate"} text="Your rating" />
+        <Rating rating={userRating?.toFixed(1)} userRating text="Your rating" />
       </div>
     </div>
   );

@@ -4,7 +4,6 @@
 $topSectionHeight: 60vh;
 $personContainerWidth: 150px;
 $personGap: 10px;
-$lightGreen: rgb(18, 202, 48);
 
 .movie {
   position: relative;
@@ -15,16 +14,6 @@ $lightGreen: rgb(18, 202, 48);
     justify-content: center;
     align-items: center;
     gap: 30px;
-  }
-
-  &__userRating {
-    .rating__circle {
-      &:hover {
-        background: rgba(0, 0, 0, 0.5);
-        color: $lightGreen;
-        cursor: pointer;
-      }
-    }
   }
 
   &__bottomSection {
@@ -156,18 +145,6 @@ $lightGreen: rgb(18, 202, 48);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  &__circle {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 3px solid $lightGreen;
-    padding: 20px;
-    border-radius: 50%;
-    font-size: 1.3em;
-  }
 
   p {
     font-weight: 700;

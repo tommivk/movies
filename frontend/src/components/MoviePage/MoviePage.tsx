@@ -256,12 +256,13 @@ const MoviePage = () => {
   const { data: movie, isLoading, isError, error } = useFetchMovie({ id });
   const backdrop = movie?.backdropPath ?? "";
   const [imageLoaded] = useCacheImage(getFullSizeImageUrl(backdrop));
+  const backdropLoading = backdrop && !imageLoaded;
 
   if (isError) {
     console.log(error);
     return <p>Error</p>;
   }
-  if (isLoading || (backdrop && !imageLoaded)) {
+  if (isLoading || backdropLoading) {
     return <LoadingContainer />;
   }
 

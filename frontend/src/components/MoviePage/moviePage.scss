@@ -226,3 +226,13 @@ $personGap: 10px;
     margin: auto;
   }
 }
+
+@media (max-width: 770px) {
+  .movie__topSection {
+    .movie__details {
+      .movie__title {
+        font-size: 2.2rem;
+      }
+    }
+  }
+}

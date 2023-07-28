@@ -133,6 +133,7 @@ const SignupForm = ({
     <form onSubmit={handleSubmit((credentials) => mutateAsync(credentials))}>
       <FormInput
         register={register("username")}
+        autoComplete="nope"
         required={true}
         type="text"
         placeholder="Username"

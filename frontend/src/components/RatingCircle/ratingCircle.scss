@@ -42,7 +42,8 @@ $lightGreen: rgb(18, 202, 48);
         fill: $lightGreen;
       }
 
-      .ratingCircle__bg {
+      .ratingCircle__bg,
+      .ratingCircle__rating {
         stroke: $lightGreen;
       }
     }

@@ -241,7 +241,7 @@ const Recommendations = ({ movie }: { movie: Movie }) => {
 
   return (
     <>
-      {slides && (
+      {slides && slides.length > 0 && (
         <>
           <h1>People also liked</h1>
           <Swiper slides={slides}></Swiper>

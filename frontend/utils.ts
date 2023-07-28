@@ -1,4 +1,5 @@
 import camelcaseKeys from "camelcase-keys";
+import useAppStore from "./src/store";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -23,6 +24,12 @@ export const fetchData = async ({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
+
+  if (res.status === 401) {
+    useAppStore.getState().setLoggedUser(null);
+    localStorage.removeItem("loggedUser");
+    throw new Error("Session expired");
+  }
 
   if (!res.ok) {
     throw new Error(await res.json());

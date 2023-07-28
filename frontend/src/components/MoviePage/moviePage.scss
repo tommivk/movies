@@ -8,6 +8,7 @@ $lightGreen: rgb(18, 202, 48);
 
 .movie {
   position: relative;
+  padding-bottom: 200px;
 
   .movie__ratings {
     display: flex;
@@ -24,6 +25,14 @@ $lightGreen: rgb(18, 202, 48);
         cursor: pointer;
       }
     }
+  }
+
+  &__bottomSection {
+    position: relative;
+    box-sizing: content-box;
+    max-width: ($personContainerWidth * 6) + ($personGap * 5);
+    margin: auto;
+    padding: 50px 20px;
   }
 }
 
@@ -166,12 +175,7 @@ $lightGreen: rgb(18, 202, 48);
 }
 
 .cast {
-  box-sizing: content-box;
-  max-width: ($personContainerWidth * 6) + ($personGap * 5);
-  margin: auto;
-  position: relative;
-  padding: 50px 20px;
-  padding-bottom: 200px;
+  padding-bottom: 50px;
 
   &__top {
     display: flex;

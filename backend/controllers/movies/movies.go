@@ -38,22 +38,23 @@ type Credits struct {
 }
 
 type Movie struct {
-	Id              int     `json:"id"`
-	Title           string  `json:"title"`
-	BackdropPath    string  `json:"backdrop_path"`
-	GenreIds        []int   `json:"genre_ids,omitempty"`
-	Genres          []Genre `json:"genres"`
-	Language        string  `json:"original_language"`
-	OriginalTitle   string  `json:"original_title"`
-	Overview        string  `json:"overview"`
-	PosterPath      string  `json:"poster_path"`
-	ReleaseDate     string  `json:"release_date"`
-	Credits         Credits `json:"credits,omitempty"`
-	VoteAverage     float32 `json:"vote_average,omitempty"`
-	VoteCount       int     `json:"vote_count,omitempty"`
-	VoteSiteAverage float32 `json:"vote_site_average,omitempty"`
-	Popularity      float32 `json:"popularity,omitempty"`
-	Runtime         int     `json:"runtime"`
+	Id              int          `json:"id"`
+	Title           string       `json:"title"`
+	BackdropPath    string       `json:"backdrop_path"`
+	GenreIds        []int        `json:"genre_ids,omitempty"`
+	Genres          []Genre      `json:"genres"`
+	Language        string       `json:"original_language"`
+	OriginalTitle   string       `json:"original_title"`
+	Overview        string       `json:"overview"`
+	PosterPath      string       `json:"poster_path"`
+	ReleaseDate     string       `json:"release_date"`
+	Credits         Credits      `json:"credits,omitempty"`
+	VoteAverage     float32      `json:"vote_average,omitempty"`
+	VoteCount       int          `json:"vote_count,omitempty"`
+	VoteSiteAverage float32      `json:"vote_site_average,omitempty"`
+	Popularity      float32      `json:"popularity,omitempty"`
+	Runtime         int          `json:"runtime"`
+	Recommendations SearchResult `json:"recommendations"`
 }
 
 type SearchResult struct {
@@ -69,7 +70,7 @@ func FetchMovieById(c *gin.Context, id string) (Movie, error) {
 	baseURL, _ := url.Parse("https://api.themoviedb.org/3/movie/" + id)
 	params := url.Values{}
 	params.Add("api_key", API_KEY)
-	params.Add("append_to_response", "credits")
+	params.Add("append_to_response", "credits,recommendations")
 	baseURL.RawQuery = params.Encode()
 
 	res, err := utils.FetchData(baseURL.String())
@@ -82,6 +83,9 @@ func FetchMovieById(c *gin.Context, id string) (Movie, error) {
 	if err != nil {
 		return Movie{}, err
 	}
+
+	appendGenresToSearchResult(&movie.Recommendations)
+
 	return movie, nil
 }
 
@@ -106,7 +110,7 @@ func GetMovieById(c *gin.Context) {
 	c.JSON(http.StatusOK, movie)
 }
 
-func appendGenresToSearchResult(searchResult SearchResult) {
+func appendGenresToSearchResult(searchResult *SearchResult) {
 	movies := searchResult.Results
 	for i := 0; i < len(movies); i++ {
 		for j := 0; j < len(movies[i].GenreIds); j++ {
@@ -154,7 +158,7 @@ func getMovies(url *url.URL) (SearchResult, error) {
 		return SearchResult{}, err
 	}
 
-	appendGenresToSearchResult(searchResult)
+	appendGenresToSearchResult(&searchResult)
 	return searchResult, nil
 }
 

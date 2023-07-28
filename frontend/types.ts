@@ -14,6 +14,7 @@ export type Movie = {
   voteSiteAverage?: number;
   popularity?: number;
   runtime: number;
+  recommendations?: SearchResult;
 };
 
 export type Cast = {

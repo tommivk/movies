@@ -5,7 +5,7 @@ import {
   runtimeToString,
 } from "../../../utils";
 import { Cast, Movie } from "../../../types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import Modal from "../Modal/Modal";
@@ -17,6 +17,8 @@ import useAddRating from "../../hooks/useAddRating";
 import useUpdateRating from "../../hooks/useUpdateRating";
 import useCacheImage from "../../hooks/useCacheImage";
 import useFetchMovie from "../../hooks/useFetchMovie";
+import PosterCard from "../PosterCard/PosterCard";
+import Swiper from "../Swiper/Swiper";
 
 import "./moviePage.scss";
 
@@ -228,6 +230,27 @@ const CastContainer = ({ movie }: { movie: Movie }) => {
   );
 };
 
+const Recommendations = ({ movie }: { movie: Movie }) => {
+  const slides = useMemo(
+    () =>
+      movie?.recommendations?.results.map((movie) => (
+        <PosterCard movie={movie} />
+      )),
+    [movie]
+  );
+
+  return (
+    <>
+      {slides && (
+        <>
+          <h1>People also liked</h1>
+          <Swiper slides={slides}></Swiper>
+        </>
+      )}
+    </>
+  );
+};
+
 const MoviePage = () => {
   const { id } = useParams();
   const { data: movie, isLoading, isError, error } = useFetchMovie({ id });
@@ -245,7 +268,10 @@ const MoviePage = () => {
   return (
     <div className="movie">
       <TopSection movie={movie} />
-      <CastContainer movie={movie} />
+      <div className="movie__bottomSection">
+        <CastContainer movie={movie} />
+        <Recommendations movie={movie} />
+      </div>
     </div>
   );
 };

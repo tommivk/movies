@@ -1,0 +1,35 @@
+@use "../../sassStyles/theme";
+@use "../../sassStyles//variables";
+
+.posterCard {
+  height: fit-content;
+  width: variables.$posterCardWidth;
+  text-align: center;
+  padding-bottom: 20px;
+  border-radius: 10px;
+
+  &:hover {
+    background: theme.$hoverGray;
+  }
+
+  img {
+    height: 300px;
+    width: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  h1 {
+    font-size: 17px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: theme.$secondaryGrey;
+    span:nth-child(2)::before {
+      content: "•";
+      margin: 5px;
+    }
+  }
+}

@@ -66,6 +66,7 @@ func main() {
 	createTables(db)
 
 	router := gin.Default()
+	router.SetTrustedProxies(nil)
 
 	config := cors.DefaultConfig()
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}

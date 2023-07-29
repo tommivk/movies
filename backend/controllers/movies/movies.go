@@ -31,10 +31,12 @@ type Cast struct {
 	CreditId           string  `json:"credit_id"`
 	Order              int     `json:"order"`
 	Job                string  `json:"job,omitempty"`
+	Department         string  `json:"department,omitempty"`
 }
 
 type Credits struct {
 	Cast []Cast `json:"cast,omitempty"`
+	Crew []Cast `json:"crew,omitempty"`
 }
 
 type Movie struct {

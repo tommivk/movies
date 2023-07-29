@@ -8,7 +8,7 @@ export type Movie = {
   overview: string;
   posterPath: string;
   releaseDate: string;
-  credits?: { cast: Cast[] };
+  credits?: { cast: Cast[]; crew: Cast[] };
   voteAverage?: number;
   voteCount?: number;
   voteSiteAverage?: number;
@@ -29,6 +29,7 @@ export type Cast = {
   creditId: string;
   order: number;
   job?: string;
+  department?: string;
 };
 
 export type SearchResult = {

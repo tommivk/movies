@@ -189,7 +189,9 @@ const Person = ({ person }: { person: Cast }) => {
         )}
         <div className="person__details">
           <h3 className="person__name">{person.name}</h3>
-          <p className="person__character">{person.character}</p>
+          <p className="person__character">
+            {person.character ? person.character : person.job}
+          </p>
         </div>
       </div>
     </Link>
@@ -198,6 +200,7 @@ const Person = ({ person }: { person: Cast }) => {
 
 const CastContainer = ({ movie }: { movie: Movie }) => {
   const [showFullCast, setShowFullCast] = useState(false);
+  const [showCast, setShowCast] = useState(true);
   const castLength = movie.credits?.cast?.length ?? 0;
 
   if (castLength === 0) return <></>;
@@ -205,14 +208,36 @@ const CastContainer = ({ movie }: { movie: Movie }) => {
   return (
     <div className="cast">
       <Modal
-        title="Cast"
+        title="Cast And Crew"
         open={showFullCast}
         onClose={() => setShowFullCast(false)}
       >
         <div className="cast__modal">
-          {movie.credits?.cast.map((person) => (
-            <Person person={person} key={person.id} />
-          ))}
+          <div className="cast__modal__buttons">
+            <Button
+              color="transparent"
+              active={showCast}
+              onClick={() => setShowCast(true)}
+            >
+              Cast
+            </Button>
+            <Button
+              color="transparent"
+              active={!showCast}
+              onClick={() => setShowCast(false)}
+            >
+              Crew
+            </Button>
+          </div>
+          <div className="cast__modal__results">
+            {showCast
+              ? movie.credits?.cast.map((person, index) => (
+                  <Person key={index} person={person} />
+                ))
+              : movie.credits?.crew.map((person, index) => (
+                  <Person key={index} person={person} />
+                ))}
+          </div>
         </div>
       </Modal>
 
@@ -220,12 +245,10 @@ const CastContainer = ({ movie }: { movie: Movie }) => {
         <h1>Top Cast</h1>
         {castLength > 6 && (
           <button
-            className={`cast__btn btn--transparent ${
-              showFullCast ? "cast__btn--close" : ""
-            }`}
-            onClick={() => setShowFullCast(!showFullCast)}
+            className="cast__btn btn--transparent"
+            onClick={() => setShowFullCast(true)}
           >
-            {showFullCast ? "Hide full cast" : "Show full cast"}
+            Show Full Cast And Crew
           </button>
         )}
       </div>

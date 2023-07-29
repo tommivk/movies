@@ -1,7 +1,10 @@
 @use "../../sassStyles/variables";
 
 .loadingContainer {
-  height: calc(100% - variables.$navigationBarHeight);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;

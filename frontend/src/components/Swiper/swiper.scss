@@ -1,3 +1,5 @@
+@use "../../sassStyles/theme";
+
 $swiperSlideGap: 50px;
 $widthSmall: 200px;
 
@@ -9,32 +11,33 @@ $widthSmall: 200px;
 
 .swiper-btn-next,
 .swiper-btn-prev {
-  &:after {
-    position: absolute;
-    top: 90px;
-    z-index: 222;
-    font-size: 70px;
-    z-index: 20;
-    cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-color: whitesmoke;
+  border-style: solid;
+  border-width: 3px 3px 0px 0px;
+  position: absolute;
+  top: 120px;
+  z-index: 3;
+  cursor: pointer;
+
+  &:hover {
+    border-color: theme.$secondaryGrey;
   }
 }
 
 .swiper-btn-prev {
-  &:after {
-    left: -60px;
-    content: "<";
-  }
+  left: -60px;
+  transform: rotate(225deg);
+}
+
+.swiper-btn-next {
+  right: -60px;
+  transform: rotate(45deg);
 }
 
 .swiper-button-disabled {
   display: none;
-}
-
-.swiper-btn-next {
-  &:after {
-    right: -60px;
-    content: ">";
-  }
 }
 
 .swiperContainer.sm {
@@ -43,20 +46,20 @@ $widthSmall: 200px;
   }
 }
 
-@media (max-width: 1110px) {
+@media (max-width: 1120px) {
   .swiperContainer.sm {
     margin: auto;
     width: (3 * $widthSmall) + (2 * $swiperSlideGap);
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 875px) {
   .swiperContainer.sm {
     width: (2 * $widthSmall) + $swiperSlideGap;
   }
 }
 
-@media (max-width: 610px) {
+@media (max-width: 615px) {
   .swiperContainer.sm {
     width: $widthSmall;
   }

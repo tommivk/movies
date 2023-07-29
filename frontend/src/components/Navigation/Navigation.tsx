@@ -7,6 +7,54 @@ import { ModalContext } from "../../App";
 
 import "./navigation.scss";
 
+const MenuItem = ({
+  icon,
+  href,
+  text,
+}: {
+  icon: string;
+  href: string;
+  text: string;
+}) => {
+  return (
+    <Menu.Item>
+      <Link to={href} className="menuItem">
+        <span>{icon}</span>
+        {text}
+      </Link>
+    </Menu.Item>
+  );
+};
+
+const DropDown = ({ handleLogOut }: { handleLogOut: () => void }) => {
+  return (
+    <Menu>
+      <Menu.Button className="menuButton">
+        <Burger />
+      </Menu.Button>
+      <Menu.Items className="menu__items">
+        <MenuItem href="/search" icon="🔍" text="Search" />
+        <MenuItem href="/favourites" icon="⭐" text="Favourites" />
+
+        <button onClick={handleLogOut} className="menu__logout">
+          <span className="logout__icon">⇤</span>
+          Log out
+        </button>
+      </Menu.Items>
+    </Menu>
+  );
+};
+
+const Burger = () => {
+  return (
+    <div className="burger">
+      <div />
+      <div />
+      <div />
+    </div>
+  );
+};
+
 const Navigation = () => {
   const modalContext = useContext(ModalContext);
 
@@ -49,42 +97,6 @@ const Navigation = () => {
         </li>
       </ul>
     </div>
-  );
-};
-
-const MenuItem = ({
-  icon,
-  href,
-  text,
-}: {
-  icon: string;
-  href: string;
-  text: string;
-}) => {
-  return (
-    <Menu.Item>
-      <Link to={href} className="menuItem">
-        <span>{icon}</span>
-        {text}
-      </Link>
-    </Menu.Item>
-  );
-};
-
-const DropDown = ({ handleLogOut }: { handleLogOut: () => void }) => {
-  return (
-    <Menu>
-      <Menu.Button className="menu__button"></Menu.Button>
-      <Menu.Items className="menu__items">
-        <MenuItem href="/search" icon="🔍" text="Search" />
-        <MenuItem href="/favourites" icon="⭐" text="Favourites" />
-
-        <button onClick={handleLogOut} className="menu__logout">
-          <span className="logout__icon">⇤</span>
-          Log out
-        </button>
-      </Menu.Items>
-    </Menu>
   );
 };
 

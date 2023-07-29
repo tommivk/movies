@@ -242,9 +242,9 @@ const CastContainer = ({ movie }: { movie: Movie }) => {
 const Recommendations = ({ movie }: { movie: Movie }) => {
   const slides = useMemo(
     () =>
-      movie?.recommendations?.results.map((movie) => (
-        <PosterCard movie={movie} />
-      )),
+      movie?.recommendations?.results
+        .filter((movie) => movie.releaseDate && movie.posterPath)
+        .map((movie) => <PosterCard movie={movie} />),
     [movie]
   );
 

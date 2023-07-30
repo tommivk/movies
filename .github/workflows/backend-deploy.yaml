@@ -30,7 +30,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
           REGISTRY_ALIAS: b4v0q9o0
           REPOSITORY: movies
-          IMAGE_TAG: movies-latest
+          IMAGE_TAG: latest
         run: |
           cd backend
           docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .

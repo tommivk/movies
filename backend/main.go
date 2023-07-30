@@ -82,6 +82,8 @@ func main() {
 		addTestUser(db)
 	}
 
+	fmt.Println("yo yo")
+
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 

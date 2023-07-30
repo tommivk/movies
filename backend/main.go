@@ -33,7 +33,7 @@ func createTables(db *sqlx.DB) {
 	}
 	_, err = db.Exec(string(sql))
 	if err != nil {
-		log.Fatal("failed to create tables", err)
+		log.Fatal("failed to create tables: ", err)
 	}
 }
 

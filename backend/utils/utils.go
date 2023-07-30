@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"movies/constants"
 	"net/http"
@@ -20,7 +21,7 @@ func FetchData(url string) ([]byte, error) {
 		return nil, err
 	}
 	if res.StatusCode < 200 || res.StatusCode > 299 {
-		return nil, errors.New("Failed to fetch")
+		return nil, errors.New(fmt.Sprintf("Failed to fetch, status: %d", res.StatusCode))
 	}
 
 	body, err := ioutil.ReadAll(res.Body)

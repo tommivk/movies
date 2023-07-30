@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
 import { Movie } from "../../../types.js";
-import {
-  getSmallBackdropImageUrl,
-  getSmallPosterImageUrl,
-} from "../../../utils.js";
+import { getBackdropImageUrl, getPosterImageUrl } from "../../../utils.js";
 
 import "./movieCard.scss";
 
@@ -13,8 +10,8 @@ const placeHolderImg = import.meta.env.VITE_PLACEHOLDER_IMAGE;
 
 const MovieCard = ({ movie }: Props) => {
   const image =
-    getSmallBackdropImageUrl(movie.backdropPath) ??
-    getSmallPosterImageUrl(movie.posterPath) ??
+    getBackdropImageUrl(movie.backdropPath, "md") ??
+    getPosterImageUrl(movie.posterPath, "md") ??
     placeHolderImg;
 
   const year = movie.releaseDate

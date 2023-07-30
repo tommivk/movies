@@ -46,19 +46,49 @@ export const getFullSizeImageUrl = (imagePath: string) => {
   return `https://image.tmdb.org/t/p/original/${imagePath}`;
 };
 
-export const getSmallPosterImageUrl = (imagePath: string) => {
+export const getBackdropImageUrl = (
+  imagePath: string,
+  size: "xs" | "md" | "lg"
+) => {
   if (!imagePath) return;
-  return `https://image.tmdb.org/t/p/w500/${imagePath}`;
+  switch (size) {
+    case "xs":
+      return `https://image.tmdb.org/t/p/w300/${imagePath}`;
+    case "md":
+      return `https://image.tmdb.org/t/p/w780/${imagePath}`;
+    case "lg":
+      return `https://image.tmdb.org/t/p/w1280/${imagePath}`;
+  }
 };
 
-export const getSmallBackdropImageUrl = (imagePath: string) => {
+export const getPosterImageUrl = (
+  imagePath: string,
+  size: "xs" | "sm" | "md"
+) => {
   if (!imagePath) return;
-  return `https://image.tmdb.org/t/p/w780/${imagePath}`;
+  switch (size) {
+    case "xs":
+      return `https://image.tmdb.org/t/p/w342/${imagePath}`;
+    case "sm":
+      return `https://image.tmdb.org/t/p/w500/${imagePath}`;
+    case "md":
+      return `https://image.tmdb.org/t/p/w780/${imagePath}`;
+  }
 };
 
-export const getSmallProfileImageUrl = (imagePath: string) => {
+export const getProfileImageUrl = (
+  imagePath: string,
+  size: "xs" | "xxs" | "md"
+) => {
   if (!imagePath) return;
-  return `https://image.tmdb.org/t/p/w185/${imagePath}`;
+  switch (size) {
+    case "xxs":
+      return `https://image.tmdb.org/t/p/w45/${imagePath}`;
+    case "xs":
+      return `https://image.tmdb.org/t/p/w185/${imagePath}`;
+    case "md":
+      return `https://image.tmdb.org/t/p/h632/${imagePath}`;
+  }
 };
 
 export const runtimeToString = (minutes: number) =>

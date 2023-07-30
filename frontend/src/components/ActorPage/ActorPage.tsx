@@ -1,4 +1,4 @@
-import { getFullSizeImageUrl, getSmallPosterImageUrl } from "../../../utils";
+import { getFullSizeImageUrl, getPosterImageUrl } from "../../../utils";
 import { useParams } from "react-router";
 import { ActorMovie } from "../../../types";
 import { useMemo } from "react";
@@ -14,7 +14,7 @@ const MovieList = ({ movies }: { movies: ActorMovie[] }) => {
       <h1>Movies</h1>
 
       {movies?.map((movie) => {
-        const imageSrc = getSmallPosterImageUrl(movie.posterPath);
+        const imageSrc = getPosterImageUrl(movie.posterPath, "sm");
         const year = movie.releaseDate
           ? new Date(movie.releaseDate).getFullYear()
           : "";

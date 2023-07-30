@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import {
   getFullSizeImageUrl,
-  getSmallProfileImageUrl,
+  getProfileImageUrl,
   runtimeToString,
 } from "../../../utils";
 import { Cast, Movie } from "../../../types";
@@ -183,7 +183,7 @@ const Person = ({ person }: { person: Cast }) => {
         {person.profilePath ? (
           <img
             className="person__image"
-            src={getSmallProfileImageUrl(person.profilePath)}
+            src={getProfileImageUrl(person.profilePath, "xs")}
           />
         ) : (
           placeholder

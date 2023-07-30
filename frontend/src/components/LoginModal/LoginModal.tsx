@@ -138,6 +138,7 @@ const SignupForm = ({
         type="text"
         placeholder="Username"
         error={!!errors.username}
+        data-cy="username"
       ></FormInput>
       <FormFieldError message={errors.username?.message} />
       <FormInput
@@ -146,6 +147,7 @@ const SignupForm = ({
         type="password"
         placeholder="Password"
         error={!!errors.password}
+        data-cy="password"
       ></FormInput>
       <FormFieldError message={errors.password?.message} />
       <FormInput
@@ -154,9 +156,15 @@ const SignupForm = ({
         type="password"
         placeholder="Confirm password"
         error={!!errors.passwordConfirm}
+        data-cy="passwordConfirm"
       ></FormInput>
       <FormFieldError message={errors.passwordConfirm?.message} />
-      <Button className="form__submitBtn" type="submit" size="md">
+      <Button
+        className="form__submitBtn"
+        type="submit"
+        size="md"
+        data-cy="submit"
+      >
         Sign Up
       </Button>
     </form>
@@ -192,14 +200,16 @@ const LoginForm = ({
         required={true}
         type="text"
         placeholder="Username"
+        data-cy="username"
       ></FormInput>
       <FormInput
         register={register("password")}
         required={true}
         type="password"
         placeholder="Password"
+        data-cy="password"
       ></FormInput>
-      <Button className="form__submitBtn" type="submit">
+      <Button className="form__submitBtn" type="submit" data-cy="submit">
         Login
       </Button>
     </form>

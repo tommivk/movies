@@ -22,7 +22,7 @@ const MovieCard = ({ movie }: Props) => {
     : undefined;
 
   return (
-    <Link className="link" to={`/movies/${movie.id}`}>
+    <Link className="link" to={`/movies/${movie.id}`} data-cy="movieCard">
       <div className="card">
         {movie.voteAverage && (
           <div className="card__rating">{movie.voteAverage.toFixed(1)}</div>

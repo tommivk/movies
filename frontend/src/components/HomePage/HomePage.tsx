@@ -121,6 +121,7 @@ const HomePage = () => {
             onClick={() =>
               modalContext.setModalState({ isOpen: true, isLogin: false })
             }
+            data-cy="openSignup"
           >
             Sign Up
           </Button>

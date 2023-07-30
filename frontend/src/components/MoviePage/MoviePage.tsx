@@ -152,6 +152,7 @@ const TopSection = ({ movie }: { movie: Movie }) => {
             className="movie__favourite"
             role="button"
             onClick={() => toggleFavourite()}
+            data-cy="favouriteBtn"
           >
             <span
               className={`movie__heart ${
@@ -253,7 +254,7 @@ const CastContainer = ({ movie }: { movie: Movie }) => {
         )}
       </div>
 
-      <div className="cast__list">
+      <div className="cast__list" data-cy="movieTopCast">
         {movie.credits?.cast.slice(0, 6).map((person) => (
           <Person person={person} key={person.id} />
         ))}
@@ -275,7 +276,7 @@ const Recommendations = ({ movie }: { movie: Movie }) => {
     <>
       {slides && slides.length > 0 && (
         <>
-          <h1>People also liked</h1>
+          <h1 data-cy="recommendations">People also liked</h1>
           <Swiper slides={slides}></Swiper>
         </>
       )}

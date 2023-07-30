@@ -90,6 +90,7 @@ const Navigation = () => {
                   isLogin: true,
                 })
               }
+              data-cy="login"
             >
               Login
             </button>

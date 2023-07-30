@@ -13,6 +13,7 @@ import (
 	"movies/controllers/ratings"
 	"movies/controllers/users"
 	"movies/middleware"
+	"movies/utils"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -33,6 +34,19 @@ func createTables(db *sqlx.DB) {
 	_, err = db.Exec(string(sql))
 	if err != nil {
 		log.Fatal("failed to create tables", err)
+	}
+}
+
+func addTestUser(db *sqlx.DB) {
+	passwordHash, err := utils.HashPassword("tester")
+	if err != nil {
+		log.Fatal("Failed to hash testuser password: ", err)
+	}
+	sql := `INSERT INTO USERS(username, password_hash) VALUES($1, $2)
+			ON CONFLICT DO NOTHING`
+	_, err = db.Exec(sql, "tester", passwordHash)
+	if err != nil {
+		log.Fatal("Failed to create test user: ", err)
 	}
 }
 
@@ -64,6 +78,9 @@ func main() {
 	fmt.Println("DB connected")
 
 	createTables(db)
+	if ENV == "test" {
+		addTestUser(db)
+	}
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)

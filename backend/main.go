@@ -58,6 +58,8 @@ func main() {
 	PORT := os.Getenv("PORT")
 	ALLOWED_ORIGIN := os.Getenv("ALLOWED_ORIGIN")
 
+	fmt.Println("ENV: ", ENV)
+
 	if PORT == "" {
 		PORT = "8080"
 	}

@@ -6,7 +6,7 @@ on:
     paths: ["backend/**"]
 jobs:
   build:
-    name: Build and deploy image
+    name: Build and push image
     runs-on: ubuntu-latest
 
     steps:
@@ -35,3 +35,16 @@ jobs:
           cd backend
           docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
+
+  deploy:
+    needs: build
+    name: "Deploy image to EC2"
+    runs-on: ubuntu-latest
+    steps:
+      - name: execute ssh deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: touch hello.txt

@@ -27,6 +27,8 @@ function App() {
     isLogin: false,
   });
 
+  console.log("yo yo");
+
   useLoggedUser();
   useFetchUserData();
 

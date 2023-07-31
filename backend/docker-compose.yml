@@ -27,6 +27,6 @@ services:
       - 8080
     volumes:
       - .:/app
-    command: /movies
+    command: ./server
     depends_on:
       - db

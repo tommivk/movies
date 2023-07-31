@@ -38,7 +38,7 @@ jobs:
 
   deploy:
     needs: build
-    name: "Deploy image to EC2"
+    name: "Pull image from ECR and Deploy to EC2"
     runs-on: ubuntu-latest
     steps:
       - name: execute ssh deploy
@@ -47,4 +47,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: touch hello.txt
+          script: |
+            docker pull public.ecr.aws/b4v0q9o0/movies:latest
+            docker stop server
+            docker rm server
+            docker run -d --env-file=".env" -p 8080:8080 --name server public.ecr.aws/b4v0q9o0/movies 
+            docker system prune -a -f

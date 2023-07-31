@@ -95,6 +95,7 @@ $personGap: 10px;
         align-items: center;
         gap: 10px;
         cursor: pointer;
+        margin-bottom: 50px;
 
         .movie__heart {
           font-size: 30px;
@@ -153,6 +154,10 @@ $personGap: 10px;
 
 .cast {
   padding-bottom: 50px;
+
+  &__btn {
+    margin: 20px 0px;
+  }
 
   &__top {
     display: flex;

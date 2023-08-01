@@ -5,13 +5,15 @@ const useCardAnimation = () => {
   const [card2Index, setCard2Index] = useState(4);
   const [card3Index, setCard3Index] = useState(0);
 
+  const BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
+
   const cardPaths = [
-    "/card1.png",
-    "/card2.png",
-    "/card3.png",
-    "/card4.png",
-    "/card5.png",
-    "/card6.png",
+    `${BASE_URL}/cards/card1.png`,
+    `${BASE_URL}/cards/card2.png`,
+    `${BASE_URL}/cards/card3.png`,
+    `${BASE_URL}/cards/card4.png`,
+    `${BASE_URL}/cards/card5.png`,
+    `${BASE_URL}/cards/card6.png`,
   ];
 
   const maxIndex = cardPaths.length - 1;

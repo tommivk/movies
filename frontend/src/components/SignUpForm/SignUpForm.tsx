@@ -1,21 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { z } from "zod";
-import { Credentials } from "../../../types";
-import { fetchData } from "../../../utils";
-import useAppStore from "../../store";
 import Button from "../Button/Button";
 import FormInput from "../FormInput/FormInput";
 import FormFieldError from "../FormFieldError/FormFieldError";
+import useSignUp from "../../hooks/useSignUp";
+import useLogin from "../../hooks/useLogin";
 
 type Props = {
   closeModal: () => void;
 };
 
 const SignupForm = ({ closeModal }: Props) => {
-  const store = useAppStore();
+  const { mutate: signUp } = useSignUp();
+  const { mutate: login } = useLogin();
 
   const signupSchema = z
     .object({
@@ -45,36 +43,24 @@ const SignupForm = ({ closeModal }: Props) => {
     resolver: zodResolver(signupSchema),
   });
 
-  const { mutateAsync: login } = useMutation({
-    mutationFn: (credentials: Credentials) =>
-      fetchData({ path: "/login", method: "POST", body: credentials }),
-    onSuccess: async (userData) => {
-      store.setLoggedUser(userData);
-      localStorage.setItem("loggedUser", JSON.stringify(userData));
-      toast.success(`Hello ${userData.username}`);
-      closeModal();
-      reset();
-    },
-    onError: ({ message }) => toast.error(message),
-  });
+  const closeModalAndResetForm = () => {
+    closeModal();
+    reset();
+  };
 
-  const { mutateAsync } = useMutation({
-    mutationFn: ({ username, password }: SignUpValues) =>
-      fetchData({
-        path: "/signup",
-        method: "POST",
-        body: { username, password },
-      }),
-    onSuccess: async () => {
-      const { username, password } = getValues();
-      login({ username, password });
-      reset();
-    },
-    onError: ({ message }) => toast.error(message),
-  });
+  const handleLogin = () => {
+    const credentials = getValues();
+    login(credentials, {
+      onSuccess: closeModalAndResetForm,
+    });
+  };
 
   return (
-    <form onSubmit={handleSubmit((credentials) => mutateAsync(credentials))}>
+    <form
+      onSubmit={handleSubmit((credentials) =>
+        signUp(credentials, { onSuccess: handleLogin })
+      )}
+    >
       <FormInput
         register={register("username")}
         autoComplete="nope"

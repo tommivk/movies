@@ -3,12 +3,10 @@ import { Credentials } from "../../../types";
 import Button from "../Button/Button";
 import FormInput from "../FormInput/FormInput";
 import useLogin from "../../hooks/useLogin";
+import useModalContext from "../../context/useModalContext";
 
-type Props = {
-  closeModal: () => void;
-};
-
-const LoginForm = ({ closeModal }: Props) => {
+const LoginForm = () => {
+  const { closeModal } = useModalContext();
   const { register, handleSubmit, reset } = useForm<Credentials>();
   const { mutate: login } = useLogin();
 

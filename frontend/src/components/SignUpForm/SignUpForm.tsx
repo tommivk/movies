@@ -1,17 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import useModalContext from "../../context/useModalContext";
 import Button from "../Button/Button";
 import FormInput from "../FormInput/FormInput";
 import FormFieldError from "../FormFieldError/FormFieldError";
 import useSignUp from "../../hooks/useSignUp";
 import useLogin from "../../hooks/useLogin";
 
-type Props = {
-  closeModal: () => void;
-};
-
-const SignupForm = ({ closeModal }: Props) => {
+const SignupForm = () => {
+  const { closeModal } = useModalContext();
   const { mutate: signUp } = useSignUp();
   const { mutate: login } = useLogin();
 

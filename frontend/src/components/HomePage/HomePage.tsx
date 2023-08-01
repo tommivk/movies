@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useContext } from "react";
-import { ModalContext } from "../../App";
+import { useState, useEffect, useCallback } from "react";
 import Button from "../Button/Button";
 import useCardAnimation from "../../hooks/useCardAnimation";
+import useModalContext from "../../context/useModalContext";
 
 import "./homePage.scss";
 
@@ -17,7 +17,7 @@ const Cards = () => {
 };
 
 const HomePage = () => {
-  const modalContext = useContext(ModalContext);
+  const { openSignUpModal } = useModalContext();
   const [play, setPlay] = useState(false);
 
   const checkVisibility = useCallback(() => {
@@ -45,9 +45,7 @@ const HomePage = () => {
           <Button
             size={"lg"}
             hoverEffect="zoom"
-            onClick={() =>
-              modalContext.setModalState({ isOpen: true, isLogin: false })
-            }
+            onClick={openSignUpModal}
             data-cy="openSignup"
           >
             Sign Up

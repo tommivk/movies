@@ -1,48 +1,34 @@
 import LoginForm from "../LoginForm/LoginForm";
 import Modal from "../Modal/Modal";
 import SignupForm from "../SignUpForm/SignUpForm";
+import useModalContext from "../../context/useModalContext";
 
 import "./loginSignUpModal.scss";
 
-type Props = {
-  modalState: { isOpen: boolean; isLogin: boolean };
-  setModalState: React.Dispatch<
-    React.SetStateAction<{
-      isOpen: boolean;
-      isLogin: boolean;
-    }>
-  >;
-};
-
-const LoginSignUpModal = ({ modalState, setModalState }: Props) => {
-  const handleModalClose = () => {
-    setModalState({ ...modalState, isOpen: false });
-  };
+const LoginSignUpModal = () => {
+  const { modalState, openLoginModal, openSignUpModal, closeModal } =
+    useModalContext();
 
   return (
     <Modal
       open={modalState.isOpen}
-      onClose={handleModalClose}
+      onClose={closeModal}
       title={modalState.isLogin ? "Login" : "Sign Up"}
     >
       <div className="loginSignUpModal">
-        {modalState.isLogin ? (
-          <LoginForm closeModal={handleModalClose} />
-        ) : (
-          <SignupForm closeModal={handleModalClose} />
-        )}
+        {modalState.isLogin ? <LoginForm /> : <SignupForm />}
 
         {modalState.isLogin ? (
           <button
             className="loginSignUpModal__changeFormBtn"
-            onClick={() => setModalState({ ...modalState, isLogin: false })}
+            onClick={openSignUpModal}
           >
             Not a user? Sign up Here
           </button>
         ) : (
           <button
             className="loginSignUpModal__changeFormBtn"
-            onClick={() => setModalState({ ...modalState, isLogin: true })}
+            onClick={openLoginModal}
           >
             Already a user? Login
           </button>

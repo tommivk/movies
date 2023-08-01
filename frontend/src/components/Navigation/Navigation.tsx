@@ -1,9 +1,8 @@
-import useAppStore from "../../store";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
 import { toast } from "react-toastify";
 import { Menu } from "@headlessui/react";
-import { ModalContext } from "../../App";
+import useAppStore from "../../store";
+import useModalContext from "../../context/useModalContext";
 
 import "./navigation.scss";
 
@@ -56,7 +55,7 @@ const Burger = () => {
 };
 
 const Navigation = () => {
-  const modalContext = useContext(ModalContext);
+  const { openLoginModal } = useModalContext();
 
   const store = useAppStore();
   const setLoggedUser = store.setLoggedUser;
@@ -84,12 +83,7 @@ const Navigation = () => {
           ) : (
             <button
               className="btn btn--transparent"
-              onClick={() =>
-                modalContext.setModalState({
-                  isOpen: true,
-                  isLogin: true,
-                })
-              }
+              onClick={openLoginModal}
               data-cy="login"
             >
               Login

@@ -30,8 +30,6 @@ function App() {
   useLoggedUser();
   useFetchUserData();
 
-  console.log("yo yo");
-
   return (
     <>
       <Login

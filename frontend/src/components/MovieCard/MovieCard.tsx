@@ -6,13 +6,14 @@ import "./movieCard.scss";
 
 type Props = { movie: Movie };
 
-const placeHolderImg = import.meta.env.VITE_PLACEHOLDER_IMAGE;
+const BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
+const placeholderImg = `${BASE_URL}/placeholder.png`;
 
 const MovieCard = ({ movie }: Props) => {
   const image =
     getBackdropImageUrl(movie.backdropPath, "md") ??
     getPosterImageUrl(movie.posterPath, "md") ??
-    placeHolderImg;
+    placeholderImg;
 
   const year = movie.releaseDate
     ? new Date(movie.releaseDate).getFullYear()

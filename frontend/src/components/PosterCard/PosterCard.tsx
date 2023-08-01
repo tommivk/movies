@@ -8,13 +8,14 @@ type Props = {
   movie: Movie;
 };
 
-const placeholder = import.meta.env.VITE_PLACEHOLDER_IMAGE;
+const BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
+const placeholderImg = `${BASE_URL}/placeholder.png`;
 
 const PosterCard = ({ movie }: Props) => {
   const image =
     getPosterImageUrl(movie.posterPath, "md") ??
     getBackdropImageUrl(movie.backdropPath, "md") ??
-    placeholder;
+    placeholderImg;
   const year = movie.releaseDate
     ? new Date(movie.releaseDate).getFullYear()
     : undefined;

@@ -1,10 +1,10 @@
-import Login from "./components/LoginModal/LoginModal";
 import { ToastContainer } from "react-toastify";
 import { RouterProvider } from "react-router-dom";
-import useFetchUserData from "./hooks/useFetchUserData";
-import useLoggedUser from "./hooks/useLoggedUser";
 import { createContext, useState } from "react";
 import { router } from "./router";
+import useFetchUserData from "./hooks/useFetchUserData";
+import useLoggedUser from "./hooks/useLoggedUser";
+import LoginSignUpModal from "./components/LoginSignUpModal.tsx/LoginSignUpModal";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -32,13 +32,7 @@ function App() {
 
   return (
     <>
-      <Login
-        modalOpen={modalState.isOpen}
-        login={modalState.isLogin}
-        setModalOpen={(value) =>
-          setModalState({ ...modalState, isOpen: Boolean(value) })
-        }
-      />
+      <LoginSignUpModal modalState={modalState} setModalState={setModalState} />
       <ModalContext.Provider value={{ setModalState }}>
         <RouterProvider router={router} />
       </ModalContext.Provider>

@@ -5,6 +5,7 @@ import (
 	"movies/models"
 	"movies/utils"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -85,4 +86,61 @@ func RatedMovies(c *gin.Context) {
 
 	}
 	c.JSON(http.StatusOK, ratings)
+}
+
+func SendFriendRequest(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	var body forms.FriendRequest
+	if err := c.BindJSON(&body); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	err := userModel.CreateFriendRequest(c, userId, body.AddresseeId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, "Friendship request sent")
+}
+
+func GetFriendships(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	result, err := userModel.GetAllFriendshipsByUserId(c, userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}
+
+func AcceptFriendRequest(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	requesterId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid path param")
+		return
+	}
+	err = userModel.AcceptFriendRequest(c, userId, requesterId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, "Friend request successfully accepted")
+}
+
+func DeleteFriend(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	addresseeId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid path param")
+		return
+	}
+	err = userModel.DeleteFriendship(c, userId, addresseeId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusNoContent, "")
 }

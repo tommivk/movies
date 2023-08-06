@@ -16,3 +16,16 @@ CREATE TABLE IF NOT EXISTS Ratings (
     user_id INTEGER REFERENCES Users NOT NULL,
     rating INTEGER NOT NULL
 );
+
+DO $$ BEGIN
+    CREATE TYPE FriendshipStatus as ENUM ('friends', 'pending_user_one', 'pending_user_two');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+CREATE TABLE IF NOT EXISTS Friends (
+    id SERIAL PRIMARY KEY,
+    user_one INTEGER REFERENCES Users NOT NULL,
+    user_two INTEGER REFERENCES Users NOT NULL,
+    status FriendshipStatus NOT NULL
+);

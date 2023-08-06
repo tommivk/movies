@@ -8,3 +8,7 @@ type Credentials struct {
 type MovieRating struct {
 	Rating int `binding:"required"`
 }
+
+type FriendRequest struct {
+	AddresseeId int `binding:"required"`
+}

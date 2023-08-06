@@ -71,6 +71,17 @@ func (u User) UserExists(c *gin.Context, username string) (bool, error) {
 	return userExists, nil
 }
 
+func (u User) GetAllUsers(c *gin.Context) (*[]UserData, error) {
+	db := c.MustGet("db").(*sqlx.DB)
+	sql := `SELECT id, username FROM Users`
+	var result []UserData
+	err := db.Select(&result, sql)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error {
 	db := c.MustGet("db").(*sqlx.DB)
 

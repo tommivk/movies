@@ -144,3 +144,12 @@ func DeleteFriend(c *gin.Context) {
 	}
 	c.JSON(http.StatusNoContent, "")
 }
+
+func GetUsers(c *gin.Context) {
+	users, err := userModel.GetAllUsers(c)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}

@@ -158,14 +158,13 @@ type UserData struct {
 	Username string `json:"username"`
 }
 
-type Friendship struct {
-	Id      int      `json:"id"`
-	Status  string   `json:"status"`
-	UserOne UserData `json:"userOne"`
-	UserTwo UserData `json:"userTwo"`
+type Friendships struct {
+	Friends          []UserData
+	SentRequests     []UserData
+	ReceivedRequests []UserData
 }
 
-func (u User) GetAllFriendshipsByUserId(c *gin.Context, userId int) (*[]Friendship, error) {
+func (u User) GetAllFriendshipsByUserId(c *gin.Context, userId int) (*Friendships, error) {
 	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT F.id, F.status, U1.id as user_one_id, U1.username as user_one_username, U2.id as user_two_id, U2.username as user_two_username
 			FROM Friends F
@@ -178,20 +177,41 @@ func (u User) GetAllFriendshipsByUserId(c *gin.Context, userId int) (*[]Friendsh
 	}
 	defer rows.Close()
 
-	var result []Friendship
+	friendships := Friendships{
+		Friends:          []UserData{},
+		SentRequests:     []UserData{},
+		ReceivedRequests: []UserData{},
+	}
 
 	for rows.Next() {
 		var row FriendshipRow
 		rows.StructScan(&row)
-		friendship := Friendship{
-			Id:      row.Id,
-			Status:  row.Status,
-			UserOne: UserData{Id: row.UserOneId, Username: row.UserOneUsername},
-			UserTwo: UserData{Id: row.UserTwoId, Username: row.UserTwoUsername}}
-		result = append(result, friendship)
+
+		switch row.Status {
+		case "friends":
+			if row.UserOneId == userId {
+				friendships.Friends = append(friendships.Friends, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
+				break
+			}
+			friendships.Friends = append(friendships.Friends, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
+
+		case "pending_user_one":
+			if row.UserOneId == userId {
+				friendships.ReceivedRequests = append(friendships.Friends, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
+				break
+			}
+			friendships.SentRequests = append(friendships.Friends, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
+
+		case "pending_user_two":
+			if row.UserTwoId == userId {
+				friendships.ReceivedRequests = append(friendships.Friends, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
+				break
+			}
+			friendships.SentRequests = append(friendships.Friends, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
+		}
 	}
 
-	return &result, nil
+	return &friendships, nil
 }
 
 func (u User) DeleteFriendship(c *gin.Context, userId, friendId int) error {

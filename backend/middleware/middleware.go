@@ -1,7 +1,9 @@
 package middleware
 
 import (
-	"movies/constants"
+	"database/sql"
+	"fmt"
+	"movies/custom_errors"
 	"movies/utils"
 	"net/http"
 	"strings"
@@ -19,11 +21,15 @@ func ErrorHandler() gin.HandlerFunc {
 			return
 		}
 
-		switch err.Error() {
-		case constants.NotFound:
-			c.AbortWithStatusJSON(http.StatusNotFound, err.Error())
+		fmt.Println("Error happened: ", err)
+
+		switch err.Err {
+		case sql.ErrNoRows:
+			c.AbortWithStatusJSON(http.StatusNotFound, "Not found")
+		case custom_errors.ErrNotFound:
+			c.AbortWithStatusJSON(http.StatusNotFound, "Not found")
 		default:
-			c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			c.AbortWithStatusJSON(http.StatusInternalServerError, "Internal server error")
 		}
 	}
 }

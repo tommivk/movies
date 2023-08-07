@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"movies/constants"
+	"movies/custom_errors"
 	"net/http"
 	"time"
 
@@ -15,7 +15,7 @@ import (
 func FetchData(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if res.StatusCode == 404 {
-		return nil, errors.New(constants.NotFound)
+		return nil, custom_errors.ErrNotFound
 	}
 	if err != nil {
 		return nil, err

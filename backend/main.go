@@ -117,6 +117,7 @@ func main() {
 	private.PATCH("/movies/:id/ratings", ratings.UpdateMovieRating)
 
 	private.GET("/users", users.GetUsers)
+	private.GET("/users/:username", users.GetUserByUsername)
 
 	private.GET("/users/me/favourited-movies", favourites.FavouritedMovies)
 	private.GET("/users/me/favourited-movie-ids", favourites.FavouritedMovieIds)

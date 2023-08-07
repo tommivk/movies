@@ -82,6 +82,17 @@ func (u User) GetAllUsers(c *gin.Context) (*[]UserData, error) {
 	return &result, nil
 }
 
+func (u User) GetUserByUsername(c *gin.Context, username string) (*UserData, error) {
+	db := c.MustGet("db").(*sqlx.DB)
+	sql := `SELECT id, username FROM Users WHERE username=$1`
+	var user UserData
+	err := db.Get(&user, sql, username)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error {
 	db := c.MustGet("db").(*sqlx.DB)
 

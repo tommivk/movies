@@ -153,3 +153,13 @@ func GetUsers(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, users)
 }
+
+func GetUserByUsername(c *gin.Context) {
+	username := c.Param("username")
+	user, err := userModel.GetUserByUsername(c, username)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}

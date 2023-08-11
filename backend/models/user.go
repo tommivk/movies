@@ -208,17 +208,17 @@ func (u User) GetAllFriendshipsByUserId(c *gin.Context, userId int) (*Friendship
 
 		case "pending_user_one":
 			if row.UserOneId == userId {
-				friendships.ReceivedRequests = append(friendships.Friends, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
+				friendships.ReceivedRequests = append(friendships.ReceivedRequests, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
 				break
 			}
-			friendships.SentRequests = append(friendships.Friends, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
+			friendships.SentRequests = append(friendships.SentRequests, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
 
 		case "pending_user_two":
 			if row.UserTwoId == userId {
-				friendships.ReceivedRequests = append(friendships.Friends, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
+				friendships.ReceivedRequests = append(friendships.ReceivedRequests, UserData{Id: row.UserOneId, Username: row.UserOneUsername})
 				break
 			}
-			friendships.SentRequests = append(friendships.Friends, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
+			friendships.SentRequests = append(friendships.SentRequests, UserData{Id: row.UserTwoId, Username: row.UserTwoUsername})
 		}
 	}
 

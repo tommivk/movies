@@ -67,3 +67,30 @@ export type Rating = {
   movieId: number;
   rating: number;
 };
+
+export type User = {
+  id: number;
+  username: string;
+};
+
+export type Friendships = {
+  friends: User[];
+  sentRequests: User[];
+  receivedRequests: User[];
+};
+
+type NotificationType =
+  | "info"
+  | "friend_request"
+  | "accepted_friend_request"
+  | "denied_friend_request";
+
+export type Notification = {
+  id: number;
+  userId?: number;
+  firedBy?: number;
+  message: string;
+  seen: boolean;
+  timestamp: string;
+  notificationType: NotificationType;
+};

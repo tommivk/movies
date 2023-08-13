@@ -1,0 +1,25 @@
+.dropDownMenu {
+  &__items {
+    cursor: default;
+    position: relative;
+    z-index: 10;
+    box-sizing: border-box;
+    padding: 20px;
+    background: rgb(26, 26, 26);
+    border-radius: 10px;
+    position: absolute;
+    top: 90px;
+    right: 20px;
+    min-height: fit-content;
+    width: fit-content;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  &__button {
+    all: unset;
+    display: block;
+    position: relative;
+  }
+}

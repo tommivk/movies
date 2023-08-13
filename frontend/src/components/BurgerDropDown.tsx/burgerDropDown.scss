@@ -1,0 +1,62 @@
+@use "../../sassStyles/theme";
+@use "../../sassStyles/variables";
+
+$hoverHighlight: rgb(58, 56, 56);
+
+.burger {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+
+  div {
+    width: 30px;
+    height: 5px;
+    border-radius: 3px;
+    background: whitesmoke;
+  }
+
+  &:hover div {
+    background: theme.$secondaryGrey;
+  }
+}
+
+.burgerDropDown {
+  .dropDownMenu__items {
+    height: 270px;
+  }
+
+  &__logout {
+    all: unset;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(36, 35, 35);
+    border-radius: 10px;
+    padding: 6px;
+    font-weight: 400;
+
+    &:hover {
+      background: $hoverHighlight;
+      cursor: pointer;
+    }
+
+    .logout__icon {
+      font-size: 25px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.menuItem {
+  font-size: 17px;
+  padding: 10px;
+  border-radius: 20px;
+  display: flex;
+  gap: 10px;
+  font-weight: 700;
+  &:hover {
+    background: $hoverHighlight;
+  }
+}

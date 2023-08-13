@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+	"movies/enums"
 	"movies/forms"
 	"movies/models"
 	"movies/utils"
@@ -13,6 +15,7 @@ import (
 
 var userModel = new(models.User)
 var ratingsModel = new(models.Rating)
+var notificationModel = new(models.Notification)
 
 func Login(c *gin.Context) {
 	var body forms.Credentials
@@ -101,7 +104,12 @@ func SendFriendRequest(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-
+	msg := "You have a new friend request"
+	err = notificationModel.CreateNotification(c, body.AddresseeId, msg, enums.FriendRequest)
+	if err != nil {
+		c.Error(err)
+		return
+	}
 	c.JSON(http.StatusOK, "Friendship request sent")
 }
 
@@ -115,19 +123,50 @@ func GetFriendships(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func AcceptFriendRequest(c *gin.Context) {
+func RespondToFriendRequest(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
+	username := c.MustGet("username").(string)
 	requesterId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid path param")
 		return
 	}
-	err = userModel.AcceptFriendRequest(c, userId, requesterId)
+
+	action := c.Query("action")
+	if action != "accept" && action != "reject" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid query param `action`")
+		return
+	}
+
+	if action == "accept" {
+		err = userModel.AcceptFriendRequest(c, userId, requesterId)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		msg := fmt.Sprintf("%s accepted your friend request!", username)
+		err = notificationModel.CreateNotification(c, requesterId, msg, enums.AcceptFriendRequest)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		c.JSON(http.StatusOK, "Friend request successfully accepted")
+		return
+	}
+
+	err = userModel.DeleteFriendship(c, userId, requesterId)
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	c.JSON(http.StatusOK, "Friend request successfully accepted")
+	msg := fmt.Sprintf("%s rejected your friend request", username)
+	err = notificationModel.CreateNotification(c, requesterId, msg, enums.DeniedFriendRequest)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, "Friend request successfully rejected")
+
 }
 
 func DeleteFriend(c *gin.Context) {
@@ -162,4 +201,28 @@ func GetUserByUsername(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
+}
+
+func GetNotifications(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	notifications, err := notificationModel.GetAllNotificationsByUserId(c, userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, notifications)
+}
+
+func SetNotificationSeen(c *gin.Context) {
+	notificationId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid notification id")
+		return
+	}
+	err = notificationModel.SetNotificationSeen(c, notificationId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, "")
 }

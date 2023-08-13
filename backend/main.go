@@ -122,10 +122,13 @@ func main() {
 	private.GET("/users/me/favourited-movies", favourites.FavouritedMovies)
 	private.GET("/users/me/favourited-movie-ids", favourites.FavouritedMovieIds)
 	private.GET("/users/me/ratings", users.RatedMovies)
+	private.GET("/users/me/notifications", users.GetNotifications)
+
+	private.PATCH("/users/me/notifications/:id", users.SetNotificationSeen)
 
 	private.GET("/users/me/friends", users.GetFriendships)
 	private.POST("/users/me/friends", users.SendFriendRequest)
-	private.PUT("/users/me/friends/:userId", users.AcceptFriendRequest)
+	private.PUT("/users/me/friends/:userId", users.RespondToFriendRequest)
 	private.DELETE("/users/me/friends/:userId", users.DeleteFriend)
 
 	router.Run(fmt.Sprintf("0.0.0.0:%s", PORT))

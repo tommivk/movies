@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchData } from "../../utils";
+import { Notification } from "../../types";
+
 import useAppStore from "../store";
 
 const useFetchUserData = () => {
@@ -15,8 +17,14 @@ const useFetchUserData = () => {
       path: `/users/me/ratings`,
       token,
     });
+    const notifications = (await fetchData({
+      path: `/users/me/notifications`,
+      token,
+    })) as Notification[];
+
     store.setFavouritedMovieIds(movieIds);
     store.setRatings(ratings);
+    store.setNotifications(notifications);
     return null;
   };
 

@@ -9,6 +9,7 @@ import (
 
 	"movies/controllers/actors"
 	"movies/controllers/favourites"
+	"movies/controllers/groups"
 	"movies/controllers/movies"
 	"movies/controllers/ratings"
 	"movies/controllers/users"
@@ -113,6 +114,7 @@ func main() {
 
 	private.POST("/movies/:id/favourite", favourites.AddFavourite)
 	private.DELETE("/movies/:id/favourite", favourites.RemoveFavourite)
+
 	private.POST("/movies/:id/ratings", ratings.RateMovie)
 	private.PATCH("/movies/:id/ratings", ratings.UpdateMovieRating)
 
@@ -121,15 +123,24 @@ func main() {
 
 	private.GET("/users/me/favourited-movies", favourites.FavouritedMovies)
 	private.GET("/users/me/favourited-movie-ids", favourites.FavouritedMovieIds)
-	private.GET("/users/me/ratings", users.RatedMovies)
-	private.GET("/users/me/notifications", users.GetNotifications)
 
+	private.GET("/users/me/ratings", users.RatedMovies)
+
+	private.GET("/users/me/notifications", users.GetNotifications)
 	private.PATCH("/users/me/notifications/:id", users.SetNotificationSeen)
 
 	private.GET("/users/me/friends", users.GetFriendships)
 	private.POST("/users/me/friends", users.SendFriendRequest)
 	private.PUT("/users/me/friends/:userId", users.RespondToFriendRequest)
 	private.DELETE("/users/me/friends/:userId", users.DeleteFriend)
+
+	private.GET("/users/me/groups", users.GetUsersGroups)
+
+	private.GET("/groups", groups.GetAllPublicGroups)
+	private.GET("/groups/:id", groups.GetGroupById)
+
+	private.POST("/groups", groups.CreateGroup)
+	private.POST("/groups/:id/join", groups.JoinGroup)
 
 	router.Run(fmt.Sprintf("0.0.0.0:%s", PORT))
 }

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -73,4 +74,11 @@ func ParseToken(tokenString, secret string) (jwt.MapClaims, *jwt.ValidationError
 		return claims, nil
 	}
 	return nil, jwt.NewValidationError("Invalid token", jwt.ValidationErrorMalformed)
+}
+
+func NewNullString(s string) sql.NullString {
+	if len(s) == 0 {
+		return sql.NullString{}
+	}
+	return sql.NullString{String: s, Valid: true}
 }

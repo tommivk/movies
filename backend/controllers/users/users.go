@@ -16,6 +16,7 @@ import (
 var userModel = new(models.User)
 var ratingsModel = new(models.Rating)
 var notificationModel = new(models.Notification)
+var groupModel = new(models.Group)
 
 func Login(c *gin.Context) {
 	var body forms.Credentials
@@ -225,4 +226,14 @@ func SetNotificationSeen(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, "")
+}
+
+func GetUsersGroups(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	groups, err := groupModel.GetGroupsByUserId(c, userId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, groups)
 }

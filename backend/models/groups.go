@@ -91,3 +91,13 @@ func (g *Group) GetGroupsByUserId(c *gin.Context, userId int) (*[]Group, error) 
 	}
 	return &result, nil
 }
+
+func (g *Group) RemoveUserFromGroup(c *gin.Context, userId, groupId int) error {
+	db := c.MustGet("db").(*sqlx.DB)
+	sql := `DELETE FROM UserGroups WHERE user_id=$1 AND group_id=$2`
+	_, err := db.Exec(sql, userId, groupId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

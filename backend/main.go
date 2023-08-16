@@ -141,6 +141,7 @@ func main() {
 
 	private.POST("/groups", groups.CreateGroup)
 	private.POST("/groups/:id/join", groups.JoinGroup)
+	private.DELETE("/groups/:id/leave", groups.LeaveGroup)
 
 	router.Run(fmt.Sprintf("0.0.0.0:%s", PORT))
 }

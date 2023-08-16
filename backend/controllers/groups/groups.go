@@ -134,3 +134,29 @@ func JoinGroup(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "Successfully joined group")
 }
+
+func LeaveGroup(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	groupId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid groupId param")
+		return
+	}
+
+	userInGroup, err := groupModel.IsUserInGroup(c, userId, groupId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if !userInGroup {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "You are not in this group")
+		return
+	}
+
+	err = groupModel.RemoveUserFromGroup(c, userId, groupId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusNoContent, "")
+}

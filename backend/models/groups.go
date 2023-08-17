@@ -21,7 +21,11 @@ func (g *Group) CreateNewGroup(c *gin.Context, userId int, name string, private 
 	sql := `INSERT INTO Groups (admin_id, name, private, password_hash) VALUES ($1, $2, $3, $4)
 			RETURNING id, admin_id, name, created_at, private`
 	group := Group{}
-	err := db.QueryRowx(sql, userId, name, private, utils.NewNullString(passwordHash)).StructScan(&group)
+	tx := db.MustBegin()
+	tx.QueryRowx(sql, userId, name, private, utils.NewNullString(passwordHash)).StructScan(&group)
+	sql = `INSERT INTO UserGroups (user_id, group_id) VALUES ($1, $2)`
+	tx.Exec(sql, userId, group.Id)
+	err := tx.Commit()
 	if err != nil {
 		return nil, err
 	}

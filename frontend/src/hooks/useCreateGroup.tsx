@@ -16,6 +16,7 @@ const useCreateGroup = () => {
     }) => fetchData({ method: "POST", path: "/groups", body, token }),
     onSuccess: () => {
       queryClient.invalidateQueries(["getGroups"]);
+      queryClient.invalidateQueries(["fetchUserData"]);
     },
   });
 };

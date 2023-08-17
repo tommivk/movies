@@ -44,8 +44,9 @@ func CreateGroup(c *gin.Context) {
 	c.JSON(http.StatusOK, group)
 }
 
-func GetAllPublicGroups(c *gin.Context) {
-	groups, err := groupModel.GetAllPublicGroups(c)
+func GetGroups(c *gin.Context) {
+	search := c.Query("search")
+	groups, err := groupModel.GetGroups(c, search)
 	if err != nil {
 		c.Error(err)
 		return
@@ -121,7 +122,7 @@ func JoinGroup(c *gin.Context) {
 
 		err = utils.ValidatePassword(*passwordHash, body.Password)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, "Incorrect password")
+			c.AbortWithStatusJSON(http.StatusBadRequest, "Incorrect password")
 			return
 		}
 	}

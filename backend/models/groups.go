@@ -2,6 +2,7 @@ package models
 
 import (
 	"movies/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
@@ -49,11 +50,11 @@ func (g *Group) GetGroupPasswordHashById(c *gin.Context, groupId int) (*string, 
 	return &result, nil
 }
 
-func (g *Group) GetAllPublicGroups(c *gin.Context) (*[]Group, error) {
+func (g *Group) GetGroups(c *gin.Context, search string) (*[]Group, error) {
 	db := c.MustGet("db").(*sqlx.DB)
 	result := []Group{}
-	sql := `SELECT id, name, created_at, private, admin_id FROM Groups WHERE private = false`
-	err := db.Select(&result, sql)
+	sql := `SELECT id, name, created_at, private, admin_id FROM Groups WHERE LOWER(name) LIKE '%' || $1 || '%'`
+	err := db.Select(&result, sql, strings.ToLower(search))
 	if err != nil {
 		return nil, err
 	}

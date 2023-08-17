@@ -136,7 +136,7 @@ func main() {
 
 	private.GET("/users/me/groups", users.GetUsersGroups)
 
-	private.GET("/groups", groups.GetAllPublicGroups)
+	private.GET("/groups", groups.GetGroups)
 	private.GET("/groups/:id", groups.GetGroupById)
 
 	private.POST("/groups", groups.CreateGroup)

@@ -1,0 +1,93 @@
+@use "../../sassStyles/theme";
+
+.groupPage {
+  input {
+    padding: 10px 20px;
+    margin: auto;
+    display: block;
+    outline: none;
+    border-radius: 10px;
+    border: none;
+    &:focus {
+      outline: 2px solid theme.$primaryBlue;
+    }
+  }
+}
+
+.groupList {
+  max-width: 90vw;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 250px);
+  gap: 20px;
+  margin: auto;
+  margin-top: 60px;
+  padding-bottom: 100px;
+  place-content: center;
+
+  &__newGroupButton {
+    grid-column: 1 / -1;
+    margin-left: auto;
+    display: block;
+  }
+
+  &__group {
+    position: relative;
+    border-radius: 10px;
+    background: rgb(31, 29, 29);
+    width: 250px;
+    height: fit-content;
+    transition-duration: 0.5s;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-1%);
+    }
+  }
+
+  &__image {
+    background: rgb(71, 69, 69);
+    height: 200px;
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+  }
+
+  &__bottomSection {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  &__description {
+    font-size: 0.9rem;
+    overflow-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__cardButton {
+    margin: auto;
+    display: block;
+  }
+
+  &__lockIcon {
+    margin-right: 8px;
+  }
+
+  &__passwordModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+
+    button {
+      margin-top: 40px;
+    }
+  }
+}
+
+.notFoundText {
+  text-align: center;
+}

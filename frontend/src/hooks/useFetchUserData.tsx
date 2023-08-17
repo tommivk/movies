@@ -21,10 +21,15 @@ const useFetchUserData = () => {
       path: `/users/me/notifications`,
       token,
     })) as Notification[];
+    const groups = await fetchData({
+      path: "/users/me/groups",
+      token,
+    });
 
     store.setFavouritedMovieIds(movieIds);
     store.setRatings(ratings);
     store.setNotifications(notifications);
+    store.setGroups(groups);
     return null;
   };
 

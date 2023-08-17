@@ -5,6 +5,7 @@ import useInfiniteMovieSearch from "../../hooks/useInfiniteMovieSearch.tsx";
 import useInfiniteTopRatedMovies from "../../hooks/useInfiniteTopRatedMovies.tsx";
 import useInfiniteTrendingMovies from "../../hooks/useInfiniteTrendingMovies.tsx";
 import Button from "../Button/Button.tsx";
+import SearchInput from "../SearchInput/SearchInput.tsx";
 
 import "./movieSearch.scss";
 
@@ -21,10 +22,9 @@ const MovieSearch = () => {
 
   return (
     <div className="search">
-      <input
+      <SearchInput
         type="text"
         placeholder="Search all movies..."
-        className="search__input"
         autoComplete="false"
         autoCorrect="false"
         value={search}
@@ -32,7 +32,7 @@ const MovieSearch = () => {
           setSearch(value);
           setPage("search");
         }}
-      ></input>
+      ></SearchInput>
 
       <div className="search__buttons">
         <Button

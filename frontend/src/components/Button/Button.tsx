@@ -4,7 +4,7 @@ import "./button.scss";
 
 type Props = {
   children: React.ReactNode;
-  color?: "primary" | "transparent";
+  color?: "primary" | "transparent" | "secondary";
   size?: "sm" | "md" | "lg";
   hoverEffect?: "zoom" | "brighten";
   active?: boolean;

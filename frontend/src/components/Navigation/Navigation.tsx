@@ -34,7 +34,7 @@ const Navigation = () => {
           </li>
           {store.loggedUser && (
             <li>
-              <Link to="/users">Users</Link>
+              <Link to="/groups">Groups</Link>
             </li>
           )}
         </div>

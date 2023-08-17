@@ -42,6 +42,7 @@ const BurgerDropDown = ({ handleLogOut }: { handleLogOut: () => void }) => {
         <>
           <MenuItem href="/search" icon="🔍" text="Search" />
           <MenuItem href="/favourites" icon="⭐" text="Favourites" />
+          <MenuItem href="/groups" icon="💬" text="Groups" />
 
           <button onClick={handleLogOut} className="burgerDropDown__logout">
             <span className="logout__icon">⇤</span>

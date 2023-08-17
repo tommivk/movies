@@ -94,3 +94,11 @@ export type Notification = {
   timestamp: string;
   notificationType: NotificationType;
 };
+
+export type Group = {
+  id: number;
+  name: string;
+  createdAt: string;
+  private: boolean;
+  adminId: number;
+};

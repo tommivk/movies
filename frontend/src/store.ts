@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Rating, Notification } from "../types";
+import { Rating, Notification, Group } from "../types";
 
 type UserData = {
   userId: number | undefined;
@@ -12,6 +12,8 @@ type AppState = {
   favouritedMovieIds: number[];
   ratings: Rating[];
   notifications: Notification[];
+  groups: Group[];
+  setGroups: (groups: Group[]) => void;
   setLoggedUser: (user: UserData | null) => void;
   setFavouritedMovieIds: (favouritedMovieIds: number[]) => void;
   setRatings: (ratings: Rating[]) => void;
@@ -21,6 +23,7 @@ type AppState = {
 const useAppStore = create<AppState>((set) => ({
   favouritedMovieIds: [],
   ratings: [],
+  groups: [],
   loggedUser: undefined,
   notifications: [],
   setLoggedUser: (loggedUser: UserData | null) => set({ loggedUser }),
@@ -28,6 +31,7 @@ const useAppStore = create<AppState>((set) => ({
     set({ favouritedMovieIds }),
   setRatings: (ratings: Rating[]) => set({ ratings }),
   setNotifications: (notifications: Notification[]) => set({ notifications }),
+  setGroups: (groups: Group[]) => set({ groups }),
 }));
 
 export default useAppStore;

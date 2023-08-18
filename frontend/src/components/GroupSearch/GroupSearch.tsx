@@ -10,7 +10,7 @@ import useLeaveGroup from "../../hooks/useLeaveGroup";
 import useGetAllGroups from "../../hooks/useGetAllGroups";
 import NewGroupForm from "../NewGroupForm/NewGroupForm";
 
-import "./groupPage.scss";
+import "./groupSearch.scss";
 import FormInput from "../FormInput/FormInput";
 import { Link } from "react-router-dom";
 
@@ -168,7 +168,7 @@ const GroupList = ({ search = "" }: { search: string }) => {
   );
 };
 
-const GroupPage = () => {
+const GroupSearch = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500);
 
@@ -185,4 +185,4 @@ const GroupPage = () => {
   );
 };
 
-export default GroupPage;
+export default GroupSearch;

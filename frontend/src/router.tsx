@@ -10,7 +10,7 @@ import Layout from "./components/Layout";
 import MoviePage from "./components/MoviePage/MoviePage";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
 import ProtectedRoute from "./components/ProtectedRoute";
-import GroupPage from "./components/GroupPage/GroupPage";
+import GroupSearch from "./components/GroupSearch/GroupSearch";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,7 +20,7 @@ export const router = createBrowserRouter(
       <Route path="/actors/:id" element={<ActorPage />} />
       <Route path="/movies/:id" element={<MoviePage />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="/groups" element={<GroupPage />} />
+        <Route path="/groups" element={<GroupSearch />} />
         <Route path="/favourites" element={<Favourites />} />
       </Route>
     </Route>

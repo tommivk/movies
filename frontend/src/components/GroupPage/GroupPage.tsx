@@ -12,6 +12,7 @@ import NewGroupForm from "../NewGroupForm/NewGroupForm";
 
 import "./groupPage.scss";
 import FormInput from "../FormInput/FormInput";
+import { Link } from "react-router-dom";
 
 const NewGroupModal = ({
   open,
@@ -110,50 +111,54 @@ const GroupList = ({ search = "" }: { search: string }) => {
         </Button>
 
         {allGroups.map((group) => (
-          <div key={group.id} className="groupList__group">
-            <div className="groupList__image" />
-            <div className="groupList__bottomSection">
-              <h3 className="groupList__title">{group.name}</h3>
-              <p className="groupList__description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Incidunt culpa voluptatem, est repellat similique ratione
-                dolorem vitae.
-              </p>
-              {joinedGroupIds.includes(group.id) ? (
-                <Button
-                  color="transparent"
-                  size="sm"
-                  className="groupList__cardButton"
-                  onClick={() => {
-                    const confirmed = window.confirm("Leave group?");
-                    if (confirmed) {
-                      leaveGroup({ groupId: group.id, token });
-                    }
-                  }}
-                >
-                  Leave
-                </Button>
-              ) : (
-                <Button
-                  color="transparent"
-                  size="sm"
-                  className="groupList__cardButton"
-                  onClick={() => {
-                    if (group.private) {
-                      setPasswordModal({ isOpen: true, groupId: group.id });
-                      return;
-                    }
-                    joinGroup({ groupId: group.id, token });
-                  }}
-                >
-                  {group.private && (
-                    <span className="groupList__lockIcon">🔒</span>
-                  )}
-                  Join
-                </Button>
-              )}
+          <Link to={`/groups/${group.id}`} key={group.id} className="link">
+            <div className="groupList__group">
+              <div className="groupList__image" />
+              <div className="groupList__bottomSection">
+                <h3 className="groupList__title">{group.name}</h3>
+                <p className="groupList__description">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Incidunt culpa voluptatem, est repellat similique ratione
+                  dolorem vitae.
+                </p>
+                {joinedGroupIds.includes(group.id) ? (
+                  <Button
+                    color="transparent"
+                    size="sm"
+                    className="groupList__cardButton"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const confirmed = window.confirm("Leave group?");
+                      if (confirmed) {
+                        leaveGroup({ groupId: group.id, token });
+                      }
+                    }}
+                  >
+                    Leave
+                  </Button>
+                ) : (
+                  <Button
+                    color="transparent"
+                    size="sm"
+                    className="groupList__cardButton"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (group.private) {
+                        setPasswordModal({ isOpen: true, groupId: group.id });
+                        return;
+                      }
+                      joinGroup({ groupId: group.id, token });
+                    }}
+                  >
+                    {group.private && (
+                      <span className="groupList__lockIcon">🔒</span>
+                    )}
+                    Join
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
       {allGroups.length === 0 && (

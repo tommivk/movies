@@ -75,6 +75,17 @@ func (g *Group) AddUserToGroup(c *gin.Context, userId, groupId int) error {
 	return nil
 }
 
+func (g *Group) IsPrivateGroup(c *gin.Context, groupId int) (bool, error) {
+	db := c.MustGet("db").(*sqlx.DB)
+	var isPrivate bool
+	sql := `SELECT private FROM Groups WHERE id=$1`
+	err := db.QueryRow(sql, groupId).Scan(&isPrivate)
+	if err != nil {
+		return false, err
+	}
+	return isPrivate, nil
+}
+
 func (g *Group) IsUserInGroup(c *gin.Context, userId, groupId int) (bool, error) {
 	db := c.MustGet("db").(*sqlx.DB)
 	var exists bool

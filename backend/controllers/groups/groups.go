@@ -11,6 +11,7 @@ import (
 )
 
 var groupModel = new(models.Group)
+var recommendationsModel = new(models.Recommendation)
 
 func CreateGroup(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
@@ -160,4 +161,56 @@ func LeaveGroup(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusNoContent, "")
+}
+
+func RecommendMovie(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	var body forms.MovieRecommendation
+	err := c.BindJSON(&body)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	err = recommendationsModel.AddRecommendation(c, userId, body.MovieId, body.GroupId, body.Description)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, "Recommendation successfully added")
+}
+
+func GetRecommendations(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	groupId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'id'")
+		return
+	}
+
+	isPrivateGroup, err := groupModel.IsPrivateGroup(c, groupId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if isPrivateGroup {
+		userInGroup, err := groupModel.IsUserInGroup(c, userId, groupId)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		if !userInGroup {
+			c.AbortWithStatusJSON(http.StatusBadRequest, "You are not in this group")
+			return
+		}
+	}
+
+	result, err := recommendationsModel.GetRecommendationsByGroupId(c, groupId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }

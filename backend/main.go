@@ -138,9 +138,12 @@ func main() {
 
 	private.GET("/groups", groups.GetGroups)
 	private.GET("/groups/:id", groups.GetGroupById)
+	private.GET("/groups/:id/recommendations", groups.GetRecommendations)
 
 	private.POST("/groups", groups.CreateGroup)
+	private.POST("/groups/recommendations", groups.RecommendMovie)
 	private.POST("/groups/:id/join", groups.JoinGroup)
+
 	private.DELETE("/groups/:id/leave", groups.LeaveGroup)
 
 	router.Run(fmt.Sprintf("0.0.0.0:%s", PORT))

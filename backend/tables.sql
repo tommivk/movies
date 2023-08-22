@@ -60,3 +60,12 @@ CREATE TABLE IF NOT EXISTS UserGroups (
     user_id INTEGER REFERENCES Users NOT NULL,
     group_id INTEGER REFERENCES Groups NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS Recommendations (
+    id SERIAL PRIMARY KEY,
+    movie_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL REFERENCES Groups,
+    user_id INTEGER NOT NULL REFERENCES Users,
+    description TEXT,
+    timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);

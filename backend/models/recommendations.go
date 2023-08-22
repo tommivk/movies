@@ -9,7 +9,7 @@ import (
 
 type Recommendation struct {
 	Id          int    `json:"id"`
-	MovieId     int    `json:"movieId" db:"movie_id"`
+	MovieId     int    `json:"movieId,omitempty" db:"movie_id"`
 	GroupId     int    `json:"groupId" db:"group_id"`
 	UserId      int    `json:"userId" db:"user_id"`
 	Description string `json:"description"`

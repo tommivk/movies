@@ -12,6 +12,7 @@ import (
 
 var groupModel = new(models.Group)
 var recommendationsModel = new(models.Recommendation)
+var moviesModel = new(models.Movie)
 
 func CreateGroup(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
@@ -181,6 +182,28 @@ func RecommendMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, "Recommendation successfully added")
 }
 
+type RecommendationsResult struct {
+	models.Recommendation
+	Movie models.Movie `json:"movie"`
+}
+
+func addMovieDataToRecommendations(c *gin.Context, recommendations []models.Recommendation) (*[]RecommendationsResult, error) {
+	result := []RecommendationsResult{}
+
+	for i := 0; i < len(recommendations); i++ {
+		res := RecommendationsResult{Recommendation: recommendations[i], Movie: models.Movie{}}
+		movieData, err := moviesModel.FetchMovieById(c, strconv.Itoa(recommendations[i].MovieId))
+		if err != nil {
+			return nil, err
+		}
+		res.Movie = movieData
+		res.MovieId = 0
+		result = append(result, res)
+	}
+
+	return &result, nil
+}
+
 func GetRecommendations(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
 	groupId, err := strconv.Atoi(c.Param("id"))
@@ -212,5 +235,11 @@ func GetRecommendations(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	response, err := addMovieDataToRecommendations(c, *result)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
 }

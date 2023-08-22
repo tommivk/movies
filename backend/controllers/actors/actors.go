@@ -3,7 +3,7 @@ package actors
 import (
 	"encoding/json"
 	"fmt"
-	"movies/controllers/movies"
+	"movies/models"
 	"movies/utils"
 	"net/http"
 	"net/url"
@@ -12,7 +12,7 @@ import (
 )
 
 type ActorMovie struct {
-	movies.Movie
+	models.Movie
 	Character string `json:"character"`
 }
 

@@ -1,4 +1,4 @@
-package movies
+package models
 
 import (
 	"testing"

@@ -2,7 +2,6 @@ package favourites
 
 import (
 	"math"
-	"movies/controllers/movies"
 	"movies/models"
 	"net/http"
 	"strconv"
@@ -12,6 +11,7 @@ import (
 )
 
 var favouritesModel = new(models.Favourite)
+var moviesModel = new(models.Movie)
 
 func AddFavourite(c *gin.Context) {
 	movieId := c.Param("id")
@@ -92,18 +92,18 @@ func FavouritedMovies(c *gin.Context) {
 		end = len(ids)
 	}
 
-	results := []movies.Movie{}
+	results := []models.Movie{}
 
 	for i := start; i < end; i++ {
 		movieId := strconv.Itoa(ids[i])
-		movie, err := movies.FetchMovieById(c, movieId)
+		movie, err := moviesModel.FetchMovieById(c, movieId)
 		if err != nil {
 			c.Error(err)
 			return
 		}
 		results = append(results, movie)
 	}
-	response := movies.SearchResult{
+	response := models.SearchResult{
 		Page:         page,
 		Results:      results,
 		TotalPages:   totalPages,

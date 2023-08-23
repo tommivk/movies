@@ -117,3 +117,14 @@ func (g *Group) RemoveUserFromGroup(c *gin.Context, userId, groupId int) error {
 	}
 	return nil
 }
+
+func (g *Group) GetUsersInGroup(c *gin.Context, groupId int) (*[]UserData, error) {
+	db := c.MustGet("db").(*sqlx.DB)
+	sql := `SELECT U.id, U.username FROM UserGroups UG JOIN Users U ON UG.user_id=U.id WHERE UG.group_id=$1`
+	result := []UserData{}
+	err := db.Select(&result, sql, groupId)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}

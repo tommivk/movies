@@ -243,3 +243,17 @@ func GetRecommendations(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func GetGroupsMembers(c *gin.Context) {
+	groupId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'id'")
+		return
+	}
+	users, err := groupModel.GetUsersInGroup(c, groupId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}

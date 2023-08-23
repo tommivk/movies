@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Friends (
 );
 
 DO $$ BEGIN
-    CREATE TYPE NotificationType as ENUM ('info', 'friend_request', 'accepted_friend_request', 'denied_friend_request');
+    CREATE TYPE NotificationType as ENUM ('info', 'friend_request', 'accepted_friend_request', 'denied_friend_request', 'new_movie_recommendation');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;

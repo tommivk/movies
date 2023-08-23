@@ -30,21 +30,6 @@ CREATE TABLE IF NOT EXISTS Friends (
     status FriendshipStatus NOT NULL
 );
 
-DO $$ BEGIN
-    CREATE TYPE NotificationType as ENUM ('welcome', 'friend_request', 'accepted_friend_request', 'denied_friend_request', 'new_movie_recommendation');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
-CREATE TABLE IF NOT EXISTS Notifications (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES Users NOT NULL,
-    fired_by INTEGER,
-    notification_type NotificationType NOT NULL,
-    seen BOOLEAN NOT NULL DEFAULT FALSE,
-    timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
-);
-
 CREATE TABLE IF NOT EXISTS Groups (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
@@ -54,11 +39,29 @@ CREATE TABLE IF NOT EXISTS Groups (
     admin_id INTEGER REFERENCES Users
 );
 
+
 CREATE TABLE IF NOT EXISTS UserGroups (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users NOT NULL,
     group_id INTEGER REFERENCES Groups NOT NULL
 );
+
+DO $$ BEGIN
+    CREATE TYPE NotificationType as ENUM ('welcome', 'friend_request', 'accepted_friend_request', 'denied_friend_request', 'new_movie_recommendation');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+CREATE TABLE IF NOT EXISTS Notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES Users NOT NULL,
+    fired_by_user_id INTEGER REFERENCES Users,
+    fired_by_group_id INTEGER REFERENCES Groups,
+    notification_type NotificationType NOT NULL,
+    seen BOOLEAN NOT NULL DEFAULT FALSE,
+    timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
 
 CREATE TABLE IF NOT EXISTS Recommendations (
     id SERIAL PRIMARY KEY,

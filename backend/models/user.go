@@ -25,7 +25,7 @@ type LoginResponse struct {
 }
 
 func sendNotification(tx *sqlx.Tx, userId, firedBy int, notificationType enums.NotificationType) {
-	sql := "INSERT INTO Notifications (user_id, fired_by, notification_type) VALUES ($1, $2, $3)"
+	sql := "INSERT INTO Notifications (user_id, fired_by_user_id, notification_type) VALUES ($1, $2, $3)"
 	tx.Exec(sql, userId, firedBy, notificationType.ToString())
 }
 
@@ -61,7 +61,10 @@ func (u User) Create(c *gin.Context, username, passwordHash string) error {
 			VALUES($1, $2) RETURNING id`
 	var userId int
 	tx.QueryRow(sql, username, passwordHash).Scan(&userId)
-	sendNotification(tx, userId, 0, enums.Welcome)
+
+	sql = "INSERT INTO Notifications (user_id, notification_type) VALUES ($1, $2)"
+	tx.Exec(sql, userId, enums.Welcome.ToString())
+
 	err := tx.Commit()
 	if err != nil {
 		return err

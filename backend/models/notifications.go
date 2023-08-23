@@ -9,21 +9,32 @@ type Notification struct {
 	Id               int    `json:"id"`
 	Seen             bool   `json:"seen"`
 	Timestamp        string `json:"timestamp"`
-	FiredBy          int    `json:"firedBy" db:"fired_by"`
+	FiredByUserId    *int   `json:"firedByUserId" db:"fired_by_user_id"`
+	FiredByGroupId   *int   `json:"firedByGroupId" db:"fired_by_group_id"`
 	NotificationType string `json:"notificationType" db:"notification_type"`
 }
 
-func (*Notification) GetAllNotificationsByUserId(c *gin.Context, userId int) (*[]Notification, error) {
+type NotificationResult struct {
+	Notification
+	FiredByName *string `json:"firedByName" db:"fired_by_name"`
+}
+
+func (*Notification) GetAllNotificationsByUserId(c *gin.Context, userId int) (*[]NotificationResult, error) {
 	db := c.MustGet("db").(*sqlx.DB)
-	sql := `SELECT id, seen, timestamp, notification_type FROM Notifications
+	sql := `SELECT id, seen, timestamp, notification_type, fired_by_group_id, fired_by_user_id,
+			(CASE 
+				WHEN fired_by_group_id IS NOT NULL THEN (SELECT name FROM Groups WHERE id=fired_by_group_id)
+				ELSE (SELECT username FROM Users WHERE id=fired_by_user_id)
+			END) AS fired_by_name
+			FROM Notifications
 			WHERE user_id = $1
 			ORDER BY (seen is false) DESC, timestamp DESC`
-	result := []Notification{}
-	err := db.Select(&result, sql, userId)
+	notifications := []NotificationResult{}
+	err := db.Select(&notifications, sql, userId)
 	if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	return &notifications, nil
 }
 
 func (*Notification) SetNotificationSeen(c *gin.Context, notificationId int) error {

@@ -25,7 +25,7 @@ func getGroupMembers(tx *sqlx.Tx, groupId, userId int) []int {
 }
 
 func sendNotificationsToGroupMembers(tx *sqlx.Tx, userIds []int, groupId int) {
-	sql := `INSERT INTO Notifications (user_id, fired_by, notification_type) VALUES ($1, $2, $3)`
+	sql := `INSERT INTO Notifications (user_id, fired_by_group_id, notification_type) VALUES ($1, $2, $3)`
 	for _, userId := range userIds {
 		tx.Exec(sql, userId, groupId, enums.NewMovieRecommendation.ToString())
 	}

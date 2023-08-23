@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"log"
 	"movies/enums"
 	"movies/forms"
 	"movies/models"
@@ -73,9 +74,15 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	if err := userModel.Create(c, body.Username, passwordHash); err != nil {
+	userId, err := userModel.Create(c, body.Username, passwordHash)
+	if err != nil {
 		c.Error(err)
 		return
+	}
+	msg := fmt.Sprintf("Welcome to Mövies, %s!", body.Username)
+	err = notificationModel.CreateNotification(c, userId, msg, enums.Info)
+	if err != nil {
+		log.Println("Failed to create notification: ", err)
 	}
 
 	c.JSON(http.StatusCreated, "Account successfully created")

@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"movies/enums"
 	"movies/forms"
 	"movies/utils"
 	"strings"
@@ -21,6 +22,11 @@ type LoginResponse struct {
 	UserId   int    `json:"userId"`
 	Token    string `json:"token"`
 	Username string `json:"username"`
+}
+
+func sendNotification(tx *sqlx.Tx, userId, firedBy int, notificationType enums.NotificationType) {
+	sql := "INSERT INTO Notifications (user_id, fired_by, notification_type) VALUES ($1, $2, $3)"
+	tx.Exec(sql, userId, firedBy, notificationType.ToString())
 }
 
 func (u User) Login(c *gin.Context, credentials forms.Credentials) (*LoginResponse, error) {
@@ -48,16 +54,19 @@ func (u User) Login(c *gin.Context, credentials forms.Credentials) (*LoginRespon
 	return &res, nil
 }
 
-func (u User) Create(c *gin.Context, username, passwordHash string) (int, error) {
+func (u User) Create(c *gin.Context, username, passwordHash string) error {
 	db := c.MustGet("db").(*sqlx.DB)
+	tx := db.MustBegin()
 	sql := `INSERT INTO Users(username, password_hash)
 			VALUES($1, $2) RETURNING id`
 	var userId int
-	err := db.QueryRow(sql, username, passwordHash).Scan(&userId)
+	tx.QueryRow(sql, username, passwordHash).Scan(&userId)
+	sendNotification(tx, userId, 0, enums.Welcome)
+	err := tx.Commit()
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return userId, nil
+	return nil
 }
 
 func (u User) UserExists(c *gin.Context, username string) (bool, error) {
@@ -115,8 +124,13 @@ func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error
 		status = "pending_user_one"
 	}
 
+	tx := db.MustBegin()
 	sql := `INSERT INTO Friends (user_one, user_two, status) VALUES($1, $2, $3)`
-	_, err := db.Exec(sql, idOne, idTwo, status)
+	tx.Exec(sql, idOne, idTwo, status)
+
+	sendNotification(tx, addresseeId, userId, enums.FriendRequest)
+
+	err := tx.Commit()
 	if err != nil {
 		return err
 	}
@@ -125,18 +139,40 @@ func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error
 
 func (u User) AcceptFriendRequest(c *gin.Context, userId, requesterId int) error {
 	db := c.MustGet("db").(*sqlx.DB)
+
 	exists := friendshipOrRequestExists(db, userId, requesterId)
 	if !exists {
 		return errors.New("Friend request does not exist")
 	}
+
+	tx := db.MustBegin()
 	sql := `UPDATE Friends SET status='friends'
 			WHERE (user_one=$1 AND user_two=$2 AND status='pending_user_one')
 			OR (user_two=$1 AND user_one=$2 AND status='pending_user_two')`
-	_, err := db.Exec(sql, userId, requesterId)
+	tx.Exec(sql, userId, requesterId)
+
+	sendNotification(tx, requesterId, userId, enums.AcceptFriendRequest)
+
+	err := tx.Commit()
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (u User) DenyFriendRequest(c *gin.Context, userId, requesterId int) error {
+	db := c.MustGet("db").(*sqlx.DB)
+	tx := db.MustBegin()
+	sql := `DELETE FROM Friends WHERE (user_one=$1 AND user_two=$2) OR (user_one=$2 AND user_two=$1)`
+	tx.Exec(sql, userId, requesterId)
+
+	sendNotification(tx, requesterId, userId, enums.DeniedFriendRequest)
+
+	err := tx.Commit()
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func friendshipOrRequestExists(db *sqlx.DB, userId, friendId int) bool {

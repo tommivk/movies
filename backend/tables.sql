@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Friends (
 );
 
 DO $$ BEGIN
-    CREATE TYPE NotificationType as ENUM ('info', 'friend_request', 'accepted_friend_request', 'denied_friend_request', 'new_movie_recommendation');
+    CREATE TYPE NotificationType as ENUM ('welcome', 'friend_request', 'accepted_friend_request', 'denied_friend_request', 'new_movie_recommendation');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -39,8 +39,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS Notifications (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users NOT NULL,
-    fired_by INTEGER REFERENCES Users,
-    message TEXT NOT NULL,
+    fired_by INTEGER,
     notification_type NotificationType NOT NULL,
     seen BOOLEAN NOT NULL DEFAULT FALSE,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()

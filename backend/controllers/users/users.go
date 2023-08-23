@@ -1,9 +1,6 @@
 package users
 
 import (
-	"fmt"
-	"log"
-	"movies/enums"
 	"movies/forms"
 	"movies/models"
 	"movies/utils"
@@ -74,15 +71,10 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	userId, err := userModel.Create(c, body.Username, passwordHash)
+	err = userModel.Create(c, body.Username, passwordHash)
 	if err != nil {
 		c.Error(err)
 		return
-	}
-	msg := fmt.Sprintf("Welcome to Mövies, %s!", body.Username)
-	err = notificationModel.CreateNotification(c, userId, msg, enums.Info)
-	if err != nil {
-		log.Println("Failed to create notification: ", err)
 	}
 
 	c.JSON(http.StatusCreated, "Account successfully created")
@@ -112,12 +104,7 @@ func SendFriendRequest(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	msg := "You have a new friend request"
-	err = notificationModel.CreateNotification(c, body.AddresseeId, msg, enums.FriendRequest)
-	if err != nil {
-		c.Error(err)
-		return
-	}
+
 	c.JSON(http.StatusOK, "Friendship request sent")
 }
 
@@ -133,7 +120,6 @@ func GetFriendships(c *gin.Context) {
 
 func RespondToFriendRequest(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
-	username := c.MustGet("username").(string)
 	requesterId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid path param")
@@ -152,27 +138,16 @@ func RespondToFriendRequest(c *gin.Context) {
 			c.Error(err)
 			return
 		}
-		msg := fmt.Sprintf("%s accepted your friend request!", username)
-		err = notificationModel.CreateNotification(c, requesterId, msg, enums.AcceptFriendRequest)
-		if err != nil {
-			c.Error(err)
-			return
-		}
 		c.JSON(http.StatusOK, "Friend request successfully accepted")
 		return
 	}
 
-	err = userModel.DeleteFriendship(c, userId, requesterId)
+	err = userModel.DenyFriendRequest(c, userId, requesterId)
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	msg := fmt.Sprintf("%s rejected your friend request", username)
-	err = notificationModel.CreateNotification(c, requesterId, msg, enums.DeniedFriendRequest)
-	if err != nil {
-		c.Error(err)
-		return
-	}
+
 	c.JSON(http.StatusOK, "Friend request successfully rejected")
 
 }

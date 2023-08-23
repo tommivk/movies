@@ -48,16 +48,16 @@ func (u User) Login(c *gin.Context, credentials forms.Credentials) (*LoginRespon
 	return &res, nil
 }
 
-func (u User) Create(c *gin.Context, username, passwordHash string) error {
+func (u User) Create(c *gin.Context, username, passwordHash string) (int, error) {
 	db := c.MustGet("db").(*sqlx.DB)
 	sql := `INSERT INTO Users(username, password_hash)
-			VALUES($1, $2)`
-	_, err := db.Exec(sql, username, passwordHash)
-
+			VALUES($1, $2) RETURNING id`
+	var userId int
+	err := db.QueryRow(sql, username, passwordHash).Scan(&userId)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return userId, nil
 }
 
 func (u User) UserExists(c *gin.Context, username string) (bool, error) {

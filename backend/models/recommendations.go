@@ -17,6 +17,11 @@ type Recommendation struct {
 	Timestamp   string `json:"timestamp"`
 }
 
+type RecommendationResult struct {
+	Recommendation
+	Username string `json:"username" db:"username"`
+}
+
 func getGroupMembers(tx *sqlx.Tx, groupId, userId int) []int {
 	var userIds []int
 	sql := `SELECT U.id FROM UserGroups UG JOIN Users U ON UG.user_id = U.id WHERE UG.group_id=$1 AND UG.user_id != $2`
@@ -48,10 +53,12 @@ func (r *Recommendation) AddRecommendation(c *gin.Context, userId, movieId, grou
 	return nil
 }
 
-func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int) (*[]Recommendation, error) {
+func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int) (*[]RecommendationResult, error) {
 	db := c.MustGet("db").(*sqlx.DB)
-	sql := `SELECT id, movie_id, group_id, user_id, description, timestamp FROM Recommendations WHERE group_id = $1`
-	result := []Recommendation{}
+	sql := `SELECT id, movie_id, group_id, user_id, description, timestamp,
+			(SELECT username FROM Users U WHERE U.id=user_id) as username
+			FROM Recommendations WHERE group_id = $1`
+	result := []RecommendationResult{}
 	err := db.Select(&result, sql, groupId)
 	if err != nil {
 		return nil, err

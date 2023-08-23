@@ -182,16 +182,16 @@ func RecommendMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, "Recommendation successfully added")
 }
 
-type RecommendationsResult struct {
-	models.Recommendation
+type RecommendationsResponse struct {
+	models.RecommendationResult
 	Movie models.Movie `json:"movie"`
 }
 
-func addMovieDataToRecommendations(c *gin.Context, recommendations []models.Recommendation) (*[]RecommendationsResult, error) {
-	result := []RecommendationsResult{}
+func addMovieDataToRecommendations(c *gin.Context, recommendations []models.RecommendationResult) (*[]RecommendationsResponse, error) {
+	result := []RecommendationsResponse{}
 
 	for i := 0; i < len(recommendations); i++ {
-		res := RecommendationsResult{Recommendation: recommendations[i], Movie: models.Movie{}}
+		res := RecommendationsResponse{RecommendationResult: recommendations[i], Movie: models.Movie{}}
 		movieData, err := moviesModel.FetchMovieById(c, strconv.Itoa(recommendations[i].MovieId))
 		if err != nil {
 			return nil, err

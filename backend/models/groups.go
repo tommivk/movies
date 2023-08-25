@@ -32,10 +32,16 @@ func (g *Group) CreateNewGroup(c *gin.Context, userId int, name string, private 
 	return &group, nil
 }
 
-func (g *Group) GetGroupById(c *gin.Context, groupId int) (*Group, error) {
+type GroupWithMemberCount struct {
+	Group
+	MemberCount int `json:"memberCount" db:"member_count"`
+}
+
+func (g *Group) GetGroupById(c *gin.Context, groupId int) (*GroupWithMemberCount, error) {
 	db := c.MustGet("db").(*sqlx.DB)
-	sql := `SELECT id, name, created_at, private, admin_id FROM Groups WHERE id = $1`
-	result := Group{}
+	sql := `SELECT G.id, name, created_at, private, admin_id, COUNT(UG.id) as member_count
+			FROM Groups G JOIN UserGroups UG ON G.id = UG.group_id WHERE G.id = $1 GROUP BY G.id`
+	result := GroupWithMemberCount{}
 	err := db.Get(&result, sql, groupId)
 	if err != nil {
 		return nil, err

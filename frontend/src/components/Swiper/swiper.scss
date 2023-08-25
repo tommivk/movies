@@ -1,7 +1,9 @@
 @use "../../sassStyles/theme";
+@use "../../sassStyles/variables";
 
 $swiperSlideGap: 50px;
 $widthSmall: 200px;
+$widthMedium: variables.$recommendationCardWidth;
 
 .swiperContainer {
   position: relative;
@@ -43,6 +45,27 @@ $widthSmall: 200px;
 .swiperContainer.sm {
   .swiper-slide {
     width: $widthSmall !important;
+  }
+}
+
+.swiperContainer.md {
+  width: (3 * $widthMedium) + (2 * $swiperSlideGap);
+
+  .swiper-slide {
+    width: $widthMedium !important;
+  }
+}
+
+@media (max-width: 1650px) {
+  .swiperContainer.md {
+    width: (2 * $widthMedium) + (1 * $swiperSlideGap);
+  }
+}
+
+@media (max-width: 1150px) {
+  .swiperContainer.md {
+    margin: auto;
+    width: ($widthMedium);
   }
 }
 

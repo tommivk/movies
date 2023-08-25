@@ -7,7 +7,7 @@ import "swiper/css/bundle";
 
 type Props = {
   slides: React.ReactNode[];
-  size?: "sm";
+  size?: "sm" | "md";
 };
 
 const Swiper = ({ slides, size = "sm" }: Props) => {

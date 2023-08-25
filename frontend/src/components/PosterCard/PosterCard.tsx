@@ -1,17 +1,19 @@
 import { Link } from "react-router-dom";
 import { Movie } from "../../../types";
 import { getBackdropImageUrl, getPosterImageUrl } from "../../../utils";
+import classNames from "classnames";
 
 import "./posterCard.scss";
-
-type Props = {
-  movie: Movie;
-};
 
 const BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
 const placeholderImg = `${BASE_URL}/placeholder.png`;
 
-const PosterCard = ({ movie }: Props) => {
+type Props = {
+  movie: Movie;
+  size?: "sm" | "md";
+};
+
+const PosterCard = ({ movie, size = "md" }: Props) => {
   const image =
     getPosterImageUrl(movie.posterPath, "md") ??
     getBackdropImageUrl(movie.backdropPath, "md") ??
@@ -22,7 +24,7 @@ const PosterCard = ({ movie }: Props) => {
 
   return (
     <Link className="link" to={`/movies/${movie.id}`}>
-      <div className="posterCard">
+      <div className={classNames("posterCard", { [size]: size })}>
         <img alt={movie.title} src={image} />
         <h1>{movie.title}</h1>
         <p>

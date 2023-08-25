@@ -3,7 +3,6 @@
 
 .posterCard {
   height: fit-content;
-  width: variables.$posterCardWidth;
   text-align: center;
   padding-bottom: 20px;
   border-radius: 10px;
@@ -13,8 +12,6 @@
   }
 
   img {
-    height: 300px;
-    width: 200px;
     object-fit: cover;
     border-radius: 10px;
   }
@@ -30,6 +27,24 @@
     span:nth-child(2)::before {
       content: "•";
       margin: 5px;
+    }
+  }
+
+  &.sm {
+    width: 140px;
+
+    img {
+      height: 200px;
+      width: 140px;
+    }
+  }
+
+  &.md {
+    width: variables.$posterCardWidthMd;
+
+    img {
+      height: 300px;
+      width: 200px;
     }
   }
 }

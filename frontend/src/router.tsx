@@ -12,6 +12,7 @@ import MovieSearch from "./components/MovieSearch/MovieSearch";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GroupSearch from "./components/GroupSearch/GroupSearch";
 import GroupPage from "./components/GroupPage/GroupPage";
+import ProfilePage from "./components/ProfilePage/ProfilePage";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
         <Route path="/groups" element={<GroupSearch />} />
         <Route path="/groups/:id" element={<GroupPage />} />
         <Route path="/favourites" element={<Favourites />} />
+        <Route path="/me" element={<ProfilePage />} />
       </Route>
     </Route>
   )

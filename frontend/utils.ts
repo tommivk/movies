@@ -1,5 +1,6 @@
 import camelcaseKeys from "camelcase-keys";
 import useAppStore from "./src/store";
+import { Notification } from "./types";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -93,3 +94,35 @@ export const getProfileImageUrl = (
 
 export const runtimeToString = (minutes: number) =>
   `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+
+export const getNotificationMessage = (
+  notification: Notification
+): { message: string; href?: string } => {
+  const { firedByGroupId, firedByName, notificationType } = notification;
+
+  switch (notificationType) {
+    case "welcome":
+      return { message: `Welcome to Mövies!` };
+    case "friend_request":
+      return {
+        message: `You have a new friend request from ${firedByName}!`,
+        href: "/me",
+      };
+    case "accepted_friend_request":
+      return {
+        message: `Your friend request was accepted by ${firedByName}!`,
+        href: "/me",
+      };
+    case "denied_friend_request":
+      return {
+        message: `${firedByName} denied your friend request`,
+        href: "/me",
+      };
+    case "new_movie_recommendation":
+    default:
+      return {
+        message: `${firedByName}: New movie recommendation`,
+        href: `/groups/${firedByGroupId}`,
+      };
+  }
+};

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import useModalContext from "../../context/useModalContext";
 import BurgerDropDown from "../BurgerDropDown.tsx/BurgerDropDown";
-import NotificationDropDown from "../NotificationDropDown.tsx/NotificationDropDown";
+import NotificationDropDown from "../NotificationDropDown/NotificationDropDown";
 
 import "./navigation.scss";
 

@@ -9,6 +9,7 @@ import Button from "../Button/Button";
 import DropDownMenu from "../DropDownMenu/DropDownMenu";
 import { Notification } from "../../../types";
 import useSetNotificationSeen from "../../hooks/useSetNotificationSeen";
+import { getNotificationMessage } from "../../../utils";
 
 import "./notificationDropDown.scss";
 
@@ -17,15 +18,12 @@ const NotificationMessage = ({
 }: {
   notification: Notification;
 }) => {
+  const location = useLocation();
   const { token } = useAppStore().loggedUser ?? {};
   const { mutate: setNotificationSeen } = useSetNotificationSeen();
-
-  const location = useLocation();
-  const href =
-    notification.notificationType !== "friend_request"
-      ? "/users"
-      : location.pathname;
   const seen = notification.seen;
+  const { message, href = location.pathname } =
+    getNotificationMessage(notification);
 
   return (
     <Menu.Item>
@@ -40,7 +38,7 @@ const NotificationMessage = ({
           <Info />
         </div>
         <div>
-          <p className="notificationMessage__message">{notification.message}</p>
+          <p className="notificationMessage__message">{message}</p>
           <p className="notificationMessage__date">
             {moment(notification.timestamp).fromNow()}
           </p>
@@ -56,7 +54,7 @@ const NotificationList = () => {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    navigate("/users");
+    navigate("/me");
   };
 
   const limit = 7;

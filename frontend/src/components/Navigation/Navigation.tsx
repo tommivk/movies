@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import useModalContext from "../../context/useModalContext";
-import BurgerDropDown from "../BurgerDropDown.tsx/BurgerDropDown";
+import BurgerDropDown from "../BurgerDropDown/BurgerDropDown";
 import NotificationDropDown from "../NotificationDropDown/NotificationDropDown";
 
 import "./navigation.scss";

@@ -57,7 +57,7 @@ func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int
 	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT id, movie_id, group_id, user_id, description, timestamp,
 			(SELECT username FROM Users U WHERE U.id=user_id) as username
-			FROM Recommendations WHERE group_id = $1`
+			FROM Recommendations WHERE group_id = $1 ORDER BY timestamp DESC`
 	result := []RecommendationResult{}
 	err := db.Select(&result, sql, groupId)
 	if err != nil {

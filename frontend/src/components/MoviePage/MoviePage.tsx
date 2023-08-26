@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import {
+  fetchData,
   getFullSizeImageUrl,
   getProfileImageUrl,
   runtimeToString,
@@ -7,6 +8,7 @@ import {
 import { Cast, Movie } from "../../../types";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
 import useAppStore from "../../store";
 import Modal from "../Modal/Modal";
 import LoadingContainer from "../LoadingContainer/LoadingContainer";
@@ -20,6 +22,12 @@ import useFetchMovie from "../../hooks/useFetchMovie";
 import PosterCard from "../PosterCard/PosterCard";
 import Swiper from "../Swiper/Swiper";
 import RatingCircle from "../RatingCircle/RatingCircle";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import FormLabel from "../FormLabel/FormLabel";
+import FormFieldError from "../FormFieldError/FormFieldError";
+import FormSelect from "../FormSelect/FormSelect";
 
 import "./moviePage.scss";
 
@@ -116,6 +124,127 @@ const Ratings = ({ movie }: { movie: Movie }) => {
   );
 };
 
+const RecommmendationForm = ({
+  movieId,
+  closeModal,
+}: {
+  movieId: number;
+  closeModal: () => void;
+}) => {
+  const { token } = useAppStore().loggedUser ?? {};
+  const groups = useAppStore().groups;
+
+  const { mutate } = useMutation({
+    mutationKey: ["addRecommendation"],
+    mutationFn: (body: {
+      groupId: number;
+      movieId: number;
+      description: string;
+    }) =>
+      fetchData({
+        path: "/groups/recommendations",
+        method: "POST",
+        body,
+        token,
+      }),
+    onSuccess: () => toast.success("Recommendation submitted!"),
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const schema = z.object({
+    groupId: z.number({ required_error: "Group is required" }),
+    description: z.string().min(1, "Description is required"),
+  });
+  type FormSchema = z.infer<typeof schema>;
+
+  const {
+    handleSubmit,
+    register,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormSchema>({
+    resolver: zodResolver(schema),
+  });
+
+  const selectOptions = groups.map((group) => ({
+    value: group.id,
+    label: group.name,
+  }));
+
+  return (
+    <form
+      className="recommendationForm"
+      onSubmit={handleSubmit((data) =>
+        mutate(
+          { ...data, movieId },
+          {
+            onSuccess: () => {
+              reset();
+              closeModal();
+            },
+          }
+        )
+      )}
+    >
+      <FormLabel>Group</FormLabel>
+      <Controller
+        control={control}
+        name="groupId"
+        render={({ field: { onChange } }) => (
+          <FormSelect options={selectOptions} onChange={onChange} />
+        )}
+      />
+      <FormFieldError message={errors.groupId?.message} />
+
+      <FormLabel>Description</FormLabel>
+      <textarea
+        className="recommendationForm__textArea"
+        rows={5}
+        spellCheck="false"
+        {...register("description")}
+      />
+      <FormFieldError message={errors.description?.message} />
+
+      <Button type="submit">Submit</Button>
+    </form>
+  );
+};
+
+const RecommendationModal = ({ movieId }: { movieId: number }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const groups = useAppStore().groups;
+  const { userId } = useAppStore().loggedUser ?? {};
+  return (
+    <>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Recommend movie"
+      >
+        <RecommmendationForm
+          movieId={movieId}
+          closeModal={() => setModalOpen(false)}
+        />
+      </Modal>
+      <Button
+        onClick={() => {
+          if (!userId) {
+            return toast.error("You must be logged in to recommend movies");
+          }
+          if (groups.length === 0) {
+            return toast.error("You don't belong in any groups");
+          }
+          setModalOpen(true);
+        }}
+      >
+        <span className="icon">💬</span>
+        Recommend Movie
+      </Button>
+    </>
+  );
+};
+
 const TopSection = ({ movie }: { movie: Movie }) => {
   const year = new Date(movie.releaseDate).getFullYear();
   const imgSrc = getFullSizeImageUrl(movie.backdropPath);
@@ -148,22 +277,17 @@ const TopSection = ({ movie }: { movie: Movie }) => {
         <div className="movie__bottom">
           <Ratings movie={movie} />
 
-          <div
-            className="movie__favourite"
-            role="button"
-            onClick={() => toggleFavourite()}
-            data-cy="favouriteBtn"
-          >
-            <span
-              className={`movie__heart ${
-                isFavourited ? "movie__heart--striked" : ""
-              }`}
-            >
-              ♡
-            </span>
-            <span>
-              {isFavourited ? "Remove from favourites" : "Add to favourites"}
-            </span>
+          <div className="movie__userActions">
+            <Button onClick={() => toggleFavourite()} data-cy="favouriteBtn">
+              <span className={`icon ${isFavourited ? "icon--striked" : ""}`}>
+                ♡
+              </span>
+              <span>
+                {isFavourited ? "Remove from favourites" : "Add to favourites"}
+              </span>
+            </Button>
+
+            <RecommendationModal movieId={movie.id} />
           </div>
         </div>
       </div>

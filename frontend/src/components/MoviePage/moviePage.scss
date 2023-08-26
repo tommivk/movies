@@ -79,15 +79,13 @@ $personGap: 10px;
       margin: 0;
     }
 
-    .movie__bottom {
+    .movie__userActions {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 20px;
-      margin-top: 20px;
-      justify-content: space-between;
-
-      .movie__favourite {
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 50px;
+      width: 250px;
+      button {
         background: rgba(41, 40, 40, 0.6);
         padding: 5px 30px;
         border-radius: 20px;
@@ -95,10 +93,15 @@ $personGap: 10px;
         align-items: center;
         gap: 10px;
         cursor: pointer;
-        margin-bottom: 50px;
+        font-weight: 600;
+        width: 100%;
+        font-size: 0.9rem;
 
-        .movie__heart {
+        .icon {
           font-size: 30px;
+          width: 40px;
+          height: 40px;
+          text-align: center;
           font-weight: bold;
           position: relative;
 
@@ -115,7 +118,7 @@ $personGap: 10px;
               font-weight: 200;
               position: absolute;
               bottom: 20px;
-              left: -4px;
+              left: 2px;
               transform: rotate(30deg);
             }
           }
@@ -124,19 +127,28 @@ $personGap: 10px;
         &:hover {
           background: rgba(41, 40, 40, 0.8);
         }
-        &:hover .movie__heart {
+        &:hover .icon {
           color: red;
         }
-        &:hover .movie__heart::after {
+        &:hover .icon::after {
           border-bottom: 3px solid rgb(247, 0, 0);
         }
-        &:hover .movie__heart--striked {
+        &:hover .icon--striked {
           color: rgb(99, 92, 92);
         }
-        &:hover .movie__heart--striked::after {
+        &:hover .icon--striked::after {
           border-bottom: 3px solid rgb(99, 92, 92);
         }
       }
+    }
+
+    .movie__bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      margin-top: 20px;
+      justify-content: space-between;
     }
   }
 }
@@ -178,6 +190,8 @@ $personGap: 10px;
     box-sizing: border-box;
     width: 1200px;
     max-width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
 
     &__buttons {
       display: flex;
@@ -233,6 +247,21 @@ $personGap: 10px;
   button {
     display: block;
     margin: auto;
+  }
+}
+
+.recommendationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  min-width: 300px;
+
+  &__textArea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    min-width: 200px;
   }
 }
 

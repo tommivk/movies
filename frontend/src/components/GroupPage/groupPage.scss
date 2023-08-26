@@ -1,0 +1,92 @@
+@use "../../sassStyles/theme";
+@use "../../sassStyles/variables";
+
+.groupPage {
+  padding: 20px;
+
+  &__memberCount {
+    display: flex;
+    width: fit-content;
+    margin: auto;
+    color: theme.$secondaryGrey;
+    cursor: pointer;
+    gap: 5px;
+  }
+}
+
+.recommendations {
+  word-wrap: break-word;
+  padding: 0px 100px;
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    text-align: center;
+  }
+}
+
+.recommendationCard {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 15px;
+  box-sizing: border-box;
+  background: rgb(26, 25, 25);
+  border-radius: 15px;
+  width: variables.$recommendationCardWidth;
+  height: 340px;
+
+  &__quoteMark {
+    fill: whitesmoke;
+    margin: 15px;
+    transform: scale(0.9);
+  }
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+
+    p {
+      font-weight: 500;
+      margin: 15px;
+    }
+  }
+}
+
+.groupMemberList {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
+  min-width: 250px;
+
+  &__member {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    img {
+      height: 40px;
+      width: 40px;
+      background: theme.$secondaryGrey;
+      border-radius: 50%;
+    }
+  }
+}
+
+@media (max-width: 650px) {
+  .recommendations {
+    padding: 0px;
+  }
+  .recommendationCard {
+    flex-wrap: wrap-reverse;
+    height: fit-content;
+    width: variables.$recommendationCardWidthSmall;
+    margin: auto;
+  }
+}

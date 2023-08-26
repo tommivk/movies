@@ -79,20 +79,32 @@ export type Friendships = {
   receivedRequests: User[];
 };
 
-type NotificationType =
-  | "info"
+export type NotificationType =
+  | "welcome"
   | "friend_request"
   | "accepted_friend_request"
-  | "denied_friend_request";
+  | "denied_friend_request"
+  | "new_movie_recommendation";
 
 export type Notification = {
   id: number;
   userId?: number;
-  firedBy?: number;
-  message: string;
+  firedByUserId?: number;
+  firedByGroupId?: number;
+  firedByName?: string;
   seen: boolean;
   timestamp: string;
   notificationType: NotificationType;
+};
+
+export type Recommendation = {
+  id: number;
+  groupId: number;
+  userId: number;
+  username: string;
+  description?: string;
+  timestamp: string;
+  movie: Movie;
 };
 
 export type Group = {
@@ -101,4 +113,6 @@ export type Group = {
   createdAt: string;
   private: boolean;
   adminId: number;
+  recommendations: Recommendation[];
+  memberCount?: number;
 };

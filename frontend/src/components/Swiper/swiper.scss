@@ -11,6 +11,10 @@ $widthMedium: variables.$recommendationCardWidth;
   user-select: none;
 }
 
+.swiper-slide {
+  width: fit-content !important;
+}
+
 .swiper-btn-next,
 .swiper-btn-prev {
   width: 40px;
@@ -42,30 +46,27 @@ $widthMedium: variables.$recommendationCardWidth;
   display: none;
 }
 
-.swiperContainer.sm {
-  .swiper-slide {
-    width: $widthSmall !important;
-  }
-}
-
 .swiperContainer.md {
   width: (3 * $widthMedium) + (2 * $swiperSlideGap);
-
-  .swiper-slide {
-    width: $widthMedium !important;
-  }
 }
 
 @media (max-width: 1650px) {
   .swiperContainer.md {
-    width: (2 * $widthMedium) + (1 * $swiperSlideGap);
+    width: (2 * $widthMedium) + $swiperSlideGap;
   }
 }
 
 @media (max-width: 1150px) {
   .swiperContainer.md {
     margin: auto;
-    width: ($widthMedium);
+    width: $widthMedium;
+  }
+}
+
+@media (max-width: 650px) {
+  .swiperContainer.md {
+    margin: auto;
+    width: variables.$recommendationCardWidthSmall;
   }
 }
 

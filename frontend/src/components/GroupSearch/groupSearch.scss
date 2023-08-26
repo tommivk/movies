@@ -1,6 +1,9 @@
 @use "../../sassStyles/theme";
 
-.groupPage {
+.groupSearch {
+  max-width: 1400px;
+  margin: auto;
+
   input {
     padding: 10px 20px;
     margin: auto;

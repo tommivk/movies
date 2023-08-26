@@ -9,10 +9,10 @@ import useJoinGroup from "../../hooks/useJoinGroup";
 import useLeaveGroup from "../../hooks/useLeaveGroup";
 import useGetAllGroups from "../../hooks/useGetAllGroups";
 import NewGroupForm from "../NewGroupForm/NewGroupForm";
-
-import "./groupSearch.scss";
 import FormInput from "../FormInput/FormInput";
 import { Link } from "react-router-dom";
+
+import "./groupSearch.scss";
 
 const NewGroupModal = ({
   open,
@@ -173,7 +173,7 @@ const GroupSearch = () => {
   const [debouncedSearch] = useDebounce(search, 500);
 
   return (
-    <div className="groupPage">
+    <div className="groupSearch">
       <h1 className="text-center">Discover Groups</h1>
       <SearchInput
         type="text"

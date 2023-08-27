@@ -37,7 +37,7 @@ type GroupWithMemberCount struct {
 
 func (g *Group) GetGroupById(c *gin.Context, groupId int) (*GroupWithMemberCount, error) {
 	sql := `SELECT G.id, name, created_at, private, admin_id, COUNT(UG.id) as member_count
-			FROM Groups G JOIN UserGroups UG ON G.id = UG.group_id WHERE G.id = $1 GROUP BY G.id`
+			FROM Groups G LEFT JOIN UserGroups UG ON G.id = UG.group_id WHERE G.id = $1 GROUP BY G.id`
 	result := GroupWithMemberCount{}
 	err := db.Get(&result, sql, groupId)
 	if err != nil {

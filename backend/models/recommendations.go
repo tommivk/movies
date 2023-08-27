@@ -37,8 +37,6 @@ func sendNotificationsToGroupMembers(tx *sqlx.Tx, userIds []int, groupId int) {
 }
 
 func (r *Recommendation) AddRecommendation(c *gin.Context, userId, movieId, groupId int, description string) error {
-	db := c.MustGet("db").(*sqlx.DB)
-
 	tx := db.MustBegin()
 	sql := `INSERT INTO Recommendations (movie_id, group_id, user_id, description) VALUES ($1, $2, $3, $4)`
 	tx.Exec(sql, movieId, groupId, userId, utils.NewNullString(description))
@@ -54,7 +52,6 @@ func (r *Recommendation) AddRecommendation(c *gin.Context, userId, movieId, grou
 }
 
 func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int) (*[]RecommendationResult, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT id, movie_id, group_id, user_id, description, timestamp,
 			(SELECT username FROM Users U WHERE U.id=user_id) as username
 			FROM Recommendations WHERE group_id = $1 ORDER BY timestamp DESC`

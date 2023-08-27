@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
 
 type Notification struct {
@@ -20,7 +19,6 @@ type NotificationResult struct {
 }
 
 func (*Notification) GetAllNotificationsByUserId(c *gin.Context, userId int) (*[]NotificationResult, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT id, seen, timestamp, notification_type, fired_by_group_id, fired_by_user_id,
 			(CASE 
 				WHEN fired_by_group_id IS NOT NULL THEN (SELECT name FROM Groups WHERE id=fired_by_group_id)
@@ -38,7 +36,6 @@ func (*Notification) GetAllNotificationsByUserId(c *gin.Context, userId int) (*[
 }
 
 func (*Notification) SetNotificationSeen(c *gin.Context, notificationId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `UPDATE Notifications SET seen=true WHERE id=$1`
 	_, err := db.Exec(sql, notificationId)
 	if err != nil {

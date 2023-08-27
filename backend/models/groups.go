@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
 
 type Group struct {
@@ -17,7 +16,6 @@ type Group struct {
 }
 
 func (g *Group) CreateNewGroup(c *gin.Context, userId int, name string, private bool, passwordHash string) (*Group, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `INSERT INTO Groups (admin_id, name, private, password_hash) VALUES ($1, $2, $3, $4)
 			RETURNING id, admin_id, name, created_at, private`
 	group := Group{}
@@ -38,7 +36,6 @@ type GroupWithMemberCount struct {
 }
 
 func (g *Group) GetGroupById(c *gin.Context, groupId int) (*GroupWithMemberCount, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT G.id, name, created_at, private, admin_id, COUNT(UG.id) as member_count
 			FROM Groups G JOIN UserGroups UG ON G.id = UG.group_id WHERE G.id = $1 GROUP BY G.id`
 	result := GroupWithMemberCount{}
@@ -50,7 +47,6 @@ func (g *Group) GetGroupById(c *gin.Context, groupId int) (*GroupWithMemberCount
 }
 
 func (g *Group) GetGroupPasswordHashById(c *gin.Context, groupId int) (*string, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT password_hash FROM Groups WHERE id = $1`
 	result := ""
 	err := db.Get(&result, sql, groupId)
@@ -61,7 +57,6 @@ func (g *Group) GetGroupPasswordHashById(c *gin.Context, groupId int) (*string, 
 }
 
 func (g *Group) GetGroups(c *gin.Context, search string) (*[]Group, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	result := []Group{}
 	sql := `SELECT id, name, created_at, private, admin_id FROM Groups WHERE LOWER(name) LIKE '%' || $1 || '%'`
 	err := db.Select(&result, sql, strings.ToLower(search))
@@ -72,7 +67,6 @@ func (g *Group) GetGroups(c *gin.Context, search string) (*[]Group, error) {
 }
 
 func (g *Group) AddUserToGroup(c *gin.Context, userId, groupId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `INSERT INTO UserGroups (user_id, group_id) VALUES ($1, $2)`
 	_, err := db.Exec(sql, userId, groupId)
 	if err != nil {
@@ -82,7 +76,6 @@ func (g *Group) AddUserToGroup(c *gin.Context, userId, groupId int) error {
 }
 
 func (g *Group) IsPrivateGroup(c *gin.Context, groupId int) (bool, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	var isPrivate bool
 	sql := `SELECT private FROM Groups WHERE id=$1`
 	err := db.QueryRow(sql, groupId).Scan(&isPrivate)
@@ -93,7 +86,6 @@ func (g *Group) IsPrivateGroup(c *gin.Context, groupId int) (bool, error) {
 }
 
 func (g *Group) IsUserInGroup(c *gin.Context, userId, groupId int) (bool, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	var exists bool
 	sql := `SELECT EXISTS(SELECT 1 FROM UserGroups WHERE user_id=$1 AND group_id = $2)`
 	err := db.QueryRow(sql, userId, groupId).Scan(&exists)
@@ -104,7 +96,6 @@ func (g *Group) IsUserInGroup(c *gin.Context, userId, groupId int) (bool, error)
 }
 
 func (g *Group) GetGroupsByUserId(c *gin.Context, userId int) (*[]Group, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT G.id as id, name, created_at, private, admin_id FROM UserGroups UG JOIN Groups G ON G.id = UG.group_id WHERE UG.user_id=$1`
 	result := []Group{}
 	err := db.Select(&result, sql, userId)
@@ -115,7 +106,6 @@ func (g *Group) GetGroupsByUserId(c *gin.Context, userId int) (*[]Group, error) 
 }
 
 func (g *Group) RemoveUserFromGroup(c *gin.Context, userId, groupId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `DELETE FROM UserGroups WHERE user_id=$1 AND group_id=$2`
 	_, err := db.Exec(sql, userId, groupId)
 	if err != nil {
@@ -125,7 +115,6 @@ func (g *Group) RemoveUserFromGroup(c *gin.Context, userId, groupId int) error {
 }
 
 func (g *Group) GetUsersInGroup(c *gin.Context, groupId int) (*[]UserData, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT U.id, U.username FROM UserGroups UG JOIN Users U ON UG.user_id=U.id WHERE UG.group_id=$1`
 	result := []UserData{}
 	err := db.Select(&result, sql, groupId)

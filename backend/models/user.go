@@ -31,7 +31,6 @@ func sendNotification(tx *sqlx.Tx, userId, firedBy int, notificationType enums.N
 
 func (u User) Login(c *gin.Context, credentials forms.Credentials) (*LoginResponse, error) {
 	SECRET := c.MustGet("SECRET").(string)
-	db := c.MustGet("db").(*sqlx.DB)
 
 	user := User{}
 	err := db.Get(&user, "SELECT * FROM Users WHERE username=$1", credentials.Username)
@@ -55,7 +54,6 @@ func (u User) Login(c *gin.Context, credentials forms.Credentials) (*LoginRespon
 }
 
 func (u User) Create(c *gin.Context, username, passwordHash string) error {
-	db := c.MustGet("db").(*sqlx.DB)
 	tx := db.MustBegin()
 	sql := `INSERT INTO Users(username, password_hash)
 			VALUES($1, $2) RETURNING id`
@@ -73,7 +71,6 @@ func (u User) Create(c *gin.Context, username, passwordHash string) error {
 }
 
 func (u User) UserExists(c *gin.Context, username string) (bool, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	var userExists bool
 	sql := `SELECT EXISTS(SELECT 1 FROM Users WHERE LOWER(username)=$1)`
 	err := db.QueryRow(sql, strings.ToLower(username)).Scan(&userExists)
@@ -84,7 +81,6 @@ func (u User) UserExists(c *gin.Context, username string) (bool, error) {
 }
 
 func (u User) GetAllUsers(c *gin.Context) (*[]UserData, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT id, username FROM Users`
 	var result []UserData
 	err := db.Select(&result, sql)
@@ -95,7 +91,6 @@ func (u User) GetAllUsers(c *gin.Context) (*[]UserData, error) {
 }
 
 func (u User) GetUserByUsername(c *gin.Context, username string) (*UserData, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT id, username FROM Users WHERE username=$1`
 	var user UserData
 	err := db.Get(&user, sql, username)
@@ -106,8 +101,6 @@ func (u User) GetUserByUsername(c *gin.Context, username string) (*UserData, err
 }
 
 func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
-
 	if userId == addresseeId {
 		return errors.New("You cannot friend yourself")
 	}
@@ -141,8 +134,6 @@ func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error
 }
 
 func (u User) AcceptFriendRequest(c *gin.Context, userId, requesterId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
-
 	exists := friendshipOrRequestExists(db, userId, requesterId)
 	if !exists {
 		return errors.New("Friend request does not exist")
@@ -164,7 +155,6 @@ func (u User) AcceptFriendRequest(c *gin.Context, userId, requesterId int) error
 }
 
 func (u User) DenyFriendRequest(c *gin.Context, userId, requesterId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
 	tx := db.MustBegin()
 	sql := `DELETE FROM Friends WHERE (user_one=$1 AND user_two=$2) OR (user_one=$2 AND user_two=$1)`
 	tx.Exec(sql, userId, requesterId)
@@ -215,7 +205,6 @@ type Friendships struct {
 }
 
 func (u User) GetAllFriendshipsByUserId(c *gin.Context, userId int) (*Friendships, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	sql := `SELECT F.id, F.status, U1.id as user_one_id, U1.username as user_one_username, U2.id as user_two_id, U2.username as user_two_username
 			FROM Friends F
 			JOIN Users U1 ON U1.id=F.user_one
@@ -265,7 +254,6 @@ func (u User) GetAllFriendshipsByUserId(c *gin.Context, userId int) (*Friendship
 }
 
 func (u User) DeleteFriendship(c *gin.Context, userId, friendId int) error {
-	db := c.MustGet("db").(*sqlx.DB)
 	exists := friendshipOrRequestExists(db, userId, friendId)
 	if !exists {
 		return errors.New("Friendship does not exist")

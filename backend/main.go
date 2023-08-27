@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,41 +13,16 @@ import (
 	"movies/controllers/ratings"
 	"movies/controllers/users"
 	"movies/middleware"
-	"movies/utils"
+	"movies/models"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 )
 
 func ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
-}
-
-func createTables(db *sqlx.DB) {
-	sql, err := ioutil.ReadFile("./tables.sql")
-	if err != nil {
-		log.Fatal("failed to read ./tables.sql", err)
-	}
-	_, err = db.Exec(string(sql))
-	if err != nil {
-		log.Fatal("failed to create tables: ", err)
-	}
-}
-
-func addTestUser(db *sqlx.DB) {
-	passwordHash, err := utils.HashPassword("tester")
-	if err != nil {
-		log.Fatal("Failed to hash testuser password: ", err)
-	}
-	sql := `INSERT INTO USERS(username, password_hash) VALUES($1, $2)
-			ON CONFLICT DO NOTHING`
-	_, err = db.Exec(sql, "tester", passwordHash)
-	if err != nil {
-		log.Fatal("Failed to create test user: ", err)
-	}
 }
 
 func main() {
@@ -68,20 +42,19 @@ func main() {
 		connStr = "postgres://user:pass@localhost:5432/testDB?sslmode=disable"
 	}
 
-	db, err := sqlx.Open("postgres", connStr)
+	err := models.InitDB(connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err = db.Ping(); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("DB connected")
-
-	createTables(db)
 	if ENV == "test" {
-		addTestUser(db)
+		err = models.AddTestUser()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+
+	fmt.Println("DB connected")
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -94,7 +67,6 @@ func main() {
 	router.Use(middleware.ErrorHandler())
 	router.Use(middleware.APIKey(API_KEY))
 	router.Use(middleware.Secret(SECRET))
-	router.Use(middleware.DBConn(db))
 
 	public := router.Group("/")
 	public.GET("/ping", ping)

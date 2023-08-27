@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
 
 type Rating struct {
@@ -15,8 +14,6 @@ type Rating struct {
 }
 
 func (r *Rating) RateMovie(c *gin.Context, movieId string, userId, rating int) error {
-	db := c.MustGet("db").(*sqlx.DB)
-
 	var ratingExists bool
 	sql := `SELECT EXISTS(SELECT 1 FROM Ratings WHERE user_id=$1 AND movie_id=$2)`
 	err := db.QueryRow(sql, userId, movieId).Scan(&ratingExists)
@@ -36,8 +33,6 @@ func (r *Rating) RateMovie(c *gin.Context, movieId string, userId, rating int) e
 }
 
 func (r *Rating) UpdateMovieRating(c *gin.Context, movieId string, userId, rating int) error {
-	db := c.MustGet("db").(*sqlx.DB)
-
 	var ratingExists bool
 	sql := `SELECT EXISTS(SELECT 1 FROM Ratings WHERE user_id=$1 AND movie_id=$2)`
 	err := db.QueryRow(sql, userId, movieId).Scan(&ratingExists)
@@ -57,7 +52,6 @@ func (r *Rating) UpdateMovieRating(c *gin.Context, movieId string, userId, ratin
 }
 
 func (r *Rating) GetMoviesAverageRating(c *gin.Context, movieId string) (float32, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	var result float32
 	sql := `SELECT COALESCE(AVG(rating), 0) FROM Ratings WHERE movie_id=$1`
 	err := db.Get(&result, sql, movieId)
@@ -73,7 +67,6 @@ type RatingResult struct {
 }
 
 func (r *Rating) GetRatingsByUserId(c *gin.Context, userId int) ([]RatingResult, error) {
-	db := c.MustGet("db").(*sqlx.DB)
 	var result []RatingResult
 	sql := `SELECT movie_id, rating FROM Ratings WHERE user_id=$1`
 	err := db.Select(&result, sql, userId)

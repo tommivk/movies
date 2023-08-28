@@ -2,8 +2,6 @@
 @use "../../sassStyles/variables";
 
 .groupPage {
-  padding: 20px;
-
   &__memberCount {
     display: flex;
     width: fit-content;
@@ -16,7 +14,6 @@
 
 .recommendations {
   word-wrap: break-word;
-  padding: 0px 100px;
 
   &__list {
     display: flex;

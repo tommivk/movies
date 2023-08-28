@@ -6,6 +6,7 @@ import useInfiniteTopRatedMovies from "../../hooks/useInfiniteTopRatedMovies.tsx
 import useInfiniteTrendingMovies from "../../hooks/useInfiniteTrendingMovies.tsx";
 import Button from "../Button/Button.tsx";
 import SearchInput from "../SearchInput/SearchInput.tsx";
+import Container from "../Container/Container.tsx";
 
 import "./movieSearch.scss";
 
@@ -21,7 +22,7 @@ const MovieSearch = () => {
   const topRatedResult = useInfiniteTopRatedMovies();
 
   return (
-    <div className="search">
+    <Container className="search">
       <SearchInput
         type="text"
         placeholder="Search all movies..."
@@ -77,7 +78,7 @@ const MovieSearch = () => {
           enabled={!!debouncedSearch}
         />
       )}
-    </div>
+    </Container>
   );
 };
 

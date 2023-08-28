@@ -11,6 +11,7 @@ import Modal from "../Modal/Modal";
 import { useMemo, useState } from "react";
 import { SwiperSlide } from "swiper/react";
 import Loading from "../Loading/Loading";
+import Container from "../Container/Container";
 
 import "./groupPage.scss";
 
@@ -150,7 +151,7 @@ const GroupPage = () => {
   }
 
   return (
-    <div className="groupPage">
+    <Container className="groupPage">
       <h1 className="text-center">{group.name}</h1>
       <h2 className="groupPage__memberCount" onClick={() => setModalOpen(true)}>
         <span>{group.memberCount}</span> Members
@@ -161,7 +162,7 @@ const GroupPage = () => {
         groupId={groupId}
       />
       <Recommendations groupId={groupId} />
-    </div>
+    </Container>
   );
 };
 

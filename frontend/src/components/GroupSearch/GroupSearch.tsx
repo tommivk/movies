@@ -11,6 +11,7 @@ import useGetAllGroups from "../../hooks/useGetAllGroups";
 import NewGroupForm from "../NewGroupForm/NewGroupForm";
 import FormInput from "../FormInput/FormInput";
 import { Link } from "react-router-dom";
+import Container from "../Container/Container";
 
 import "./groupSearch.scss";
 
@@ -61,110 +62,108 @@ const GroupList = ({ search = "" }: { search: string }) => {
   const joinedGroupIds = usersGroups.map((group) => group.id);
 
   return (
-    <>
-      <div className="groupList">
-        <NewGroupModal
-          open={newGroupModalOpen}
-          onClose={() => setNewGroupModalOpen(false)}
-        />
-        <Modal
-          title="Join group"
-          open={passwordModal.isOpen}
-          onClose={() => {
-            setPasswordModal({ groupId: undefined, isOpen: false });
-            setPassword("");
+    <Container className="groupList">
+      <NewGroupModal
+        open={newGroupModalOpen}
+        onClose={() => setNewGroupModalOpen(false)}
+      />
+      <Modal
+        title="Join group"
+        open={passwordModal.isOpen}
+        onClose={() => {
+          setPasswordModal({ groupId: undefined, isOpen: false });
+          setPassword("");
+        }}
+      >
+        <form
+          className="groupList__passwordModal"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (passwordModal.groupId === undefined) return;
+            joinGroup(
+              { groupId: passwordModal.groupId, password, token },
+              {
+                onSuccess: () => {
+                  setPasswordModal({ groupId: undefined, isOpen: false });
+                },
+              }
+            );
           }}
         >
-          <form
-            className="groupList__passwordModal"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (passwordModal.groupId === undefined) return;
-              joinGroup(
-                { groupId: passwordModal.groupId, password, token },
-                {
-                  onSuccess: () => {
-                    setPasswordModal({ groupId: undefined, isOpen: false });
-                  },
-                }
-              );
-            }}
-          >
-            <FormInput
-              type="password"
-              placeholder="Password"
-              value={password}
-              required
-              onChange={({ target }) => setPassword(target.value)}
-            ></FormInput>
-            <Button type="submit">Submit</Button>
-          </form>
-        </Modal>
+          <FormInput
+            type="password"
+            placeholder="Password"
+            value={password}
+            required
+            onChange={({ target }) => setPassword(target.value)}
+          ></FormInput>
+          <Button type="submit">Submit</Button>
+        </form>
+      </Modal>
 
-        <Button
-          size="sm"
-          color="secondary"
-          className="groupList__newGroupButton"
-          onClick={() => setNewGroupModalOpen(true)}
-        >
-          Create New Group
-        </Button>
+      <Button
+        size="sm"
+        color="secondary"
+        className="groupList__newGroupButton"
+        onClick={() => setNewGroupModalOpen(true)}
+      >
+        Create New Group
+      </Button>
 
-        {allGroups.map((group) => (
-          <Link to={`/groups/${group.id}`} key={group.id} className="link">
-            <div className="groupList__group">
-              <div className="groupList__image" />
-              <div className="groupList__bottomSection">
-                <h3 className="groupList__title">{group.name}</h3>
-                <p className="groupList__description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Incidunt culpa voluptatem, est repellat similique ratione
-                  dolorem vitae.
-                </p>
-                {joinedGroupIds.includes(group.id) ? (
-                  <Button
-                    color="transparent"
-                    size="sm"
-                    className="groupList__cardButton"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const confirmed = window.confirm("Leave group?");
-                      if (confirmed) {
-                        leaveGroup({ groupId: group.id, token });
-                      }
-                    }}
-                  >
-                    Leave
-                  </Button>
-                ) : (
-                  <Button
-                    color="transparent"
-                    size="sm"
-                    className="groupList__cardButton"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (group.private) {
-                        setPasswordModal({ isOpen: true, groupId: group.id });
-                        return;
-                      }
-                      joinGroup({ groupId: group.id, token });
-                    }}
-                  >
-                    {group.private && (
-                      <span className="groupList__lockIcon">🔒</span>
-                    )}
-                    Join
-                  </Button>
-                )}
-              </div>
+      {allGroups.map((group) => (
+        <Link to={`/groups/${group.id}`} key={group.id} className="link">
+          <div className="groupList__group">
+            <div className="groupList__image" />
+            <div className="groupList__bottomSection">
+              <h3 className="groupList__title">{group.name}</h3>
+              <p className="groupList__description">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Incidunt culpa voluptatem, est repellat similique ratione
+                dolorem vitae.
+              </p>
+              {joinedGroupIds.includes(group.id) ? (
+                <Button
+                  color="transparent"
+                  size="sm"
+                  className="groupList__cardButton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const confirmed = window.confirm("Leave group?");
+                    if (confirmed) {
+                      leaveGroup({ groupId: group.id, token });
+                    }
+                  }}
+                >
+                  Leave
+                </Button>
+              ) : (
+                <Button
+                  color="transparent"
+                  size="sm"
+                  className="groupList__cardButton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (group.private) {
+                      setPasswordModal({ isOpen: true, groupId: group.id });
+                      return;
+                    }
+                    joinGroup({ groupId: group.id, token });
+                  }}
+                >
+                  {group.private && (
+                    <span className="groupList__lockIcon">🔒</span>
+                  )}
+                  Join
+                </Button>
+              )}
             </div>
-          </Link>
-        ))}
-      </div>
+          </div>
+        </Link>
+      ))}
       {allGroups.length === 0 && (
         <p className="notFoundText">No groups found</p>
       )}
-    </>
+    </Container>
   );
 };
 

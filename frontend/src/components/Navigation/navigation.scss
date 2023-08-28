@@ -46,3 +46,9 @@
     font-family: theme.$titleFontFamily;
   }
 }
+
+@media (max-width: 515px) {
+  .nav__links {
+    display: none;
+  }
+}

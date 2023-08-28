@@ -1,6 +1,8 @@
 package models
 
 import (
+	"movies/custom_errors"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -56,6 +58,18 @@ func (f *Favourite) AddFavourite(c *gin.Context, userId int, movieId string) err
 	_, err := db.Exec(sql, movieId, userId)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (f *Favourite) RemoveFavourite(c *gin.Context, userId, movieId int) error {
+	sql := `DELETE FROM Favourites WHERE movie_id=$1 AND user_id=$2`
+	res, err := db.Exec(sql, movieId, userId)
+	if err != nil {
+		return err
+	}
+	if count, err := res.RowsAffected(); count == 0 || err != nil {
+		return custom_errors.ErrNotFound
 	}
 	return nil
 }

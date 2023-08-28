@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 )
 
 var favouritesModel = new(models.Favourite)
@@ -36,22 +35,17 @@ func AddFavourite(c *gin.Context) {
 }
 
 func RemoveFavourite(c *gin.Context) {
-	movieId := c.Param("id")
-	db := c.MustGet("db").(*sqlx.DB)
-	userId := c.MustGet("userId").(int)
-
-	sql := `DELETE FROM Favourites WHERE movie_id=$1 AND user_id=$2`
-	res, err := db.Exec(sql, movieId, userId)
+	movieId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Invalid param 'id'")
 		return
 	}
-
-	if count, err := res.RowsAffected(); count == 0 || err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+	userId := c.MustGet("userId").(int)
+	err = favouritesModel.RemoveFavourite(c, userId, movieId)
+	if err != nil {
+		c.Error(err)
 		return
 	}
-
 	c.Status(http.StatusNoContent)
 }
 

@@ -47,6 +47,7 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
       private: z.boolean(),
       password: z.string().optional(),
       passwordConfirm: z.string().optional(),
+      images: z.custom<FileList>(),
     })
     .superRefine((input, ctx) => {
       if (input.private && (!input.password || input.password.length < 5)) {
@@ -61,6 +62,13 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
           message: "Password does not match password confirmation",
           code: z.ZodIssueCode.custom,
           path: ["passwordConfirm"],
+        });
+      }
+      if (input.images.length === 0) {
+        ctx.addIssue({
+          message: "Image is required",
+          code: z.ZodIssueCode.custom,
+          path: ["images"],
         });
       }
     });
@@ -84,9 +92,17 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
   return (
     <form
       className="newGroupForm"
-      onSubmit={handleSubmit((data) =>
+      onSubmit={handleSubmit((data) => {
+        const formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("private", data.private.toString());
+        if (data.password) {
+          formData.append("password", data.password);
+        }
+        formData.append("image", data.images[0]);
+
         createGroup(
-          { body: data, token },
+          { body: formData, token },
           {
             onSuccess: () => {
               toast.success("Group successfully created");
@@ -94,9 +110,13 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
               onClose();
             },
           }
-        )
-      )}
+        );
+      })}
     >
+      <FormLabel>Group Image</FormLabel>
+      <input type="file" {...register("images")} />
+      <FormFieldError message={errors.images?.message} />
+
       <FormInput
         placeholder="Group name"
         register={register("name")}

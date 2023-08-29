@@ -12,6 +12,7 @@ import NewGroupForm from "../NewGroupForm/NewGroupForm";
 import FormInput from "../FormInput/FormInput";
 import { Link } from "react-router-dom";
 import Container from "../Container/Container";
+import { getImageUrl } from "../../../utils";
 
 import "./groupSearch.scss";
 
@@ -113,7 +114,10 @@ const GroupList = ({ search = "" }: { search: string }) => {
       {allGroups.map((group) => (
         <Link to={`/groups/${group.id}`} key={group.id} className="link">
           <div className="groupList__group">
-            <div className="groupList__image" />
+            <img
+              className="groupList__image"
+              src={getImageUrl(group.imagePath)}
+            />
             <div className="groupList__bottomSection">
               <h3 className="groupList__title">{group.name}</h3>
               <p className="groupList__description">

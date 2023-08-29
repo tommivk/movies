@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"movies/aws"
 	"movies/controllers/actors"
 	"movies/controllers/favourites"
 	"movies/controllers/groups"
@@ -55,6 +56,11 @@ func main() {
 	}
 
 	fmt.Println("DB connected")
+
+	err = aws.CreateClient()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)

@@ -11,17 +11,16 @@ export const fetchData = async ({
   token,
 }: {
   method?: "GET" | "POST" | "DELETE" | "PUT" | "PATCH";
-  path: string;
-  body?: Record<string, unknown>;
+  path: `/${string}`;
+  body?: Record<string, unknown> | FormData;
   token?: string;
 }) => {
   const url = `${BASE_URL}${path}`;
 
   const res = await fetch(url, {
     method,
-    body: body ? JSON.stringify(body) : undefined,
+    body: body && !(body instanceof FormData) ? JSON.stringify(body) : body,
     headers: {
-      "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });

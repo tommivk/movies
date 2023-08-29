@@ -3,6 +3,7 @@ import useAppStore from "./src/store";
 import { Notification } from "./types";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+const IMGIX_BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
 
 export const fetchData = async ({
   method,
@@ -125,3 +126,5 @@ export const getNotificationMessage = (
       };
   }
 };
+
+export const getImageUrl = (path: string) => `${IMGIX_BASE_URL}/${path}`;

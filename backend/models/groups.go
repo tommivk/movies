@@ -8,19 +8,20 @@ import (
 )
 
 type Group struct {
-	Id        int    `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"createdAt" db:"created_at"`
-	Private   bool   `json:"private" db:"private"`
-	AdminId   int    `json:"adminId" db:"admin_id"`
+	Id        int     `json:"id"`
+	Name      string  `json:"name"`
+	CreatedAt string  `json:"createdAt" db:"created_at"`
+	Private   bool    `json:"private" db:"private"`
+	AdminId   int     `json:"adminId" db:"admin_id"`
+	ImagePath *string `json:"imagePath" db:"image_path"`
 }
 
-func (g *Group) CreateNewGroup(c *gin.Context, userId int, name string, private bool, passwordHash string) (*Group, error) {
-	sql := `INSERT INTO Groups (admin_id, name, private, password_hash) VALUES ($1, $2, $3, $4)
-			RETURNING id, admin_id, name, created_at, private`
+func (g *Group) CreateNewGroup(c *gin.Context, userId int, name string, private bool, passwordHash, imagePath string) (*Group, error) {
+	sql := `INSERT INTO Groups (admin_id, name, private, password_hash, image_path) VALUES ($1, $2, $3, $4, $5)
+			RETURNING id, admin_id, name, created_at, private, image_path`
 	group := Group{}
 	tx := db.MustBegin()
-	tx.QueryRowx(sql, userId, name, private, utils.NewNullString(passwordHash)).StructScan(&group)
+	tx.QueryRowx(sql, userId, name, private, utils.NewNullString(passwordHash), imagePath).StructScan(&group)
 	sql = `INSERT INTO UserGroups (user_id, group_id) VALUES ($1, $2)`
 	tx.Exec(sql, userId, group.Id)
 	err := tx.Commit()
@@ -36,7 +37,7 @@ type GroupWithMemberCount struct {
 }
 
 func (g *Group) GetGroupById(c *gin.Context, groupId int) (*GroupWithMemberCount, error) {
-	sql := `SELECT G.id, name, created_at, private, admin_id, COUNT(UG.id) as member_count
+	sql := `SELECT G.id, name, created_at, private, admin_id, image_path, COUNT(UG.id) as member_count
 			FROM Groups G LEFT JOIN UserGroups UG ON G.id = UG.group_id WHERE G.id = $1 GROUP BY G.id`
 	result := GroupWithMemberCount{}
 	err := db.Get(&result, sql, groupId)
@@ -58,7 +59,7 @@ func (g *Group) GetGroupPasswordHashById(c *gin.Context, groupId int) (*string, 
 
 func (g *Group) GetGroups(c *gin.Context, search string) (*[]Group, error) {
 	result := []Group{}
-	sql := `SELECT id, name, created_at, private, admin_id FROM Groups WHERE LOWER(name) LIKE '%' || $1 || '%'`
+	sql := `SELECT id, name, created_at, private, admin_id, image_path FROM Groups WHERE LOWER(name) LIKE '%' || $1 || '%'`
 	err := db.Select(&result, sql, strings.ToLower(search))
 	if err != nil {
 		return nil, err

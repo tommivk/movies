@@ -1,6 +1,9 @@
 package groups
 
 import (
+	"fmt"
+	"log"
+	"movies/aws"
 	"movies/forms"
 	"movies/models"
 	"movies/utils"
@@ -8,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 var groupModel = new(models.Group)
@@ -17,9 +21,23 @@ var moviesModel = new(models.Movie)
 func CreateGroup(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
 	var body forms.NewGroup
-	err := c.BindJSON(&body)
+	err := c.BindWith(&body, binding.FormMultipart)
 	if err != nil {
 		c.Error(err)
+		return
+	}
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "Missing image")
+		return
+	}
+
+	imageUrl, err := aws.UploadImage("groups", file)
+
+	if err != nil {
+		log.Println(err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, "Failed to upload file")
 		return
 	}
 
@@ -37,12 +55,12 @@ func CreateGroup(c *gin.Context) {
 		}
 	}
 
-	group, err := groupModel.CreateNewGroup(c, userId, body.Name, body.Private, passwordHash)
+	group, err := groupModel.CreateNewGroup(c, userId, body.Name, body.Private, passwordHash, imageUrl)
 	if err != nil {
+		fmt.Println(err)
 		c.Error(err)
 		return
 	}
-
 	c.JSON(http.StatusOK, group)
 }
 

@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS Groups (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     private BOOLEAN,
     password_hash VARCHAR,
-    admin_id INTEGER REFERENCES Users
+    admin_id INTEGER REFERENCES Users,
+    image_path VARCHAR NOT NULL
 );
 
 

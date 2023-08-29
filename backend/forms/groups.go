@@ -1,9 +1,9 @@
 package forms
 
 type NewGroup struct {
-	Name     string `binding:"required"`
-	Private  bool
-	Password string
+	Name     string `binding:"required" form:"name"`
+	Private  bool   `form:"private"`
+	Password string `form:"password"`
 }
 
 type JoinGroup struct {

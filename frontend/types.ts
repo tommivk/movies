@@ -115,4 +115,5 @@ export type Group = {
   adminId: number;
   recommendations: Recommendation[];
   memberCount?: number;
+  imagePath: string;
 };

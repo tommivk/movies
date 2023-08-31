@@ -9,3 +9,7 @@ type NewGroup struct {
 type JoinGroup struct {
 	Password string
 }
+
+type NewComment struct {
+	Comment string `binding:"required"`
+}

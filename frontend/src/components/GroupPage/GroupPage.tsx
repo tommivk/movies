@@ -1,35 +1,33 @@
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { fetchData } from "../../../utils";
 import useAppStore from "../../store";
 import LoadingContainer from "../LoadingContainer/LoadingContainer";
-import { Group, Recommendation, User } from "../../../types";
+import { Recommendation, RecommendationComment } from "../../../types";
 import PosterCard from "../PosterCard/PosterCard";
 import QuoteMark from "../../icons/QuoteMark";
 import Swiper from "../Swiper/Swiper";
 import Modal from "../Modal/Modal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SwiperSlide } from "swiper/react";
 import Loading from "../Loading/Loading";
 import Container from "../Container/Container";
+import SearchInput from "../SearchInput/SearchInput";
+import Button from "../Button/Button";
+import moment from "moment";
+import useJoinGroup from "../../hooks/useJoinGroup";
+import useGetRecommendationComments from "../../hooks/useGetRecommendationComments";
+import useCreateRecommendationComment from "../../hooks/useCreateRecommendationComment";
+import useGetRecommendations from "../../hooks/useGetRecommendations";
+import useGetGroupMembers from "../../hooks/useGetGroupMembers";
+import useGetGroup from "../../hooks/useGetGroup";
 
 import "./groupPage.scss";
 
 const Recommendations = ({ groupId }: { groupId: number }) => {
-  const { token } = useAppStore().loggedUser ?? {};
   const {
     data: recommendations,
     isLoading,
     isError,
-  } = useQuery<Recommendation[]>({
-    queryKey: ["getRecommendations", groupId],
-    queryFn: () =>
-      fetchData({
-        path: `/groups/${groupId}/recommendations`,
-        method: "GET",
-        token,
-      }),
-  });
+  } = useGetRecommendations(groupId);
 
   const slides =
     useMemo(
@@ -61,25 +59,128 @@ const Recommendations = ({ groupId }: { groupId: number }) => {
   );
 };
 
+const RecommendationComments = ({
+  recommendationId,
+}: {
+  recommendationId: number;
+}) => {
+  const groupId = Number(useParams().id);
+  const userGroups = useAppStore().groups;
+  const isUserInGroup = userGroups.some(({ id }) => id === groupId);
+  const [input, setInput] = useState("");
+  const { token } = useAppStore().loggedUser ?? {};
+  const { mutate: joinGroup } = useJoinGroup();
+  const { mutate: sendComment } =
+    useCreateRecommendationComment(recommendationId);
+  const {
+    data: comments,
+    isLoading,
+    isError,
+  } = useGetRecommendationComments(recommendationId);
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    return <p>Error...</p>;
+  }
+
+  return (
+    <div>
+      <CommentList comments={comments} />
+      {isUserInGroup ? (
+        <form
+          className="commentForm"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!input.trim()) {
+              return;
+            }
+            sendComment(input, { onSuccess: () => setInput("") });
+          }}
+        >
+          <SearchInput
+            placeholder="Write comment..."
+            autoComplete="off"
+            onChange={({ target }) => setInput(target.value)}
+            value={input}
+            type="text"
+          />
+          <Button>Send</Button>
+        </form>
+      ) : (
+        <div className="commentForm__info">
+          <p>You must join this group to post comments</p>
+          <Button onClick={() => joinGroup({ groupId, token })}>Join</Button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CommentList = ({ comments }: { comments: RecommendationComment[] }) => {
+  const endRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (endRef.current) {
+      endRef.current.scrollIntoView();
+    }
+  }, [comments]);
+
+  return (
+    <div className="commentList">
+      {comments.map(({ id, comment, username, timestamp }) => (
+        <div className="commentList__comment" key={id}>
+          <img />
+          <div className="commentList__right">
+            <p className="commentList__username">
+              {username}{" "}
+              <span className="commentList__time">
+                {moment(timestamp).fromNow()}
+              </span>
+            </p>
+            <p className="commentList__message">{comment}</p>
+          </div>
+          <div ref={endRef} />
+        </div>
+      ))}
+      {comments.length === 0 && <p>No comments yet...</p>}
+    </div>
+  );
+};
+
 const RecommendationCard = ({
   recommendation,
 }: {
   recommendation: Recommendation;
 }) => {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <div className="recommendationCard">
-      <div className="recommendationCard__left">
-        {recommendation.description && (
-          <>
-            <QuoteMark classname="recommendationCard__quoteMark" />
-            <p>{recommendation.description}</p>
-          </>
-        )}
-        <p className="recommendationCard__left__username">
-          - {recommendation.username}
+      <Modal
+        title="Comments"
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      >
+        <RecommendationComments recommendationId={recommendation.id} />
+      </Modal>
+      <div className="recommendationCard__top">
+        <div className="recommendationCard__left">
+          {recommendation.description && (
+            <>
+              <QuoteMark classname="recommendationCard__quoteMark" />
+              <p>{recommendation.description}</p>
+            </>
+          )}
+          <p className="recommendationCard__left__username">
+            - {recommendation.username}
+          </p>
+        </div>
+        <PosterCard size="sm" movie={recommendation.movie} />
+      </div>
+      <div className="recommendationCard__buttons">
+        <p onClick={() => setModalOpen(true)}>
+          <i>🗨</i> {recommendation.commentCount}
         </p>
       </div>
-      <PosterCard size="sm" movie={recommendation.movie} />
     </div>
   );
 };
@@ -93,16 +194,7 @@ const MemberList = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { token } = useAppStore().loggedUser ?? {};
-  const {
-    data: members,
-    isLoading,
-    isError,
-  } = useQuery<User[]>({
-    queryKey: ["getGroupMembers", groupId],
-    queryFn: () =>
-      fetchData({ path: `/groups/${groupId}/members`, method: "GET", token }),
-  });
+  const { data: members, isLoading, isError } = useGetGroupMembers(groupId);
 
   if (isLoading) {
     return <LoadingContainer />;
@@ -132,16 +224,7 @@ const MemberList = ({
 const GroupPage = () => {
   const groupId = Number(useParams().id);
   const [modalOpen, setModalOpen] = useState(false);
-  const { token } = useAppStore().loggedUser ?? {};
-  const {
-    data: group,
-    isLoading,
-    isError,
-  } = useQuery<Group>({
-    queryKey: ["getGroup", groupId],
-    queryFn: () =>
-      fetchData({ path: `/groups/${groupId}`, method: "GET", token }),
-  });
+  const { data: group, isLoading, isError } = useGetGroup(groupId);
 
   if (isLoading) {
     return <LoadingContainer />;

@@ -105,6 +105,7 @@ export type Recommendation = {
   description?: string;
   timestamp: string;
   movie: Movie;
+  commentCount: number;
 };
 
 export type Group = {
@@ -116,4 +117,13 @@ export type Group = {
   recommendations: Recommendation[];
   memberCount?: number;
   imagePath: string;
+};
+
+export type RecommendationComment = {
+  id: number;
+  recommendationId: number;
+  timestamp: string;
+  comment: string;
+  userId: number;
+  username: string;
 };

@@ -9,12 +9,13 @@ import (
 )
 
 type Recommendation struct {
-	Id          int     `json:"id"`
-	MovieId     int     `json:"movieId,omitempty" db:"movie_id"`
-	GroupId     int     `json:"groupId" db:"group_id"`
-	UserId      int     `json:"userId" db:"user_id"`
-	Description *string `json:"description"`
-	Timestamp   string  `json:"timestamp"`
+	Id           int     `json:"id"`
+	MovieId      int     `json:"movieId,omitempty" db:"movie_id"`
+	GroupId      int     `json:"groupId" db:"group_id"`
+	UserId       int     `json:"userId" db:"user_id"`
+	Description  *string `json:"description"`
+	Timestamp    string  `json:"timestamp"`
+	CommentCount int     `json:"commentCount" db:"comment_count"`
 }
 
 type RecommendationResult struct {
@@ -52,13 +53,49 @@ func (r *Recommendation) AddRecommendation(c *gin.Context, userId, movieId, grou
 }
 
 func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int) (*[]RecommendationResult, error) {
-	sql := `SELECT id, movie_id, group_id, user_id, description, timestamp,
-			(SELECT username FROM Users U WHERE U.id=user_id) as username
-			FROM Recommendations WHERE group_id = $1 ORDER BY timestamp DESC`
+	sql := `SELECT R.id, movie_id, group_id, user_id, description, timestamp,
+			(SELECT username FROM Users U WHERE U.id=user_id) as username,
+			(SELECT COUNT(*) FROM RecommendationComments RC WHERE RC.recommendation_id=R.id) as comment_count
+			FROM Recommendations R WHERE group_id = $1 ORDER BY timestamp DESC`
 	result := []RecommendationResult{}
 	err := db.Select(&result, sql, groupId)
 	if err != nil {
 		return nil, err
 	}
 	return &result, nil
+}
+
+type RecommendationComment struct {
+	Id               int    `json:"id"`
+	RecommendationId int    `json:"recommendationId" db:"recommendation_id"`
+	Timestamp        string `json:"timestamp"`
+	Comment          string `json:"comment"`
+	Username         string `json:"username"`
+	UserId           int    `json:"userId" db:"user_id"`
+}
+
+func (r *Recommendation) CreateRecommendationComment(c *gin.Context, recommendationId, userId int, comment string) error {
+	sql := `INSERT INTO RecommendationComments (recommendation_id, user_id, comment) VALUES ($1, $2, $3)`
+	_, err := db.Exec(sql, recommendationId, userId, comment)
+	return err
+}
+
+func (r *Recommendation) GetRecommendationComments(c *gin.Context, recommendationId int) (*[]RecommendationComment, error) {
+	sql := `SELECT RC.id, comment, recommendation_id, user_id, timestamp, U.username
+			FROM RecommendationComments RC JOIN Users U ON RC.user_id = U.id WHERE recommendation_id=$1
+			ORDER BY timestamp ASC`
+	result := []RecommendationComment{}
+	err := db.Select(&result, sql, recommendationId)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func (r *Recommendation) GetRecommendationById(c *gin.Context, id int) (*Recommendation, error) {
+	sql := `SELECT id, timestamp, movie_id, group_id, user_id, description
+			FROM Recommendations WHERE id=$1`
+	var result Recommendation
+	err := db.Get(&result, sql, id)
+	return &result, err
 }

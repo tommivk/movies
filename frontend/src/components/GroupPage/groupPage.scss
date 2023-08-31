@@ -14,6 +14,7 @@
 
 .recommendations {
   word-wrap: break-word;
+  margin-bottom: 200px;
 
   &__list {
     display: flex;
@@ -24,15 +25,38 @@
 }
 
 .recommendationCard {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+  width: variables.$recommendationCardWidth;
+  border-radius: 15px;
+  background: rgb(26, 25, 25);
   padding: 15px;
   box-sizing: border-box;
-  background: rgb(26, 25, 25);
-  border-radius: 15px;
-  width: variables.$recommendationCardWidth;
-  height: 340px;
+
+  &__top {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    height: 310px;
+  }
+
+  &__buttons {
+    position: absolute;
+    bottom: 0px;
+    display: flex;
+    margin-left: 30px;
+    font-size: 1.1rem;
+    color: theme.$secondaryGrey;
+
+    & > * {
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    i {
+      color: transparent;
+      text-shadow: 0 0 0 whitesmoke;
+      margin-right: 5px;
+    }
+  }
 
   &__quoteMark {
     fill: whitesmoke;
@@ -76,14 +100,97 @@
   }
 }
 
+.commentForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  column-gap: 10px;
+
+  input {
+    margin: 0;
+    width: 200px;
+  }
+
+  &__info {
+    text-align: center;
+  }
+}
+
+.commentList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0px;
+  max-height: 50vh;
+  overflow: auto;
+  min-height: 250px;
+
+  &__comment {
+    width: 100%;
+    padding: 0px 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    img {
+      align-self: start;
+      width: 60px;
+      min-width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background: theme.$secondaryGrey;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 2px solid theme.$darkGrey;
+      padding-bottom: 5px;
+    }
+  }
+
+  &__message {
+    color: theme.$secondaryGrey;
+    margin-top: 13px;
+  }
+
+  &__right {
+    width: 300px;
+  }
+
+  &__username {
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  &__time {
+    color: theme.$secondaryGrey;
+    font-size: 0.8rem;
+    padding-left: 20px;
+  }
+}
+
 @media (max-width: 650px) {
   .recommendations {
     padding: 0px;
   }
   .recommendationCard {
-    flex-wrap: wrap-reverse;
-    height: fit-content;
-    width: variables.$recommendationCardWidthSmall;
     margin: auto;
+    &__top {
+      width: variables.$recommendationCardWidthSmall;
+      flex-wrap: wrap-reverse;
+      height: fit-content;
+      margin-bottom: 30px;
+    }
   }
 }

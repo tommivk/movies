@@ -72,3 +72,11 @@ CREATE TABLE IF NOT EXISTS Recommendations (
     description TEXT,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS RecommendationComments (
+    id SERIAL PRIMARY KEY,
+    recommendation_id INTEGER REFERENCES Recommendations NOT NULL,
+    user_id INTEGER REFERENCES Users NOT NULL,
+    comment VARCHAR NOT NULL,
+    timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+)

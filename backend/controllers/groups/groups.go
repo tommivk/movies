@@ -191,6 +191,10 @@ func RecommendMovie(c *gin.Context) {
 		return
 	}
 
+	if authorized := isUserInGroup(c, userId, body.GroupId); !authorized {
+		return
+	}
+
 	err = recommendationsModel.AddRecommendation(c, userId, body.MovieId, body.GroupId, body.Description)
 	if err != nil {
 		c.Error(err)
@@ -222,6 +226,34 @@ func addMovieDataToRecommendations(c *gin.Context, recommendations []models.Reco
 	return &result, nil
 }
 
+func isUserInGroup(c *gin.Context, userId, groupId int) bool {
+	userInGroup, err := groupModel.IsUserInGroup(c, userId, groupId)
+	if err != nil {
+		c.Error(err)
+		return false
+	}
+	if !userInGroup {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized")
+		return false
+	}
+	return true
+}
+
+func canUserView(c *gin.Context, userId, groupId int) bool {
+	isPrivate, err := groupModel.IsPrivateGroup(c, groupId)
+	if err != nil {
+		c.Error(err)
+		return false
+	}
+	if isPrivate {
+		if inGroup := isUserInGroup(c, userId, groupId); !inGroup {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized")
+			return false
+		}
+	}
+	return true
+}
+
 func GetRecommendations(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
 	groupId, err := strconv.Atoi(c.Param("id"))
@@ -230,21 +262,8 @@ func GetRecommendations(c *gin.Context) {
 		return
 	}
 
-	isPrivateGroup, err := groupModel.IsPrivateGroup(c, groupId)
-	if err != nil {
-		c.Error(err)
+	if authorized := canUserView(c, userId, groupId); !authorized {
 		return
-	}
-	if isPrivateGroup {
-		userInGroup, err := groupModel.IsUserInGroup(c, userId, groupId)
-		if err != nil {
-			c.Error(err)
-			return
-		}
-		if !userInGroup {
-			c.AbortWithStatusJSON(http.StatusBadRequest, "You are not in this group")
-			return
-		}
 	}
 
 	result, err := recommendationsModel.GetRecommendationsByGroupId(c, groupId)
@@ -263,15 +282,73 @@ func GetRecommendations(c *gin.Context) {
 }
 
 func GetGroupsMembers(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
 	groupId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'id'")
 		return
 	}
+
+	if authorized := canUserView(c, userId, groupId); !authorized {
+		return
+	}
+
 	users, err := groupModel.GetUsersInGroup(c, groupId)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 	c.JSON(http.StatusOK, users)
+}
+
+func AddRecommendationComment(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	recommendationId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'id'")
+		return
+	}
+
+	recommendation, err := recommendationsModel.GetRecommendationById(c, recommendationId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if authorized := isUserInGroup(c, userId, recommendation.GroupId); !authorized {
+		return
+	}
+
+	var body forms.NewComment
+	c.BindJSON(&body)
+	err = recommendationsModel.CreateRecommendationComment(c, recommendationId, userId, body.Comment)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusCreated, "Comment successfully sent")
+}
+
+func GetRecommendationComments(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	recommendationId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'id'")
+		return
+	}
+
+	recommendation, err := recommendationsModel.GetRecommendationById(c, recommendationId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if authorized := canUserView(c, userId, recommendation.GroupId); !authorized {
+		return
+	}
+
+	messages, err := recommendationsModel.GetRecommendationComments(c, recommendationId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, messages)
 }

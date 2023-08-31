@@ -56,10 +56,7 @@ func (f *Favourite) FavouriteExists(c *gin.Context, userId int, movieId string) 
 func (f *Favourite) AddFavourite(c *gin.Context, userId int, movieId string) error {
 	sql := `INSERT INTO FAVOURITES (movie_id, user_id) VALUES($1, $2)`
 	_, err := db.Exec(sql, movieId, userId)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (f *Favourite) RemoveFavourite(c *gin.Context, userId, movieId int) error {

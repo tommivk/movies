@@ -38,8 +38,5 @@ func (*Notification) GetAllNotificationsByUserId(c *gin.Context, userId int) (*[
 func (*Notification) SetNotificationSeen(c *gin.Context, notificationId int) error {
 	sql := `UPDATE Notifications SET seen=true WHERE id=$1`
 	_, err := db.Exec(sql, notificationId)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

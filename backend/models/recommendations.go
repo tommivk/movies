@@ -45,11 +45,7 @@ func (r *Recommendation) AddRecommendation(c *gin.Context, userId, movieId, grou
 	groupMembers := getGroupMembers(tx, groupId, userId)
 	sendNotificationsToGroupMembers(tx, groupMembers, groupId)
 
-	err := tx.Commit()
-	if err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
 func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int) (*[]RecommendationResult, error) {
@@ -97,5 +93,8 @@ func (r *Recommendation) GetRecommendationById(c *gin.Context, id int) (*Recomme
 			FROM Recommendations WHERE id=$1`
 	var result Recommendation
 	err := db.Get(&result, sql, id)
-	return &result, err
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }

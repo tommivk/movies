@@ -70,30 +70,21 @@ func (g *Group) GetGroups(c *gin.Context, search string) (*[]Group, error) {
 func (g *Group) AddUserToGroup(c *gin.Context, userId, groupId int) error {
 	sql := `INSERT INTO UserGroups (user_id, group_id) VALUES ($1, $2)`
 	_, err := db.Exec(sql, userId, groupId)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (g *Group) IsPrivateGroup(c *gin.Context, groupId int) (bool, error) {
 	var isPrivate bool
 	sql := `SELECT private FROM Groups WHERE id=$1`
 	err := db.QueryRow(sql, groupId).Scan(&isPrivate)
-	if err != nil {
-		return false, err
-	}
-	return isPrivate, nil
+	return isPrivate, err
 }
 
 func (g *Group) IsUserInGroup(c *gin.Context, userId, groupId int) (bool, error) {
 	var exists bool
 	sql := `SELECT EXISTS(SELECT 1 FROM UserGroups WHERE user_id=$1 AND group_id = $2)`
 	err := db.QueryRow(sql, userId, groupId).Scan(&exists)
-	if err != nil {
-		return false, err
-	}
-	return exists, nil
+	return exists, err
 }
 
 func (g *Group) GetGroupsByUserId(c *gin.Context, userId int) (*[]Group, error) {
@@ -109,10 +100,7 @@ func (g *Group) GetGroupsByUserId(c *gin.Context, userId int) (*[]Group, error) 
 func (g *Group) RemoveUserFromGroup(c *gin.Context, userId, groupId int) error {
 	sql := `DELETE FROM UserGroups WHERE user_id=$1 AND group_id=$2`
 	_, err := db.Exec(sql, userId, groupId)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (g *Group) GetUsersInGroup(c *gin.Context, groupId int) (*[]UserData, error) {

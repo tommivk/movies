@@ -26,10 +26,7 @@ func (r *Rating) RateMovie(c *gin.Context, movieId string, userId, rating int) e
 
 	sql = `INSERT INTO Ratings (movie_id, user_id, rating) VALUES ($1, $2, $3)`
 	_, err = db.Exec(sql, movieId, userId, rating)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *Rating) UpdateMovieRating(c *gin.Context, movieId string, userId, rating int) error {
@@ -45,20 +42,14 @@ func (r *Rating) UpdateMovieRating(c *gin.Context, movieId string, userId, ratin
 
 	sql = `UPDATE Ratings SET rating=$1 WHERE movie_id=$2 AND user_id=$3`
 	_, err = db.Exec(sql, rating, movieId, userId)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *Rating) GetMoviesAverageRating(c *gin.Context, movieId string) (float32, error) {
 	var result float32
 	sql := `SELECT COALESCE(AVG(rating), 0) FROM Ratings WHERE movie_id=$1`
 	err := db.Get(&result, sql, movieId)
-	if err != nil {
-		return 0, err
-	}
-	return result, nil
+	return result, err
 }
 
 type RatingResult struct {

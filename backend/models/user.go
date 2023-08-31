@@ -63,11 +63,7 @@ func (u User) Create(c *gin.Context, username, passwordHash string) error {
 	sql = "INSERT INTO Notifications (user_id, notification_type) VALUES ($1, $2)"
 	tx.Exec(sql, userId, enums.Welcome.ToString())
 
-	err := tx.Commit()
-	if err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
 func (u User) UserExists(c *gin.Context, username string) (bool, error) {
@@ -126,11 +122,7 @@ func (u User) CreateFriendRequest(c *gin.Context, userId, addresseeId int) error
 
 	sendNotification(tx, addresseeId, userId, enums.FriendRequest)
 
-	err := tx.Commit()
-	if err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
 func (u User) AcceptFriendRequest(c *gin.Context, userId, requesterId int) error {
@@ -147,25 +139,15 @@ func (u User) AcceptFriendRequest(c *gin.Context, userId, requesterId int) error
 
 	sendNotification(tx, requesterId, userId, enums.AcceptFriendRequest)
 
-	err := tx.Commit()
-	if err != nil {
-		return err
-	}
-	return nil
+	return tx.Commit()
 }
 
 func (u User) DenyFriendRequest(c *gin.Context, userId, requesterId int) error {
 	tx := db.MustBegin()
 	sql := `DELETE FROM Friends WHERE (user_one=$1 AND user_two=$2) OR (user_one=$2 AND user_two=$1)`
 	tx.Exec(sql, userId, requesterId)
-
 	sendNotification(tx, requesterId, userId, enums.DeniedFriendRequest)
-
-	err := tx.Commit()
-	if err != nil {
-		return err
-	}
-	return err
+	return tx.Commit()
 }
 
 func friendshipOrRequestExists(db *sqlx.DB, userId, friendId int) bool {
@@ -260,8 +242,5 @@ func (u User) DeleteFriendship(c *gin.Context, userId, friendId int) error {
 	}
 	sql := `DELETE FROM Friends WHERE (user_one=$1 AND user_two=$2) OR (user_one=$2 AND user_two=$1)`
 	_, err := db.Exec(sql, userId, friendId)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

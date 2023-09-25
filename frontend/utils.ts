@@ -1,7 +1,7 @@
 import camelcaseKeys from "camelcase-keys";
 import useAppStore from "./src/store";
 import { Notification } from "./types";
-
+import { toast } from "react-toastify";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const IMGIX_BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
 
@@ -26,14 +26,15 @@ export const fetchData = async ({
     },
   });
 
-  if (res.status === 401) {
-    useAppStore.getState().setLoggedUser(null);
-    localStorage.removeItem("loggedUser");
-    throw new Error("Session expired");
-  }
-
   if (!res.ok) {
-    throw new Error(await res.json());
+    const errorMsg = await res.json();
+    if (errorMsg.toLowerCase().includes("session expired")) {
+      useAppStore.getState().setLoggedUser(null);
+      localStorage.removeItem("loggedUser");
+      toast.error("Session expired");
+    }
+
+    throw new Error(errorMsg);
   }
 
   if (method == "DELETE") return;

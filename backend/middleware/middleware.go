@@ -28,6 +28,8 @@ func ErrorHandler() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusNotFound, "Not found")
 		case custom_errors.ErrNotFound:
 			c.AbortWithStatusJSON(http.StatusNotFound, "Not found")
+		case custom_errors.ErrInvalidCredentials:
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid credentials")
 		default:
 			c.AbortWithStatusJSON(http.StatusInternalServerError, "Internal server error")
 		}
@@ -80,7 +82,7 @@ func VerifyJWT() gin.HandlerFunc {
 		claims, err := utils.ParseToken(token, SECRET)
 		if err != nil {
 			if err.Errors == jwt.ValidationErrorExpired {
-				c.AbortWithStatusJSON(http.StatusUnauthorized, "Expired token")
+				c.AbortWithStatusJSON(http.StatusUnauthorized, "Session expired")
 				return
 			}
 			c.AbortWithStatusJSON(http.StatusUnauthorized, "Invalid token")

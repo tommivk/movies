@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"movies/custom_errors"
 	"movies/enums"
 	"movies/forms"
 	"movies/utils"
@@ -35,12 +36,12 @@ func (u User) Login(c *gin.Context, credentials forms.Credentials) (*LoginRespon
 	user := User{}
 	err := db.Get(&user, "SELECT * FROM Users WHERE username=$1", credentials.Username)
 	if err != nil {
-		return nil, errors.New("Invalid credentials")
+		return nil, custom_errors.ErrInvalidCredentials
 	}
 
 	err = utils.ValidatePassword(user.PasswordHash, credentials.Password)
 	if err != nil {
-		return nil, errors.New("Invalid credentials")
+		return nil, custom_errors.ErrInvalidCredentials
 	}
 
 	token, err := utils.TokenForUser(user.Id, user.Username, SECRET)

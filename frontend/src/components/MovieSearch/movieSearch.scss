@@ -1,6 +1,7 @@
 @use "../../sassStyles/variables";
 
 .search {
+  position: relative;
   height: calc(100% - variables.$navigationBarHeight);
   padding-top: 40px;
   box-sizing: border-box;

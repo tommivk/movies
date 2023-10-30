@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAppStore from "../../store";
 import useModalContext from "../../context/useModalContext";
@@ -9,7 +9,7 @@ import "./navigation.scss";
 
 const Navigation = () => {
   const { openLoginModal } = useModalContext();
-
+  const navigate = useNavigate();
   const store = useAppStore();
   const setLoggedUser = store.setLoggedUser;
 
@@ -17,6 +17,7 @@ const Navigation = () => {
     setLoggedUser(null);
     localStorage.removeItem("loggedUser");
     toast.success("Goodbye");
+    return navigate("/");
   };
 
   return (

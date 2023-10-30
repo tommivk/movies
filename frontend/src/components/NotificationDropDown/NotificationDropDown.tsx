@@ -79,6 +79,9 @@ const NotificationList = () => {
           </Button>
         </Menu.Item>
       )}
+      {notifications.length === 0 && (
+        <p className="text-center">You don't have any notifications</p>
+      )}
     </div>
   );
 };

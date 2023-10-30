@@ -1,11 +1,10 @@
 @use "../../sassStyles/variables";
 
 .loadingContainer {
-  height: 100%;
   width: 100%;
-  position: absolute;
-  top: 0;
   display: flex;
+  flex-direction: column;
+  flex: 1;
   justify-content: center;
   align-items: center;
 }

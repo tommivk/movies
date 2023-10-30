@@ -6,7 +6,7 @@ import {
 import ActorPage from "./components/ActorPage/ActorPage";
 import Favourites from "./components/Favourites/Favourites";
 import HomePage from "./components/HomePage/HomePage";
-import Layout from "./components/Layout";
+import Layout from "./components/Layout/Layout";
 import MoviePage from "./components/MoviePage/MoviePage";
 import MovieSearch from "./components/MovieSearch/MovieSearch";
 import ProtectedRoute from "./components/ProtectedRoute";

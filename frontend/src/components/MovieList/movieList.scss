@@ -1,11 +1,13 @@
 @use "../../sassStyles/variables";
 
 .movieList {
+  width: 100%;
   display: grid;
   gap: variables.$movieCardGap;
   grid-template-columns: repeat(auto-fill, variables.$movieCardWidth);
   max-width: (4 * variables.$movieCardWidth) + (3 * variables.$movieCardGap);
   place-content: center;
   place-items: center;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
 }

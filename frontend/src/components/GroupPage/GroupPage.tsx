@@ -22,13 +22,11 @@ import useGetGroup from "../../hooks/useGetGroup";
 
 import "./groupPage.scss";
 
-const Recommendations = ({ groupId }: { groupId: number }) => {
-  const {
-    data: recommendations,
-    isLoading,
-    isError,
-  } = useGetRecommendations(groupId);
-
+const Recommendations = ({
+  recommendations,
+}: {
+  recommendations: Recommendation[];
+}) => {
   const slides =
     useMemo(
       () =>
@@ -40,20 +38,12 @@ const Recommendations = ({ groupId }: { groupId: number }) => {
       [recommendations]
     ) ?? [];
 
-  if (isError) {
-    return <p>Failed to fetch recommendations</p>;
-  }
-
   return (
     <div className="recommendations">
       <h1>Recently Recommended</h1>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className="recommendations__list">
-          <Swiper slides={slides} size="md" />
-        </div>
-      )}
+      <div className="recommendations__list">
+        <Swiper slides={slides} size="md" />
+      </div>
       {recommendations?.length === 0 && <p>No recommendations.</p>}
     </div>
   );
@@ -196,9 +186,6 @@ const MemberList = ({
 }) => {
   const { data: members, isLoading, isError } = useGetGroupMembers(groupId);
 
-  if (isLoading) {
-    return <LoadingContainer />;
-  }
   if (isError) {
     return <div>Error...</div>;
   }
@@ -207,16 +194,20 @@ const MemberList = ({
     <Modal
       open={isOpen}
       onClose={onClose}
-      title={`Group Members (${members.length})`}
+      title={`Group Members (${members?.length})`}
     >
-      <div className="groupMemberList">
-        {members.map((member) => (
-          <div key={member.id} className="groupMemberList__member">
-            <img />
-            <p>{member.username}</p>
-          </div>
-        ))}
-      </div>
+      {isLoading ? (
+        <LoadingContainer />
+      ) : (
+        <div className="groupMemberList">
+          {members.map((member) => (
+            <div key={member.id} className="groupMemberList__member">
+              <img />
+              <p>{member.username}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </Modal>
   );
 };
@@ -224,13 +215,22 @@ const MemberList = ({
 const GroupPage = () => {
   const groupId = Number(useParams().id);
   const [modalOpen, setModalOpen] = useState(false);
-  const { data: group, isLoading, isError } = useGetGroup(groupId);
+  const {
+    data: group,
+    isLoading: groupLoading,
+    isError: groupError,
+  } = useGetGroup(groupId);
+  const {
+    data: recommendations = [],
+    isLoading: recommendationsLoading,
+    isError: recommendationError,
+  } = useGetRecommendations(groupId);
 
-  if (isLoading) {
+  if (groupLoading || recommendationsLoading) {
     return <LoadingContainer />;
   }
-  if (isError) {
-    return <div>Error...</div>;
+  if (groupError || recommendationError) {
+    return <div>Error happened...</div>;
   }
 
   return (
@@ -244,7 +244,7 @@ const GroupPage = () => {
         onClose={() => setModalOpen(false)}
         groupId={groupId}
       />
-      <Recommendations groupId={groupId} />
+      <Recommendations recommendations={recommendations} />
     </Container>
   );
 };

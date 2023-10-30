@@ -1,6 +1,10 @@
 @use "../../sassStyles/theme";
 
 .groupSearch {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
   input {
     padding: 10px 20px;
     margin: auto;
@@ -18,8 +22,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, 250px);
   gap: 20px;
-  margin: auto;
-  margin-top: 60px;
   padding-bottom: 100px;
   place-content: center;
 

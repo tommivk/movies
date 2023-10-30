@@ -5,7 +5,8 @@
   &__memberCount {
     display: flex;
     width: fit-content;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
     color: theme.$secondaryGrey;
     cursor: pointer;
     gap: 5px;

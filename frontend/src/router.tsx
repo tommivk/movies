@@ -3,15 +3,15 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import ActorPage from "./components/ActorPage/ActorPage";
-import Favourites from "./components/Favourites/Favourites";
-import HomePage from "./components/HomePage/HomePage";
+import ActorPage from "./pages/ActorPage/index";
+import Favourites from "./pages/Favourites/index";
+import HomePage from "./pages/HomePage/index";
 import Layout from "./components/Layout/Layout";
-import MoviePage from "./components/MoviePage/MoviePage";
-import MovieSearch from "./components/MovieSearch/MovieSearch";
+import MoviePage from "./pages/MoviePage/index";
+import MovieSearch from "./pages/MovieSearch";
 import ProtectedRoute from "./components/ProtectedRoute";
-import GroupSearch from "./components/GroupSearch/GroupSearch";
-import GroupPage from "./components/GroupPage/GroupPage";
+import GroupSearch from "./pages/GroupSearch/index";
+import GroupPage from "./pages/GroupPage/index";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 
 export const router = createBrowserRouter(

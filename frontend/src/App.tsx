@@ -4,7 +4,7 @@ import { router } from "./router";
 import { ModalProvider } from "./context/ModalContext";
 import useFetchUserData from "./hooks/useFetchUserData";
 import useLoggedUser from "./hooks/useLoggedUser";
-import LoginSignUpModal from "./components/LoginSignUpModal.tsx/LoginSignUpModal";
+import LoginSignUpModal from "./components/LoginSignUpModal/LoginSignUpModal";
 
 import "react-toastify/dist/ReactToastify.css";
 

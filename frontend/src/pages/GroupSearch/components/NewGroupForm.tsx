@@ -114,7 +114,11 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
       })}
     >
       <FormLabel>Group Image</FormLabel>
-      <input type="file" {...register("images")} />
+      <input
+        type="file"
+        className="newGroupForm__imageInput"
+        {...register("images")}
+      />
       <FormFieldError message={errors.images?.message} />
 
       <FormInput

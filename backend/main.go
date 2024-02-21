@@ -128,5 +128,8 @@ func main() {
 	private.GET("/recommendations/:id/comments", groups.GetRecommendationComments)
 	private.POST("/recommendations/:id/comments", groups.AddRecommendationComment)
 
+	private.DELETE("/recommendations/:id/comments/:commentId", groups.DeleteRecommendationComment)
+	private.DELETE("/recommendations/:id", groups.DeleteRecommendation)
+
 	router.Run(fmt.Sprintf("0.0.0.0:%s", PORT))
 }

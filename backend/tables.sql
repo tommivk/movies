@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS Recommendations (
 
 CREATE TABLE IF NOT EXISTS RecommendationComments (
     id SERIAL PRIMARY KEY,
-    recommendation_id INTEGER REFERENCES Recommendations NOT NULL,
+    recommendation_id INTEGER REFERENCES Recommendations ON DELETE CASCADE NOT NULL,
     user_id INTEGER REFERENCES Users NOT NULL,
     comment VARCHAR NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()

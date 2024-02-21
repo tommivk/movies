@@ -281,6 +281,30 @@ func GetRecommendations(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func DeleteRecommendation(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	recommendationId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'id'")
+		return
+	}
+	recommendation, err := recommendationsModel.GetRecommendationById(c, recommendationId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if recommendation.UserId != userId {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Unauthorized")
+		return
+	}
+	err = recommendationsModel.DeleteRecommendation(c, recommendationId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
+}
+
 func GetGroupsMembers(c *gin.Context) {
 	userId := c.MustGet("userId").(int)
 	groupId, err := strconv.Atoi(c.Param("id"))
@@ -351,4 +375,28 @@ func GetRecommendationComments(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, messages)
+}
+
+func DeleteRecommendationComment(c *gin.Context) {
+	userId := c.MustGet("userId").(int)
+	commentId, err := strconv.Atoi(c.Param("commentId"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Invalid param: 'commentId'")
+		return
+	}
+	comment, err := recommendationsModel.GetRecommendationCommentById(c, commentId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if comment.UserId != userId {
+		c.AbortWithStatusJSON(http.StatusForbidden, "Unauthorized")
+		return
+	}
+	err = recommendationsModel.DeleteRecommendationComment(c, commentId)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }

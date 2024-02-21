@@ -23,6 +23,15 @@ type RecommendationResult struct {
 	Username string `json:"username" db:"username"`
 }
 
+type RecommendationComment struct {
+	Id               int    `json:"id"`
+	RecommendationId int    `json:"recommendationId" db:"recommendation_id"`
+	Timestamp        string `json:"timestamp"`
+	Comment          string `json:"comment"`
+	Username         string `json:"username"`
+	UserId           int    `json:"userId" db:"user_id"`
+}
+
 func getGroupMembers(tx *sqlx.Tx, groupId, userId int) []int {
 	var userIds []int
 	sql := `SELECT U.id FROM UserGroups UG JOIN Users U ON UG.user_id = U.id WHERE UG.group_id=$1 AND UG.user_id != $2`
@@ -48,6 +57,12 @@ func (r *Recommendation) AddRecommendation(c *gin.Context, userId, movieId, grou
 	return tx.Commit()
 }
 
+func (r *Recommendation) DeleteRecommendation(c *gin.Context, recommedationId int) error {
+	sql := `DELETE FROM Recommendations WHERE id=$1`
+	_, err := db.Exec(sql, recommedationId)
+	return err
+}
+
 func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int) (*[]RecommendationResult, error) {
 	sql := `SELECT R.id, movie_id, group_id, user_id, description, timestamp,
 			(SELECT username FROM Users U WHERE U.id=user_id) as username,
@@ -59,15 +74,6 @@ func (r *Recommendation) GetRecommendationsByGroupId(c *gin.Context, groupId int
 		return nil, err
 	}
 	return &result, nil
-}
-
-type RecommendationComment struct {
-	Id               int    `json:"id"`
-	RecommendationId int    `json:"recommendationId" db:"recommendation_id"`
-	Timestamp        string `json:"timestamp"`
-	Comment          string `json:"comment"`
-	Username         string `json:"username"`
-	UserId           int    `json:"userId" db:"user_id"`
 }
 
 func (r *Recommendation) CreateRecommendationComment(c *gin.Context, recommendationId, userId int, comment string) error {
@@ -88,6 +94,16 @@ func (r *Recommendation) GetRecommendationComments(c *gin.Context, recommendatio
 	return &result, nil
 }
 
+func (r *Recommendation) GetRecommendationCommentById(c *gin.Context, recommendationId int) (*RecommendationComment, error) {
+	sql := `SELECT id, recommendation_id, user_id, comment, timestamp FROM RecommendationComments WHERE id=$1`
+	var result RecommendationComment
+	err := db.Get(&result, sql, recommendationId)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (r *Recommendation) GetRecommendationById(c *gin.Context, id int) (*Recommendation, error) {
 	sql := `SELECT id, timestamp, movie_id, group_id, user_id, description
 			FROM Recommendations WHERE id=$1`
@@ -97,4 +113,10 @@ func (r *Recommendation) GetRecommendationById(c *gin.Context, id int) (*Recomme
 		return nil, err
 	}
 	return &result, nil
+}
+
+func (r *Recommendation) DeleteRecommendationComment(c *gin.Context, recommedationId int) error {
+	sql := `DELETE FROM RecommendationComments WHERE id=$1`
+	_, err := db.Exec(sql, recommedationId)
+	return err
 }

@@ -31,6 +31,7 @@
   background: rgb(26, 25, 25);
   padding: 15px;
   box-sizing: border-box;
+  position: relative;
 
   &__top {
     display: flex;
@@ -40,16 +41,18 @@
   }
 
   &__buttons {
-    position: absolute;
-    bottom: 0px;
     display: flex;
-    margin-left: 30px;
     font-size: 1.1rem;
     color: theme.$secondaryGrey;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 
     & > * {
       cursor: pointer;
       font-weight: 600;
+      margin-right: 20px;
+      margin-left: 20px;
     }
 
     i {
@@ -108,7 +111,7 @@
   width: 400px;
   max-width: 100%;
   box-sizing: border-box;
-  margin-top: 40px;
+  margin: 20px auto;
   flex-wrap: wrap;
   row-gap: 20px;
   column-gap: 10px;
@@ -131,7 +134,8 @@
   margin: 20px 0px;
   max-height: 50vh;
   overflow: auto;
-  min-height: 250px;
+  height: 450px;
+  position: relative;
 
   &__comment {
     width: 100%;
@@ -141,6 +145,14 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
+    position: relative;
+
+    &__deleteIcon {
+      top: 30px;
+      right: 20px;
+      cursor: pointer;
+      margin-left: auto;
+    }
 
     img {
       align-self: start;
@@ -162,8 +174,16 @@
     margin-top: 13px;
   }
 
-  &__right {
+  &__middle {
+    margin-right: auto;
     width: 300px;
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 10px 10px 0px;
+    margin-bottom: auto;
   }
 
   &__username {
@@ -174,10 +194,11 @@
     display: flex;
     justify-content: space-between;
   }
+
   &__time {
     color: theme.$secondaryGrey;
     font-size: 0.8rem;
-    padding-left: 20px;
+    margin-top: 0px;
   }
 }
 

@@ -36,7 +36,7 @@ const RecommendationComments = ({
 
   return (
     <div>
-      <CommentList comments={comments} />
+      <CommentList comments={comments} recommendationId={recommendationId} />
       {isUserInGroup ? (
         <form
           className="commentForm"

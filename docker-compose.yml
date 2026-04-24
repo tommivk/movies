@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d testDB"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       retries: 5
       start_period: 30s
@@ -39,11 +39,6 @@ services:
         VITE_BASE_URL: "/api"
         VITE_IMGIX_BASE_URL: ${VITE_IMGIX_BASE_URL}
 
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 5s
-      retries: 5
-
   nginx:
     image: nginx:1.29
     volumes:
@@ -52,7 +47,5 @@ services:
       - 8080:80
     container_name: reverse-proxy
     depends_on:
-      frontend:
-        condition: service_healthy
       server:
         condition: service_started

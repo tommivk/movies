@@ -2,7 +2,7 @@ import camelcaseKeys from "camelcase-keys";
 import useAppStore from "./src/store";
 import { Notification } from "./types";
 import { toast } from "react-toastify";
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL ?? "http://localhost:8008";
 const IMGIX_BASE_URL = import.meta.env.VITE_IMGIX_BASE_URL;
 
 export const fetchData = async ({

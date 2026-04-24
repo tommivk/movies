@@ -1,0 +1,64 @@
+services:
+  db:
+    image: postgres
+    container_name: movieDB
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: "pass"
+      POSTGRES_DB: "testDB"
+      POSTGRES_USER: "user"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d testDB"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  server:
+    build:
+      context: backend
+      dockerfile: dev.Dockerfile
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://user:pass@db:5432/testDB?sslmode=disable}
+      PORT: ${PORT:-8008}
+      ALLOWED_ORIGIN: http://localhost:8080
+      API_KEY: ${API_KEY:-''} # Add your (free) https://www.themoviedb.org/ API key here or in a .env file
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: dev.Dockerfile
+    env_file:
+      - .env
+    environment:
+      VITE_BASE_URL: "/api"
+      VITE_IMGIX_BASE_URL: ${VITE_IMGIX_BASE_URL:-https://tommivk-movies.imgix.net/}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5173"]
+      interval: 5s
+      retries: 5
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+
+  nginx:
+    image: nginx:1.29
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      frontend:
+        condition: service_healthy
+      server:
+        condition: service_started

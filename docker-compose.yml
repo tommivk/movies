@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d testDB"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  server:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      API_KEY: ${API_KEY}
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: 8008
+      ALLOWED_ORIGIN: http://localhost:8080
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    restart: unless-stopped
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_BASE_URL: "/api"
+        VITE_IMGIX_BASE_URL: ${VITE_IMGIX_BASE_URL}
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:1.29
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      frontend:
+        condition: service_healthy
+      server:
+        condition: service_started

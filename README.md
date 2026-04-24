@@ -10,3 +10,5 @@ docker compose -f docker-compose.dev.yml up
 ````
 docker compose -f docker-compose.yml up
 ````
+
+The app will be available in http://localhost:8080/

@@ -47,5 +47,7 @@ services:
       - 8080:80
     container_name: reverse-proxy
     depends_on:
+      frontend:
+        condition: service_started
       server:
         condition: service_started

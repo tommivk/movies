@@ -1,5 +1,5 @@
 
-The app is deployed to: https://movies-tommivk.netlify.app/ (The server might take up to a minute to spin up) 
+The app is deployed to: https://movies-tommivk.netlify.app/ (The backend server might take up to a minute to spin up) 
 
 ## Setting up the dev environment 
 ### Start the dev environment with docker

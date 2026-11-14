@@ -53,26 +53,32 @@
 
   &__card1 {
     position: absolute;
+    transform: translate(0px, 50px);
+    top: 0;
+    will-change: transform, filter;
     filter: brightness(0.06);
     animation: firstCard 10s infinite;
-    top: 50px;
   }
 
   &__card2 {
     z-index: 5;
     position: absolute;
     left: 200px;
-    top: 0px;
+    top: 0;
+    transform: translate(0px, 0px);
+    will-change: transform, filter;
     filter: brightness(0.06);
     animation: secondCard 10s infinite;
   }
 
   &__card3 {
     position: absolute;
+    transform: translate(0px, 50px);
+    top: 0;
+    will-change: transform, filter;
     filter: brightness(0.06);
     left: 400px;
     animation: thirdCard 10s infinite;
-    top: 50px;
   }
 }
 
@@ -87,8 +93,7 @@
   30%,
   37% {
     z-index: 4;
-    transform: translateX(400px);
-    top: 50px;
+    transform: translate(400px, 50px);
     filter: brightness(0.06);
   }
 
@@ -98,16 +103,14 @@
 
   66% {
     z-index: 7;
-    transform: translateX(200px);
-    top: 0px;
+    transform: translate(200px, 0px);
     filter: brightness(1);
   }
 
   87%,
   100% {
     z-index: 3;
-    transform: translateX(0px);
-    top: 50px;
+    transform: translate(0px, 50px);
     filter: brightness(0.06);
   }
 }
@@ -119,8 +122,7 @@
   20%,
   33% {
     z-index: 3;
-    transform: translateX(-200px);
-    top: 50px;
+    transform: translate(-200px, 50px);
     filter: brightness(0.03);
   }
 
@@ -134,8 +136,7 @@
 
   70% {
     z-index: 4;
-    transform: translateX(200px);
-    top: 50px;
+    transform: translate(200px, 50px);
     filter: brightness(0.03);
   }
 
@@ -145,8 +146,7 @@
 
   100% {
     z-index: 7;
-    transform: translateX(0px);
-    top: 0px;
+    transform: translate(0px, 0px);
     filter: brightness(1);
   }
 }
@@ -158,16 +158,14 @@
 
   33% {
     z-index: 7;
-    transform: translateX(-200px);
-    top: 0px;
+    transform: translate(-200px, 0px);
     filter: brightness(1);
   }
 
   53%,
   66% {
     z-index: 3;
-    transform: translateX(-400px);
-    top: 50px;
+    transform: translate(-400px, 50px);
     filter: brightness(0.06);
   }
 
@@ -178,8 +176,7 @@
   100%,
   3% {
     z-index: 2;
-    transform: translateX(0px);
-    top: 50px;
+    transform: translate(0px, 50px);
     filter: brightness(0.06);
   }
 }

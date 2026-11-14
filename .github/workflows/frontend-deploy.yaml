@@ -59,6 +59,11 @@ jobs:
           path: frontend/cypress/screenshots
           if-no-files-found: ignore
 
+      - name: Dump dev stack logs
+        if: failure()
+        working-directory: .
+        run: docker compose -f docker-compose.dev.yml logs --no-color
+
       - name: Stop dev stack
         if: always()
         working-directory: .

@@ -1,3 +1,5 @@
+name: movies-dev
+
 services:
   db:
     image: postgres
@@ -23,7 +25,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgres://user:pass@db:5432/testDB?sslmode=disable}
       PORT: ${PORT:-8008}
       ALLOWED_ORIGIN: http://localhost:8080
-      API_KEY: ${API_KEY:-''} # Add your (free) https://www.themoviedb.org/ API key here or in a .env.dev file
+      # API_KEY comes from .env.dev (get a free key at https://www.themoviedb.org/).
+      # Don't set it here: `environment` overrides `env_file`.
     volumes:
       - ./backend:/app
     depends_on:

@@ -14,6 +14,7 @@ defaults:
 
 jobs:
   build-and-test:
+    name: Build and test frontend
     runs-on: ubuntu-latest
 
     steps:

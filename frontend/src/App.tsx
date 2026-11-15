@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   useLoggedUser();
   useFetchUserData();
-  console.log("??");
+
   return (
     <>
       <ModalProvider>

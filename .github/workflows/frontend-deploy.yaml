@@ -13,7 +13,8 @@ defaults:
     working-directory: frontend
 
 jobs:
-  build-and-test:
+  build-and-test-frontend:
+    name: Build and test frontend
     runs-on: ubuntu-latest
 
     steps:
@@ -75,7 +76,7 @@ jobs:
   deploy:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
-    needs: [build-and-test]
+    needs: [build-and-test-frontend]
     defaults:
       run:
         working-directory: .

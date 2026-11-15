@@ -6,6 +6,7 @@ import useFetchMovie from "./hooks/useFetchMovie";
 import Recommendations from "./components/Recommendations";
 import TopSection from "./components/TopSection";
 import CastContainer from "./components/CastContainer";
+import Trailer from "./components/Trailer";
 
 import "./index.scss";
 
@@ -29,6 +30,7 @@ const MoviePage = () => {
       <TopSection movie={movie} />
       <div className="movie__bottomSection">
         <CastContainer movie={movie} />
+        <Trailer movie={movie} />
         <Recommendations movie={movie} />
       </div>
     </div>

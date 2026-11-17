@@ -28,3 +28,19 @@ func TestAppendGenresToSearchResult(t *testing.T) {
 	want = []Genre{action, history}
 	assert.Equal(t, want, searchResult.Results[1].Genres)
 }
+
+func TestFindOfficialTrailer(t *testing.T) {
+	videos := []Video{
+		{Key: "teaser", Site: "YouTube", Type: "Teaser", Official: true},
+		{Key: "unofficial", Site: "YouTube", Type: "Trailer", Official: false},
+		{Key: "vimeo", Site: "Vimeo", Type: "Trailer", Official: true},
+		{Key: "official", Site: "YouTube", Type: "Trailer", Official: true},
+		{Key: "official2", Site: "YouTube", Type: "Trailer", Official: true},
+	}
+	trailer := findOfficialTrailer(videos)
+	assert.NotNil(t, trailer)
+	assert.Equal(t, "official", trailer.Key)
+
+	assert.Nil(t, findOfficialTrailer(videos[:3]))
+	assert.Nil(t, findOfficialTrailer(nil))
+}

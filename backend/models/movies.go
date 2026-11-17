@@ -34,6 +34,19 @@ type Credits struct {
 	Crew []Cast `json:"crew,omitempty"`
 }
 
+type Video struct {
+	Key         string `json:"key"`
+	Name        string `json:"name"`
+	Site        string `json:"site"`
+	Type        string `json:"type"`
+	Official    bool   `json:"official"`
+	PublishedAt string `json:"published_at"`
+}
+
+type Videos struct {
+	Results []Video `json:"results"`
+}
+
 type Movie struct {
 	Id              int          `json:"id"`
 	Title           string       `json:"title"`
@@ -52,6 +65,8 @@ type Movie struct {
 	Popularity      float32      `json:"popularity,omitempty"`
 	Runtime         int          `json:"runtime"`
 	Recommendations SearchResult `json:"recommendations"`
+	Videos          *Videos      `json:"videos,omitempty"`
+	Trailer         *Video       `json:"trailer,omitempty"`
 }
 
 type SearchResult struct {
@@ -113,13 +128,24 @@ func appendGenresToSearchResult(searchResult *SearchResult) {
 	}
 }
 
+// findOfficialTrailer returns the first official YouTube trailer, or nil if none exists.
+func findOfficialTrailer(videos []Video) *Video {
+	for i := range videos {
+		v := videos[i]
+		if v.Official && v.Type == "Trailer" && v.Site == "YouTube" && v.Key != "" {
+			return &v
+		}
+	}
+	return nil
+}
+
 func (m *Movie) FetchMovieById(c *gin.Context, id string) (Movie, error) {
 	API_KEY := c.MustGet("API_KEY").(string)
 
 	baseURL, _ := url.Parse("https://api.themoviedb.org/3/movie/" + id)
 	params := url.Values{}
 	params.Add("api_key", API_KEY)
-	params.Add("append_to_response", "credits,recommendations")
+	params.Add("append_to_response", "credits,recommendations,videos")
 	baseURL.RawQuery = params.Encode()
 
 	res, err := utils.FetchData(baseURL.String())
@@ -134,6 +160,11 @@ func (m *Movie) FetchMovieById(c *gin.Context, id string) (Movie, error) {
 	}
 
 	appendGenresToSearchResult(&movie.Recommendations)
+
+	if movie.Videos != nil {
+		movie.Trailer = findOfficialTrailer(movie.Videos.Results)
+		movie.Videos = nil
+	}
 
 	return movie, nil
 }

@@ -15,6 +15,16 @@ export type Movie = {
   popularity?: number;
   runtime: number;
   recommendations?: SearchResult;
+  trailer?: Video;
+};
+
+export type Video = {
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+  publishedAt: string;
 };
 
 export type Cast = {
